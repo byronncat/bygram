@@ -15,8 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Routes
-const routes = require('./routes/routes');
-app.use('/api', routes.api);
+const setRoutes = require('./routes/routes');
+setRoutes(app);
 
 // Catch 404 and forward to error handler
 app.use(function(req: Request, res: Response, next: NextFunction) {
@@ -31,7 +31,7 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send('error');
+  console.log(`[Error]: ${err.message}`);
 });
 
 module.exports = app;

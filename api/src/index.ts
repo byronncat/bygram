@@ -1,10 +1,10 @@
-const app = require('./app');
+const settings = require('./settings');
 const debug = require('debug')('api:server');
 
 // Set port
 type Port = string | number | false;
 const port: Port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+settings.set('port', port);
 
 function normalizePort(val: string): Port {
   const radix = 10;
@@ -23,9 +23,9 @@ function normalizePort(val: string): Port {
 
 // Create server
 import http = require('http');
-const server = http.createServer(app);
+const server = http.createServer(settings);
 server.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  console.log(`[Server]: Server is running at http://localhost:${port}`);
 });
 server.on('error', onError);
 server.on('listening', onListening);

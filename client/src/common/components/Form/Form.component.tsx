@@ -1,12 +1,19 @@
 import { useForm } from "react-hook-form";
 import { FormData, FormFieldProps } from "@/types";
 import FormField from "./FormField.component";
+import axios from "axios";
 
-function Form({ fieldList, defaultValues }: { fieldList: Array<{
-  name: FormFieldProps["name"];
-  type: FormFieldProps["type"];
-  placeholder: FormFieldProps["placeholder"];
-}>, defaultValues: FormData }) {
+function Form({
+  fieldList,
+  defaultValues,
+}: {
+  fieldList: Array<{
+    name: FormFieldProps["name"];
+    type: FormFieldProps["type"];
+    placeholder: FormFieldProps["placeholder"];
+  }>;
+  defaultValues: FormData;
+}) {
   const {
     register,
     handleSubmit,
@@ -14,7 +21,14 @@ function Form({ fieldList, defaultValues }: { fieldList: Array<{
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    console.log("SUCCESS", data);
+    axios
+      .post("/api/auth/login", data)
+      .then(() => {
+        console.log("Success");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
