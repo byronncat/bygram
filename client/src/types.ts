@@ -1,20 +1,21 @@
-import exp from "constants";
 import { FieldError, UseFormRegister } from "react-hook-form";
 
-export type FormData = {
-  username: string;
-  password: string;
+export type AuthenticationInformationProps = "username" | "password" | "confirmPassword" | "email";
+export type AuthenticationInformation = {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
   email?: string;
 };
 
 export type FormFieldProps = {
+  key?: string;
   type: string;
   placeholder: string;
-  name: ValidFieldNames;
-  register: UseFormRegister<FormData>;
-  errors: FieldError | undefined;
-  isRequired?: boolean;
-};
+  name: AuthenticationInformationProps;
 
-// Union type
-export type ValidFieldNames = "username" | "email" | "password";
+  // react-hook-form
+  register?: UseFormRegister<AuthenticationInformation>;
+  errors?: FieldError | undefined;
+  validation?: {};
+};

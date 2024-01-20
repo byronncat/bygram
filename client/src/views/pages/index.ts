@@ -1,2 +1,2 @@
 export { default as HomePage } from './Home.page'
-export { LoginPage, RegisterPage } from './auth/index'
+export { LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from './auth/index'

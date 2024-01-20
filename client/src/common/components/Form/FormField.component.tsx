@@ -1,25 +1,18 @@
 import { FormFieldProps } from "@/types";
 
-interface FormField {
-  type: FormFieldProps["type"];
-  placeholder: FormFieldProps["placeholder"];
-  name: FormFieldProps["name"];
-  register: FormFieldProps["register"];
-  errors: FormFieldProps["errors"];
-}
-
-export default function FormField ({ type, placeholder, name, register, errors }: FormField) {
+export default function FormField ({ type, placeholder, name, register, errors, validation }: FormFieldProps) {
   return (
-    <div className="d-flex flex-column">
-      <label htmlFor={name}>{placeholder}</label>
+    <div className="form-field form-floating d-flex flex-column p-0">
       <input
+        key={name}
         type={type}
         className="form-control"
         id={name}
         placeholder={placeholder}
-        {...register(name, { required: "This is required" })}
+        {...register!(name, { ...validation })}
       />
-      <p>{errors?.message}</p>
+      <label htmlFor={name}>{placeholder}</label>
+      <p className="error-message mt-1">{errors?.message}</p>
     </div>
   );
 };
