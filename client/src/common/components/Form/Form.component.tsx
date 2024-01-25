@@ -27,7 +27,7 @@ function Form({ fieldList, defaultValues, submitHandler, children }: FormData) {
         className="form w-100 d-flex flex-column justify-content-center align-items-center"
         onSubmit={handleSubmit(submitHandler)}
       >
-        <div className="form-panel p-5 rounded-3">
+        <div className="form-panel rounded-3">
           {fieldList.map((field) => {
             return (
               <FormField

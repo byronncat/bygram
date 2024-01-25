@@ -7,6 +7,7 @@ function App() {
     <Routes>
       <Route element={<RootLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/dashboard" element={<div>dashboard</div>} />
       </Route>
 
       <Route path="/auth" element={<AuthLayout />}>

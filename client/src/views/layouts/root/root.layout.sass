@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Merienda&family=Zeyada&display=swap')
+  
+.main-background
+  // background-image: linear-gradient(to right top, #2e0932, #561255, #831878, #b5199b, #eb12bc)
+  background: url('../../assets/imgs/wallpaper.png') no-repeat center center fixed
+  background-size: cover
+
+.sidebar
+  width: 400px
+  background: var(--color-black-pearl-07)
+  box-shadow: 0 15px 25px rgba(0,0,0,.6)
+  
+  & a
+    color: rgba(255, 255, 255, 0.7) !important
+
+  & hr
+    border-color: var(--color-electric-violet)
+
+  & .brand-name
+    color: #fff !important
+    font-family: 'Merienda', cursive
+    text-shadow: 0 0 10px var(--color-electric-violet)
+    transition: all 1s
+
+  & .brand
+    &:hover .brand-name
+      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+
+  & .active
+    background: var(--color-red-violet) !important
+    color: #fff !important
+    font-weight: bold
+    box-shadow: 0 0 1px var(--color-red-violet), 0 0 2px var(--color-red-violet), 0 0 4px var(--color-red-violet), 0 0 8px var(--color-red-violet)
+
+  & .nav-link
+    transition: all 0.3s
+    &:hover:not(.active)
+      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+    & .nav-link-icon
+      width: 28px
+
+  // Dropdown
+  & .dropdown-menu
+    background: var(--color-black-pearl-07)
+
+  & .dropdown-toggle
+    color: rgba(255, 255, 255, 0.7) !important
+    transition: all 0.3s
+
+    &::after
+      display: none
+
+    & i
+      width: 28px
+
+    &.show
+      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+  
+  & .dropdown-item
+    color: rgba(255, 255, 255, 0.7) !important
+    transition: all 0.5s
+
+    &:hover
+      background: var(--color-red-violet) !important
+      color: #fff !important
+      font-weight: bold
+      box-shadow: 0 0 1px var(--color-red-violet), 0 0 2px var(--color-red-violet), 0 0 4px var(--color-red-violet), 0 0 8px var(--color-red-violet)

@@ -2,7 +2,7 @@ import { FormFieldProps } from "@/types";
 
 export default function FormField ({ type, placeholder, name, register, errors, validation }: FormFieldProps) {
   return (
-    <div className="form-field form-floating d-flex flex-column p-0">
+    <div className="form-field form-floating">
       <input
         key={name}
         type={type}

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import './global.sass';
+import 'bootstrap/dist/js/bootstrap.min.js'
 
 interface ComponentProps {
   children: ReactNode;

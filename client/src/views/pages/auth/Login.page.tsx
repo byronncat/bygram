@@ -3,13 +3,27 @@ import { Link } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
 import { AuthenticationInformation } from "@/types";
 
+// Temp
+import axios from "axios";
+import { useNavigate  } from "react-router-dom";
+
 function LoginPage() {
   const defaultValues: AuthenticationInformation = {
-    username: "",
-    password: "",
+    username: "admin",
+    password: "admin123",
   };
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => console.log(data);
+  const navigate = useNavigate();
+  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => {
+    axios.post("/api/auth/login", data).then((res: any) => {
+      if (res.data.status == "Success") {
+        console.log(res.data);
+        navigate("/");
+      } else {
+        console.log(res.data);
+      }
+    });
+  };
 
   return (
     <>
@@ -58,13 +72,6 @@ function LoginPage() {
         >
           Sign up here
         </Link>
-
-        <p className="text-center mt-5 mb-2">--- Or Login with ---</p>
-        <div className="w-100 d-flex justify-content-center align-items-center">
-          <a className="link text-reset fs-2">
-            <i className="fa-brands fa-google"></i>
-          </a>
-        </div>
       </Form>
     </>
   );

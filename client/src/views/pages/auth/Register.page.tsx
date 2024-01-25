@@ -57,7 +57,7 @@ function RegisterPage() {
         defaultValues={defaultValues}
         submitHandler={submitHandler}
       >
-        <input type="submit" value="Register" className="submit-btn mt-4 pt-2 my-2 btn w-100" />
+        <input type="submit" value="Register" className="submit-btn pt-2 my-2 btn w-100" />
         <p className="text-center mt-1 mb-0">--- or ---</p>
         <Link
           to="/auth/login"

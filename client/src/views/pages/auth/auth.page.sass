@@ -1,4 +1,5 @@
 $main-color: var(--color-charade)
+$hover-color: #d81d84
 
 .brand-logo
   width: 76px
@@ -6,13 +7,35 @@ $main-color: var(--color-charade)
 .form
   color: white
 
+  & a
+    transition: all 0.5s
+    cursor: pointer
+
+    &:hover
+      color: $hover-color !important
+      text-shadow: 0 0 1px $hover-color, 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color
+
+  $submit-btn-text-hover: white
+  & .submit-btn
+    background: #bd1d82
+    color: white
+    transition: all 0.5s
+
+    &:hover
+      color: $submit-btn-text-hover
+      text-shadow: 0 0 1px $submit-btn-text-hover, 0 0 2px $submit-btn-text-hover, 0 0 4px $submit-btn-text-hover, 0 0 8px $submit-btn-text-hover
+      background: $hover-color
+      box-shadow: 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color, 0 0 16px $hover-color
+
 .form-panel
+  padding: 52px 36px
   background-color: #2a2b38b3
   background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg')
   background-position: bottom center
   background-repeat: no-repeat
   background-size: 300%
   width: 400px
+  max-width: 100%
   box-shadow: 0 15px 25px rgba(0,0,0,.6)
 
 .form-field
@@ -68,27 +91,6 @@ $main-color: var(--color-charade)
       -webkit-text-fill-color: white
       -webkit-box-shadow: 0 0 1px $main-color, 0 0 2px $main-color, 0 0 4px $main-color, 0 0 8px $main-color
       transition: background-color 5000s ease-in-out 0s
-
-$hover-color: #d81d84
-$submit-btn-text-hover: white
-.submit-btn
-  background: #bd1d82
-  color: white
-  transition: all 0.5s
-
-  &:hover
-    color: $submit-btn-text-hover
-    text-shadow: 0 0 1px $submit-btn-text-hover, 0 0 2px $submit-btn-text-hover, 0 0 4px $submit-btn-text-hover, 0 0 8px $submit-btn-text-hover
-    background: $hover-color
-    box-shadow: 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color, 0 0 16px $hover-color
-
-a
-  transition: all 0.5s
-  cursor: pointer
-
-  &:hover
-    color: $hover-color !important
-    text-shadow: 0 0 1px $hover-color, 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color
 
 .error-message
   color: #ff0000
