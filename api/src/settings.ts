@@ -2,10 +2,13 @@ import dotenv = require('dotenv');
 dotenv.config();
 
 import { Express, Request, Response, NextFunction } from 'express';
-import createError from 'http-errors';
+import session from 'express-session';
 import express = require('express');
-import cookieParser = require('cookie-parser');
 import logger = require('morgan');
+import cookieParser = require('cookie-parser');
+import passport from 'passport';
+import bodyParser from 'body-parser';
+import createError from 'http-errors';
 
 const app: Express = express();
 
@@ -13,6 +16,21 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 10 }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 // Routes
 const setRoutes = require('./routes/routes');

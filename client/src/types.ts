@@ -19,3 +19,17 @@ export type FormFieldProps = {
   errors?: FieldError | undefined;
   validation?: {};
 };
+
+export interface Credentials {
+  id?: number;
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  token: string | null;
+  user: Credentials | null;
+}

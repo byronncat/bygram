@@ -1,7 +1,2 @@
-const MongoDB = require("./MongoDB/MongoDB.db");
-const PostgreSQL = require("./PostgreSQL/PostgreSQL.db");
-
-module.exports = {
-  MongoDB,
-  PostgreSQL
-};
+export { default as socialMediaDB } from "./MongoDB.db";
+export { default as accountDB } from "./PostgreSQL.db";

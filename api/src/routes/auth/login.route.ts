@@ -1,28 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-const router = require("express").Router();
+import express from "express";
+const router = express.Router();
+const loginController = require("./controller/login.controller");
 
-router.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.json({
-    status: "Success",
-    message: "Login route",
-  });
-});
-
-router.post("/", (req: Request, res: Response, next: NextFunction) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  if (username === "admin" && password === "admin123") {
-    res.json({
-      status: "Success",
-      message: "Login successful",
-    });
-  } else {
-    res.json({
-      status: "Error",
-      message: "Invalid credentials",
-    });
-  }
-});
+router.post("/", loginController);
 
 module.exports = router;

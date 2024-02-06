@@ -1,23 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-const router = require('express').Router();
+import express from 'express';
+const router = express.Router();
+const registerController = require('./controller/register.controller');
 
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.json({
-    status: 'Success',
-    message: 'Register route'
-  });
-});
-
-router.post('/', (req: Request, res: Response, next: NextFunction) => {
-	const username = req.body.username;
-	const password = req.body.password;
-  const email = req.body.email;
-
-	console.log({
-		username,
-    email,
-		password
-	});
-});
+router.post('/', registerController);
 
 module.exports = router;
