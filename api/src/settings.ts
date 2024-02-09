@@ -1,14 +1,14 @@
 import dotenv = require('dotenv');
 dotenv.config();
 
-import { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import session from 'express-session';
-import express = require('express');
-import logger = require('morgan');
-import cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import createError from 'http-errors';
+import logger from 'morgan';
+import path from 'path';
 
 const app: Express = express();
 

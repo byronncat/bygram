@@ -5,7 +5,7 @@ const db = mongoose.connect(connection);
 db.then(() => {
   console.log(`[Database]: MongoDB connected`);
 }).catch((error) => {
-  console.log(`[Database]: MongoDB`, error);
+  // console.log(`[Database]: MongoDB`, error);
 });
 
 export default db;

@@ -15,7 +15,7 @@ function LoginPage() {
   const { setAuthentication } = useAuth();
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
-      .post("/api/auth/login", data, { withCredentials: true })
+      .post("/api/auth/login", data)
       .then((res: AxiosResponse) => {
         setLocalState({
           token: res.data.token,

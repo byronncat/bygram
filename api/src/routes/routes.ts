@@ -1,5 +1,6 @@
 import { Express, Router } from 'express';
 const authRouter = require('./auth/index');
+const admin = require('./admin/test');
 
 interface Route {
   path: string;
@@ -15,6 +16,14 @@ const routes: Route[] = [
     path: '/auth/register',
     router: authRouter.registerRouter
   },
+  {
+    path: '/auth/send-email',
+    router: authRouter.sendEmailRouter
+  },
+  {
+    path: '/admin',
+    router: admin
+  }
 ]
 
 module.exports = function setRoutes(app: Express) {

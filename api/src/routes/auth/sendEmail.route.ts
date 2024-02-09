@@ -2,6 +2,6 @@ import express from "express";
 const router = express.Router();
 const controller = require("./controller/index");
 
-router.post("/", controller.loginController);
+router.post("/", controller.sendEmailController);
 
 module.exports = router;

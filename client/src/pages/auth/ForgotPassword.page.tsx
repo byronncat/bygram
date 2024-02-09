@@ -1,6 +1,7 @@
 import { Form } from "../../components/index";
 import { Link } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
+import axios, { AxiosResponse } from "axios";
 import { AuthenticationInformation } from "@/types";
 
 function ForgotPasswordPage() {
@@ -8,7 +9,11 @@ function ForgotPasswordPage() {
     email: "",
   };
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => console.log(data);
+  const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
+    axios.post("/api/auth/send-email", data).then((res: AxiosResponse) => {
+      console.log(res);
+    });
+  };
 
   return (
     <>

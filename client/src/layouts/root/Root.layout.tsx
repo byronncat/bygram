@@ -7,9 +7,7 @@ import "./root.layout.sass";
 function RootLayout() {
   const { authentication } = useAuth();
 
-  return !authentication.isAuthenticated ? ( 
-    <Navigate to="/auth/login" />
-  ) : (
+  return (
     <>
       <main className="main-background row w-100 h-100 m-0 p-0 d-flex flex-column flex-shrink-0 bg-dark">
         <Sidebar />
