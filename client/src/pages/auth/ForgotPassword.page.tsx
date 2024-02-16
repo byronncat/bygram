@@ -4,14 +4,14 @@ import { SubmitHandler } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
 import { AuthenticationInformation } from "@/types";
 
-function ForgotPasswordPage() {
-  const defaultValues: AuthenticationInformation = {
-    email: "",
-  };
+const defaultValues: AuthenticationInformation = {
+  email: "",
+};
 
+function ForgotPasswordPage() {
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios.post("/api/auth/send-email", data).then((res: AxiosResponse) => {
-      console.log(res);
+      console.log(res.data);
     });
   };
 
@@ -39,7 +39,7 @@ function ForgotPasswordPage() {
         <input type="submit" value="Send" className="submit-btn pt-2 my-2 btn w-100" />
         <p className="text-center mt-1 mb-0">--- or ---</p>
         <Link
-          to="/auth/login"
+          to="/login"
           className="link text-reset text-decoration-none d-block text-center fs-6"
         >
           Turn back

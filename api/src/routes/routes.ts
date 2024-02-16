@@ -1,6 +1,6 @@
 import { Express, Router } from 'express';
 const authRouter = require('./auth/index');
-const admin = require('./admin/test');
+const postRouter = require('./post/post.route');
 
 interface Route {
   path: string;
@@ -21,8 +21,8 @@ const routes: Route[] = [
     router: authRouter.sendEmailRouter
   },
   {
-    path: '/admin',
-    router: admin
+    path: '/post',
+    router: postRouter
   }
 ]
 

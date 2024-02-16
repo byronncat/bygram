@@ -11,7 +11,13 @@
   box-shadow: 0 15px 25px rgba(0,0,0,.6)
   
   & a
-    color: rgba(255, 255, 255, 0.7) !important
+    color: rgba(255, 255, 255, 0.7)
+
+  & button
+    color: rgba(255, 255, 255, 0.7)    
+    &:hover:not(.active)
+      background: transparent !important
+      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
 
   & hr
     border-color: var(--color-electric-violet)
@@ -35,6 +41,8 @@
   & .nav-link
     transition: all 0.3s
     &:hover:not(.active)
+      color: #fff !important
+      background: transparent !important
       text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
     & .nav-link-icon
       width: 28px

@@ -12,7 +12,6 @@ const AuthenticationContext = createContext(
 export default function Authentication({ children }: ComponentProps) {
   const [authentication, setAuthentication] = useState<AuthState>({
     isAuthenticated: localStorage.getItem("isAuthenticated") === "true" ? true : false,
-    token: localStorage.getItem("token") || null,
     user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
   });
   console.log(authentication);

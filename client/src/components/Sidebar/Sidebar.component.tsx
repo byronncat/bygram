@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import logo from "../../assets/imgs/logo.svg";
+import UploadPost from "../UploadPost/UploadPost.component";
 
 function Sidebar() {
   const [activeLink, setActiveLink] = useState("Home");
@@ -9,11 +11,13 @@ function Sidebar() {
     setActiveLink(path);
   };
 
+  const [activeUploadPost, setIsActiveUploadPost] = useState(false);
+
   const logoutHandler = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
-    return <Navigate to="/auth/login" />;
+    return <Navigate to="/login" />;
   };
 
   return (
@@ -66,15 +70,17 @@ function Sidebar() {
                 <i className="nav-link-icon d-inline-block fa-solid fa-comments me-3 fs-4"></i>
                 Messages
               </Link>
-              <Link
-                to="/"
-                className={`nav-link p-3 mb-3 ${activeLink === "Create" ? "active" : ""}`}
+              <Button
+                className={`nav-link w-100 p-3 mb-3 text-start`}
                 aria-current="page"
-                onClick={() => activeHandler("Create")}
+                onClick={function () {
+                  setIsActiveUploadPost(true);
+                }}
               >
                 <i className="nav-link-icon d-inline-block fa-regular fa-square-plus me-3 fs-4"></i>
                 Create
-              </Link>
+              </Button>
+              {activeUploadPost && <UploadPost closeFunction={setIsActiveUploadPost} />}
               <Link
                 to="/"
                 className={`nav-link p-3 mb-3 ${activeLink === "Profile" ? "active" : ""}`}
@@ -103,7 +109,7 @@ function Sidebar() {
                 </a>
               </li>
               <li>
-                <a className="dropdown-item p-2 ps-3" href="/auth/login" onClick={logoutHandler}>
+                <a className="dropdown-item p-2 ps-3" href="/login" onClick={logoutHandler}>
                   Logout
                 </a>
               </li>

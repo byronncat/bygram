@@ -20,19 +20,16 @@ function RegisterPage() {
     axios
       .post("/api/auth/register", data)
       .then((res: AxiosResponse) => {
-        if (res.status === 201) {
-          setLocalState({
-            token: res.data.token,
-            user: res.data.user,
-            isAuthenticated: true,
-          });
-          setAuthentication({
-            isAuthenticated: true,
-            token: res.data.token,
-            user: res.data.user,
-          });
-          navigate("/");
-        }
+        console.log(res.data);
+        setLocalState({
+          user: res.data.user,
+          isAuthenticated: true,
+        });
+        setAuthentication({
+          isAuthenticated: true,
+          user: res.data.user,
+        });
+        navigate("/");
       })
       .catch((err) => {
         if (err.response) {
@@ -88,10 +85,7 @@ function RegisterPage() {
       >
         <input type="submit" value="Register" className="submit-btn pt-2 my-2 btn w-100" />
         <p className="text-center mt-1 mb-0">--- or ---</p>
-        <Link
-          to="/auth/login"
-          className="link text-reset text-decoration-none d-block text-center fs-6"
-        >
+        <Link to="/login" className="link text-reset text-decoration-none d-block text-center fs-6">
           Login here
         </Link>
       </Form>

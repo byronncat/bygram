@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AuthLayout, RootLayout } from "./layouts/index";
 import {
   LoginPage,
@@ -10,26 +10,32 @@ import {
 import { Authentication } from "./components/index";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      element: <RootLayout />,
+      errorElement: <div>404 not found</div>,
+      children: [
+        { path: "/", element: <HomePage /> },
+        { path: "dashboard", element: <div>dashboard</div> },
+      ],
+    },
+    {
+      element: <AuthLayout />,
+      children: [
+        { path: "login", element: <LoginPage /> },
+        { path: "register", element: <RegisterPage /> },
+        { path: "forgot-password", element: <ForgotPasswordPage /> },
+        { path: "reset-password", element: <ResetPasswordPage /> },
+      ],
+    },
+  ]);
+
   return (
-    <Authentication>
-      <BrowserRouter>
-        <Routes>
-          <Route path="auth" element={<AuthLayout />}>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="reset-password" element={<ResetPasswordPage />} />
-          </Route>
-
-          <Route element={<RootLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="dashboard" element={<div>dashboard</div>} />
-          </Route>
-
-          <Route path='*' element={<div>Error</div>} />
-        </Routes>
-      </BrowserRouter>
-    </Authentication>
+    <>
+      <Authentication>
+        <RouterProvider router={router} />
+      </Authentication>
+    </>
   );
 }
 

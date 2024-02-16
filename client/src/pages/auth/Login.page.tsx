@@ -7,8 +7,8 @@ import { setLocalState } from "../../utils/index";
 
 function LoginPage() {
   const defaultValues: AuthenticationInformation = {
-    username: "test",
-    password: "123456",
+    username: process.env.DEFAULT_USERNAME,
+    password: process.env.DEFAULT_PASSWORD,
   };
 
   const navigate = useNavigate();
@@ -17,14 +17,13 @@ function LoginPage() {
     axios
       .post("/api/auth/login", data)
       .then((res: AxiosResponse) => {
+        console.log(res.data);
         setLocalState({
-          token: res.data.token,
           user: res.data.user,
           isAuthenticated: true,
         });
         setAuthentication({
           isAuthenticated: true,
-          token: res.data.token,
           user: res.data.user,
         });
         navigate("/");
@@ -70,7 +69,7 @@ function LoginPage() {
         submitHandler={submitHandler}
       >
         <Link
-          to="/auth/forgot-password"
+          to="/forgot-password"
           className="link mt-3 text-reset text-decoration-none d-block text-center fs-6"
         >
           Forgot password?
@@ -78,7 +77,7 @@ function LoginPage() {
         <input type="submit" value="Login" className="submit-btn pt-2 my-2 btn w-100" />
         <p className="text-center mt-1 mb-0">--- or ---</p>
         <Link
-          to="/auth/register"
+          to="/register"
           className="link text-reset text-decoration-none d-block text-center fs-6"
         >
           Sign up here

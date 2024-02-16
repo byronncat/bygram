@@ -11,9 +11,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// SVG is not supported in many email clients
 const filePath = path.join(__dirname, "resetPassword.template.html");
 const htmlContent = fs.readFileSync(filePath, "utf8");
-// SVG is not supported in many email clients
 const sendMail = async (to: string, subject: string) => {
   try {
     await transporter.sendMail({
@@ -24,14 +24,13 @@ const sendMail = async (to: string, subject: string) => {
       attachments: [
         {
           filename: "logo.png",
-          path: __dirname + '/logo.png',
+          path: __dirname + "/logo.png",
           cid: "logo",
         },
       ],
     });
   } catch (error) {
-    console.log(`[Error sending email]: ${error}`);
-    throw error;
+    console.log(`[Nodemailer]: ${error}`);
   }
 };
 

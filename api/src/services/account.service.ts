@@ -3,9 +3,9 @@ import { AccountSchema } from '@/type';
 
 function parseQuery(data: AccountSchema) {
   const idQuery = data.id ? `id = '${data.id}'` : '';
-  const usernameQuery = data.username ? `username = '${data.username}'` : '';
+  const usernameQuery = data.username ? `username LIKE '${data.username}'` : '';
   const emailQuery = data.email ? `email = '${data.email}'` : '';
-  const passwordQuery = data.password ? `password = '${data.password}'` : '';
+  const passwordQuery = data.password ? `password LIKE '${data.password}'` : '';
 
   const conditions = [idQuery, usernameQuery, emailQuery, passwordQuery].filter((query) => query !== '').join(' OR ');
   return conditions;
@@ -17,7 +17,7 @@ async function getAllUsers() {
     return result;
   } catch (error) {
     console.log(error);
-    return error;
+    return Promise.reject(error);
   }
 };
 
@@ -28,27 +28,28 @@ async function getUsers(data: AccountSchema) {
     const result = await accountDB.any(query);
     return result;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 
 async function verifyUser(data: AccountSchema) {
   try {
-    const query = `SELECT * FROM accounts.users WHERE username = '${data.username}' AND password = '${data.password}'`;
+    const query = `SELECT * FROM accounts.users WHERE username LIKE '${data.username}' AND password LIKE '${data.password}'`;
     const result = await accountDB.oneOrNone(query);
     return result;
   } catch (error) {
-    return error;
+    // throw error;
+    return Promise.reject(error);
   }
 };
 
 async function addUser(data: AccountSchema) {
   try {
-    const result = await accountDB.none(`INSERT INTO accounts.users (username, email, password) VALUES ($1, $2, $3)`, [data.username, data.email, data.password]);
+    const result = await accountDB.one(`INSERT INTO accounts.users (username, email, password) VALUES ($1, $2, $3) RETURNING id`, [data.username, data.email, data.password]);
     return result;
   } catch (error) {
     console.log(error);
-    return error;
+    return Promise.reject(error);
   }
 };
 

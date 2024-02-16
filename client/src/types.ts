@@ -30,6 +30,5 @@ export interface Credentials {
 
 export interface AuthState {
   isAuthenticated: boolean;
-  token: string | null;
   user: Credentials | null;
 }

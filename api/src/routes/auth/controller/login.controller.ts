@@ -15,18 +15,27 @@ async function validateInformation(req: CustomRequest<AccountSchema>, res: Respo
     "local-login",
     function (error: any, user: AccountSchema, info: Information) {
       if (error) {
-        return res.status(500).send(error);
+        return res.status(500).json({
+          success: false,
+          message: error.message,
+        });
       }
-      
+      console.log(error);
+      console.log(user);
       if (user) {
-        res.cookie('user', user, { maxAge: 900000, httpOnly: true })
-        return res.status(200).send({ 
+        // ! TODO: Set cookie
+        // res.cookie('user', user, { maxAge: 900000, httpOnly: true })
+        delete user.password;
+        return res.status(200).json({
+          success: true, 
+          message: info.message,
           user,
-          token: "test1234",
-          message: info.message
         });
       } else {
-        return res.status(401).send(info.message)
+        return res.status(401).json({
+          success: false,
+          message: info.message,
+        })
       }
     })(req, res, next);
 };
