@@ -44,7 +44,7 @@ function Sidebar() {
                 Home
               </Link>
               <Link
-                to="/dashboard"
+                to="/"
                 className={`nav-link p-3 mb-3 ${activeLink === "Search" ? "active" : ""}`}
                 aria-current="page"
                 onClick={() => activeHandler("Search")}

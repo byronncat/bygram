@@ -53,9 +53,20 @@ async function addUser(data: AccountSchema) {
   }
 };
 
+async function getUsernameById(id: number) {
+  try {
+    const result = await accountDB.one(`SELECT username FROM accounts.users WHERE id = $1`, id);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUsers,
+  getUsernameById,
   verifyUser,
   addUser,
 };

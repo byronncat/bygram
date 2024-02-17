@@ -20,8 +20,6 @@ async function validateInformation(req: CustomRequest<AccountSchema>, res: Respo
           message: error.message,
         });
       }
-      console.log(error);
-      console.log(user);
       if (user) {
         // ! TODO: Set cookie
         // res.cookie('user', user, { maxAge: 900000, httpOnly: true })

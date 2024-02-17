@@ -32,7 +32,7 @@ function HomePage() {
                 />
                 <span className="post-profile-info d-flex flex-column">
                   <span className="d-flex">
-                    <span className="d-block">The Practical Dev</span>
+                    <span className="d-block">{post.author}</span>
                     <span className="ms-2 d-block">&middot; Sep 10</span>
                   </span>
                   Something
@@ -42,12 +42,12 @@ function HomePage() {
                 <img className="img-fluid" alt="profile" src={post.imgURL} />
               </div>
                 <header className="Meta">
-                  <a href="https://twitter.com/ThePracticalDev">
-                    <span>The Practical Dev</span>
+                  <a className="text-reset text-decoration-none fw-bold" href="https://example.com/">
+                    <span>{post.author}</span>
                   </a>
-                  <span>{post.content}</span>
+                  <span className="ms-2" style={{ whiteSpace: 'pre-line' }}>{post.content}</span>
                 </header>
-              <div className="post-info">
+              {/* <div className="post-info">
                 <div className="Buttons">
                   <span className="button comments">
                     <i className="fa-solid fa-comment"></i> 2
@@ -64,7 +64,7 @@ function HomePage() {
                 </div>
                 <a className="">View comment</a>
                 <p className="Text">Comment ...</p>
-              </div>
+              </div> */}
             </section>
             <hr />
           </>

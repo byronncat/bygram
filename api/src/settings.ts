@@ -17,6 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.disable('etag');
+
 // Passport + session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',

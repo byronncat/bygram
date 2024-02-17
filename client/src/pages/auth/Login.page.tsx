@@ -7,8 +7,8 @@ import { setLocalState } from "../../utils/index";
 
 function LoginPage() {
   const defaultValues: AuthenticationInformation = {
-    username: process.env.DEFAULT_USERNAME,
-    password: process.env.DEFAULT_PASSWORD,
+    username: "",
+    password: "123456",
   };
 
   const navigate = useNavigate();

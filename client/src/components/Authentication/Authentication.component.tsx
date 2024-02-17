@@ -14,7 +14,6 @@ export default function Authentication({ children }: ComponentProps) {
     isAuthenticated: localStorage.getItem("isAuthenticated") === "true" ? true : false,
     user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null,
   });
-  console.log(authentication);
 
   return (
     <AuthenticationContext.Provider value={{ authentication, setAuthentication }}>
