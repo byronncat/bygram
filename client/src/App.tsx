@@ -6,6 +6,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   HomePage,
+  ProfilePage,
 } from "./pages/index";
 import { Authentication } from "./components/index";
 
@@ -16,7 +17,7 @@ function App() {
       errorElement: <div>404 not found</div>,
       children: [
         { path: "/", element: <HomePage /> },
-        { path: "dashboard", element: <div>dashboard</div> },
+        { path: ":user-name", element: <ProfilePage />},
       ],
     },
     {

@@ -10,4 +10,4 @@ const db = mongoose
     console.log(`[Database]: MongoDB`, error);
   });
 
-export default db;
+export default {};

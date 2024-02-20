@@ -18,11 +18,10 @@ function HomePage() {
 
   return (
     <section className="col-8 d-flex flex-column justify-content-center align-items-center">
-      {posts.map((post: any) => {
+      {posts.map((post: any, index: number) => {
         return (
-          <>
-            <section className="post w-100 p-3 my-4">
-              <header className="post-profile d-flex">
+          <section className="post w-100 p-3 my-4" key={index}>
+            <header className="post-profile d-flex">
                 <img
                   className="post-profile-picture rounded-circle me-3"
                   alt="profile"
@@ -47,7 +46,7 @@ function HomePage() {
                   </a>
                   <span className="ms-2" style={{ whiteSpace: 'pre-line' }}>{post.content}</span>
                 </header>
-              {/* <div className="post-info">
+              <div className="post-info">
                 <div className="Buttons">
                   <span className="button comments">
                     <i className="fa-solid fa-comment"></i> 2
@@ -64,10 +63,8 @@ function HomePage() {
                 </div>
                 <a className="">View comment</a>
                 <p className="Text">Comment ...</p>
-              </div> */}
-            </section>
-            <hr />
-          </>
+              </div>
+          </section>
         );
       })}
     </section>

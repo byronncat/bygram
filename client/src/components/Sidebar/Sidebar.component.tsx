@@ -82,7 +82,7 @@ function Sidebar() {
               </Button>
               {activeUploadPost && <UploadPost closeFunction={setIsActiveUploadPost} />}
               <Link
-                to="/"
+                to={`/${JSON.parse(localStorage.getItem("user") || "{}").username}`}
                 className={`nav-link p-3 mb-3 ${activeLink === "Profile" ? "active" : ""}`}
                 aria-current="page"
                 onClick={() => activeHandler("Profile")}

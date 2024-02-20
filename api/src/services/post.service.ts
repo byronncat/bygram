@@ -1,5 +1,5 @@
 import { PostSchema } from "@/type";
-import { socialMediaDB, postImageDB } from "@/db";
+import { postImageDB } from "@/db";
 const accountService = require("@services/account.service");
 
 import mongoose from "mongoose";
@@ -41,12 +41,13 @@ async function createPost(post: PostSchema, file: Express.Multer.File) {
   return "File uploaded successfully";
 }
 
-async function getPosts() {
+async function getAllPosts() {
   const posts = await Post.find({}).sort({ createAt: -1 }).limit(10);
   const returnPosts = await Promise.all(
     posts.map(async (post) => {
       const { username } = await accountService.getUsernameById(post.author);
       return {
+        id: Object.values(post._id).join(""),
         author: username,
         content: post.content,
         imgURL: post.imgURL,
@@ -54,12 +55,28 @@ async function getPosts() {
       };
     })
   );
+  return returnPosts;
+}
 
-  
+async function getPostsByAuthorId(authorId: number) {
+  const posts = await Post.find({ author: authorId }).sort({ createAt: -1 });
+  const returnPosts = await Promise.all(
+    posts.map(async (post) => {
+      const { username } = await accountService.getUsernameById(post.author);
+      return {
+        id: Object.values(post._id).join(""),
+        author: username,
+        content: post.content,
+        imgURL: post.imgURL,
+        createAt: post.createAt,
+      };
+    })
+  );
   return returnPosts;
 }
 
 module.exports = {
   createPost,
-  getPosts,
+  getAllPosts,
+  getPostsByAuthorId,
 };

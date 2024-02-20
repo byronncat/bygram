@@ -1,15 +1,17 @@
-const { accountDB } = require('../db/index');
-import { AccountSchema } from '@/type';
+const { accountDB } = require("@db");
+import { AccountSchema } from "@/type";
 
 function parseQuery(data: AccountSchema) {
-  const idQuery = data.id ? `id = '${data.id}'` : '';
-  const usernameQuery = data.username ? `username LIKE '${data.username}'` : '';
-  const emailQuery = data.email ? `email = '${data.email}'` : '';
-  const passwordQuery = data.password ? `password LIKE '${data.password}'` : '';
+  const idQuery = data.id ? `id = '${data.id}'` : "";
+  const usernameQuery = data.username ? `username LIKE '${data.username}'` : "";
+  const emailQuery = data.email ? `email = '${data.email}'` : "";
+  const passwordQuery = data.password ? `password LIKE '${data.password}'` : "";
 
-  const conditions = [idQuery, usernameQuery, emailQuery, passwordQuery].filter((query) => query !== '').join(' OR ');
+  const conditions = [idQuery, usernameQuery, emailQuery, passwordQuery]
+    .filter((query) => query !== "")
+    .join(" OR ");
   return conditions;
-};
+}
 
 async function getAllUsers() {
   try {
@@ -19,7 +21,7 @@ async function getAllUsers() {
     console.log(error);
     return Promise.reject(error);
   }
-};
+}
 
 async function getUsers(data: AccountSchema) {
   try {
@@ -30,7 +32,7 @@ async function getUsers(data: AccountSchema) {
   } catch (error) {
     return Promise.reject(error);
   }
-};
+}
 
 async function verifyUser(data: AccountSchema) {
   try {
@@ -41,17 +43,20 @@ async function verifyUser(data: AccountSchema) {
     // throw error;
     return Promise.reject(error);
   }
-};
+}
 
 async function addUser(data: AccountSchema) {
   try {
-    const result = await accountDB.one(`INSERT INTO accounts.users (username, email, password) VALUES ($1, $2, $3) RETURNING id`, [data.username, data.email, data.password]);
+    const result = await accountDB.one(
+      `INSERT INTO accounts.users (username, email, password) VALUES ($1, $2, $3) RETURNING id`,
+      [data.username, data.email, data.password]
+    );
     return result;
   } catch (error) {
     console.log(error);
     return Promise.reject(error);
   }
-};
+}
 
 async function getUsernameById(id: number) {
   try {
@@ -61,7 +66,21 @@ async function getUsernameById(id: number) {
     console.log(error);
     return Promise.reject(error);
   }
-};
+}
+
+// Social media profile
+import mongoose from "mongoose";
+const Profile = mongoose.model(
+  "profiles",
+  new mongoose.Schema({
+    uid: Number,
+    avatar: String,
+  })
+);
+async function getProfile(id: number) {
+  const profile = await Profile.findOne({ uid: id }).exec();
+  return profile;
+}
 
 module.exports = {
   getAllUsers,
@@ -69,4 +88,6 @@ module.exports = {
   getUsernameById,
   verifyUser,
   addUser,
+
+  getProfile,
 };

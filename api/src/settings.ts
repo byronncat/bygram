@@ -8,7 +8,7 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import createError from 'http-errors';
 import logger from 'morgan';
-import path from 'path';
+import { socialMediaDB } from './db';
 
 const app: Express = express();
 

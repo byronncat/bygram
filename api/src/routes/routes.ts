@@ -1,6 +1,7 @@
 import { Express, Router } from 'express';
 const authRouter = require('./auth/index');
 const postRouter = require('./post/post.route');
+const profileRouter = require('./profile/profile.route');
 
 interface Route {
   path: string;
@@ -23,6 +24,10 @@ const routes: Route[] = [
   {
     path: '/post',
     router: postRouter
+  },
+  {
+    path: '/profile',
+    router: profileRouter
   }
 ]
 

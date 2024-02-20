@@ -115,6 +115,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@db": ["./src/db/index.ts"],
       "@libs/*": ["./src/libs/*"],
       "@services/*": ["./src/services/*"]
     }

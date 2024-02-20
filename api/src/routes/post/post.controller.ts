@@ -54,7 +54,7 @@ async function validateInformation(
 
 async function getPosts(req: Request, res: Response, next: NextFunction) {
   try {
-    const posts = await postService.getPosts();
+    const posts = await postService.getAllPosts();
     res.json({
       success: true,
       message: "Posts retrieved",
@@ -68,7 +68,6 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
     });
   }
 }
-
 
 module.exports = {
   createPost: [upload.single("file"), validateInformation],
