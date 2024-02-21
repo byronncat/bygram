@@ -15,7 +15,6 @@ async function validateInformation(
   req: CustomRequest<PostSchema>,
   res: Response,
 ) {
-  console.log(req.body);
   try {
     if (!req.file) {
       res.json({
@@ -23,7 +22,6 @@ async function validateInformation(
         message: "No file uploaded",
       });
     } else {
-      console.log(req.body);
       const postInfo: PostSchema = {
         author: req.body.author,
         content: req.body.content,
@@ -71,5 +69,21 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
 
 module.exports = {
   createPost: [upload.single("file"), validateInformation],
-  getPosts: [getPosts]
+  getPosts: [getPosts],
+  deletePost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const postId = req.params.id;
+      await postService.deletePost(postId);
+      res.json({
+        success: true,
+        message: "Post deleted",
+      });
+    } catch (error) {
+      console.log(`[Error]: ${error}`);
+      res.json({
+        success: false,
+        message: error,
+      });
+    }
+  },
 };

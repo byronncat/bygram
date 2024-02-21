@@ -3,6 +3,7 @@ import { postImageDB } from "@/db";
 const accountService = require("@services/account.service");
 
 import mongoose from "mongoose";
+import { url } from "inspector";
 const Post = mongoose.model(
   "post",
   new mongoose.Schema(
@@ -42,12 +43,14 @@ async function createPost(post: PostSchema, file: Express.Multer.File) {
 }
 
 async function getAllPosts() {
-  const posts = await Post.find({}).sort({ createAt: -1 }).limit(10);
+  const posts = await Post.find({}).sort({ createAt: -1 });
   const returnPosts = await Promise.all(
     posts.map(async (post) => {
       const { username } = await accountService.getUsernameById(post.author);
+      const profile = await accountService.getProfile(post.author);
       return {
-        id: Object.values(post._id).join(""),
+        id: post._id.toString(),
+        avatar: profile.avatar,
         author: username,
         content: post.content,
         imgURL: post.imgURL,
@@ -75,8 +78,24 @@ async function getPostsByAuthorId(authorId: number) {
   return returnPosts;
 }
 
+function getPublicId(imageUrl: string) {
+  const urlParts = imageUrl.split('/');
+  const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${urlParts[urlParts.length - 1].split('.')[0]}`;
+  return publicId;
+}
+
+async function deletePost(postId: string) {
+  const deletedPost = await Post.findByIdAndDelete(postId);
+  const publicId = getPublicId(deletedPost!.imgURL!);
+  postImageDB.uploader.destroy(publicId)
+    .then((result) => console.log(result))
+    .catch((error) => console.log(error));
+  return "Post deleted";
+}
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostsByAuthorId,
+  deletePost,
 };

@@ -77,6 +77,7 @@ const Profile = mongoose.model(
     avatar: String,
   })
 );
+
 async function getProfile(id: number) {
   const profile = await Profile.findOne({ uid: id }).exec();
   return profile;

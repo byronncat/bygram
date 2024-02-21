@@ -55,7 +55,7 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
                 required: true,
               })}
             />
-            {selectedImage && <span className="upload-post-image position-absolute start-0 top-0"><img src={selectedImage as string} className="d-block mx-auto w-auto h-100" alt="Preview" /></span>}
+            {selectedImage && <span className="upload-post-image position-absolute start-0 top-0"><img src={selectedImage as string} className="d-block mx-auto w-100 h-auto" alt="Preview" /></span>}
           </span>
           <span className="upload-post-content float-end">
             <textarea
