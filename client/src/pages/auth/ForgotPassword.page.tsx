@@ -2,7 +2,7 @@ import { Form } from "../../components/index";
 import { Link } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
-import { AuthenticationInformation } from "@/types";
+import { AuthenticationInformation } from "@types";
 
 const defaultValues: AuthenticationInformation = {
   email: "",

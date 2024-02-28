@@ -19,19 +19,17 @@ function ProfilePage() {
     axios
       .get(`/api/profile/${authentication.user!.id}`)
       .then((res) => {
-        console.log(res.data);
+        const response = res.data;
         setReady(true);
-        setProfile(res.data);
+        setProfile(response.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data);
       });
   }, []);
   return !ready ? (
     <>
-      <div>
-        Loading...
-      </div>
+      <div>Loading...</div>
     </>
   ) : (
     <>

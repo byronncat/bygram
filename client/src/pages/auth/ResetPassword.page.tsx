@@ -1,7 +1,7 @@
 import { Form } from "../../components/index";
 import { Link } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
-import { AuthenticationInformation } from "@/types";
+import { AuthenticationInformation } from "@types";
 
 function ResetPasswordPage() {
   const defaultValues: AuthenticationInformation = {

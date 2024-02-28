@@ -1,9 +1,9 @@
-const loginRouter = require('./login.route');
-const registerRouter = require('./register.route');
-const sendEmailRouter = require('./sendEmail.route');
+import loginRouter from "./login.route";
+import registerRouter from "./register.route";
+import sendEmailRouter from "./sendEmail.route";
 
-module.exports = {
+export default {
   loginRouter,
   registerRouter,
-  sendEmailRouter
+  sendEmailRouter,
 };

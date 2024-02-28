@@ -1,7 +1,7 @@
 import { Form } from "../../components/index";
 import { Link } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
-import { AuthenticationInformation } from "@/types";
+import { API, AuthenticationInformation } from "@types";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosResponse } from "axios";
 import { useAuth } from "../../components/index";
@@ -21,13 +21,14 @@ function RegisterPage() {
       .post("/api/auth/register", data)
       .then((res: AxiosResponse) => {
         console.log(res.data);
+        const response: API = res.data;
         setLocalState({
-          user: res.data.user,
+          user: response.data,
           isAuthenticated: true,
         });
         setAuthentication({
           isAuthenticated: true,
-          user: res.data.user,
+          user: response.data,
         });
         navigate("/");
       })

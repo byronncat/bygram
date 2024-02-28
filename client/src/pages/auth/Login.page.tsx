@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { SubmitHandler } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
-import { AuthenticationInformation } from "@/types";
+import { AuthenticationInformation } from "@types";
 import { useAuth, Form } from "../../components/index";
 import { setLocalState } from "../../utils/index";
+import { API } from "@types";
 
 function LoginPage() {
   const defaultValues: AuthenticationInformation = {
@@ -18,19 +19,20 @@ function LoginPage() {
       .post("/api/auth/login", data)
       .then((res: AxiosResponse) => {
         console.log(res.data);
+        const response: API = res.data;
         setLocalState({
-          user: res.data.user,
+          user: response.data,
           isAuthenticated: true,
         });
         setAuthentication({
           isAuthenticated: true,
-          user: res.data.user,
+          user: response.data,
         });
         navigate("/");
       })
       .catch((err) => {
         if (err.response) {
-          console.log(err.response);
+          console.log(err.response.data);
         }
       });
   };

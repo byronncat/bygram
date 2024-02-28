@@ -1,17 +1,20 @@
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-const accountService = require("@services/account.service");
+import { IStrategyOptions, Strategy as LocalStrategy } from "passport-local";
+import { accountService } from "@services";
+import { escapeRegExp } from "@utils";
+import { IAccount } from "@type";
 
 passport.use(
   "local-login",
   new LocalStrategy(async function verify(username, password, done) {
+    password = escapeRegExp(password);
     accountService
-      .verifyUser({ username, password })
-      .then((user: any) => {
+      .get({ username, password }, { and: true, one: true })
+      .then((user: IAccount | IAccount[] | null) => {
         if (user) {
-          return done(null, user, { message: "Logged in successfully" });
+          return done(null, user);
         } else {
-          return done(null, false, { message: "Incorrect username or password" });
+          return done(null, false);
         }
       })
       .catch((error: any) => {
@@ -22,22 +25,28 @@ passport.use(
 
 passport.use(
   "local-register",
-  new LocalStrategy({ passReqToCallback: true }, function verify(req, username, password, done) {
-    const email = req.body.email;
-    accountService
-      .getUsers({ username, email })
-      .then((users: any) => {
-        if (users.length !== 0) {
-          return done(null, false, { message: "Username or email already exists" });
-        } else {
-          const user = req.body;
-          return done(null, user);
-        }
-      })
-      .catch((error: any) => {
-        return done(error);
-      });
-  })
+  new LocalStrategy(
+    {
+      usernameField: "username",
+      passwordField: "email",
+    } as IStrategyOptions,
+    function verify(username, email, done) {
+      console.log(username, email);
+      accountService
+        .get({ username, email }, { or: true })
+        .then((users: IAccount | IAccount[] | null) => {
+          if (users) {
+            return done(null, false, { message: "Username or email already exists" });
+          } else {
+            const user: IAccount = { username, email };
+            return done(null, user);
+          }
+        })
+        .catch((error: any) => {
+          return done(error);
+        });
+    }
+  )
 );
 
 passport.serializeUser(function (user: any, done) {
@@ -45,10 +54,11 @@ passport.serializeUser(function (user: any, done) {
 });
 
 passport.deserializeUser(function (id: any, done) {
+  console.log(id);
   accountService
-    .getUserByUsername(id)
-    .then((data: any) => {
-      done(null, data);
+    .get({ id }, { one: true })
+    .then((user: IAccount | IAccount[] | null) => {
+      done(null, user!);
     })
     .catch((error: any) => {
       done(error);

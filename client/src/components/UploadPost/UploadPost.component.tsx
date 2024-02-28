@@ -19,7 +19,10 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
     formData.append("file", data.file[0]);
     formData.append("content", data.content);
     formData.append("author", id!.toString());
-    axios.post("/api/post/create", formData);
+    axios
+      .post("/api/post/create", formData)
+      .then((result: any) => console.log(result))
+      .catch((error: any) => console.log(error));
   };
 
   type variable = string | ArrayBuffer | null;
@@ -45,17 +48,25 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
                 onChange: (e) => {
                   const file = e.target.files[0];
                   const reader = new FileReader();
-  
+
                   reader.onload = (event) => {
                     setSelectedImage(event.target!.result);
                   };
-  
+
                   reader.readAsDataURL(file);
                 },
                 required: true,
               })}
             />
-            {selectedImage && <span className="upload-post-image position-absolute start-0 top-0"><img src={selectedImage as string} className="d-block mx-auto w-100 h-auto" alt="Preview" /></span>}
+            {selectedImage && (
+              <span className="upload-post-image position-absolute start-0 top-0">
+                <img
+                  src={selectedImage as string}
+                  className="d-block mx-auto w-100 h-auto"
+                  alt="Preview"
+                />
+              </span>
+            )}
           </span>
           <span className="upload-post-content float-end">
             <textarea

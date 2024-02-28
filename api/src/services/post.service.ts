@@ -1,17 +1,17 @@
-import { PostSchema } from "@/type";
-import { postImageDB } from "@/db";
-const accountService = require("@services/account.service");
+import { postImageDB } from "@db";
+import { CloudinaryApiResponse } from "@db/db";
+import { accountService } from "@services";
+import { IAccount, ICondition, IPost } from "@type";
 
 import mongoose from "mongoose";
-import { url } from "inspector";
 const Post = mongoose.model(
   "post",
   new mongoose.Schema(
     {
-      author: Number,
-      content: String,
-      imgURL: String,
-      createAt: { default: Date.now, type: Date },
+      author: { type: Number, required: true },
+      content: { type: String, required: true },
+      imgURL: { type: String, required: true },
+      createAt: { type: Date, default: Date.now },
     },
     {
       versionKey: false,
@@ -19,17 +19,18 @@ const Post = mongoose.model(
   )
 );
 
-async function createPost(post: PostSchema, file: Express.Multer.File) {
+async function create(post: IPost, file: Express.Multer.File) {
   const base64String = Buffer.from(file.buffer).toString("base64");
   const dataURL = `data:${file.mimetype};base64,${base64String}`;
 
-  let secure_url;
+  let secure_url = "";
   await postImageDB.uploader
     .upload(dataURL, { folder: `social-media-app/${post.author}` })
-    .then((result) => {
-      secure_url = result.secure_url;
+    .then((result: CloudinaryApiResponse) => {
+      secure_url = result.secure_url!;
     })
-    .catch((error) => {
+    .catch((error: any) => {
+      console.log(`[Cloudinary Error]: ${error}`);
       throw new Error(error);
     });
 
@@ -38,64 +39,54 @@ async function createPost(post: PostSchema, file: Express.Multer.File) {
     content: post.content,
     imgURL: secure_url,
   });
-
-  return "File uploaded successfully";
 }
 
-async function getAllPosts() {
-  const posts = await Post.find({}).sort({ createAt: -1 });
-  const returnPosts = await Promise.all(
-    posts.map(async (post) => {
-      const { username } = await accountService.getUsernameById(post.author);
-      const profile = await accountService.getProfile(post.author);
-      return {
-        id: post._id.toString(),
-        avatar: profile.avatar,
-        author: username,
-        content: post.content,
-        imgURL: post.imgURL,
-        createAt: post.createAt,
-      };
-    })
-  );
-  return returnPosts;
-}
-
-async function getPostsByAuthorId(authorId: number) {
-  const posts = await Post.find({ author: authorId }).sort({ createAt: -1 });
-  const returnPosts = await Promise.all(
-    posts.map(async (post) => {
-      const { username } = await accountService.getUsernameById(post.author);
-      return {
-        id: Object.values(post._id).join(""),
-        author: username,
-        content: post.content,
-        imgURL: post.imgURL,
-        createAt: post.createAt,
-      };
-    })
-  );
-  return returnPosts;
+async function get(post: IPost = {}, condition?: ICondition) {
+  if (condition?.one) {
+    // TODO
+  } else {
+    const posts = await Post.find(post).sort({ createAt: -1 });
+    const returnPosts = await Promise.all(
+      posts.map(async (post) => {
+        const { username } = (await accountService.get(
+          { id: post.author },
+          { one: true }
+        )) as IAccount;
+        const profile = await accountService.readProfile(post.author);
+        return {
+          id: post._id.toString(),
+          author: username,
+          avatar: profile.avatar,
+          content: post.content,
+          imgURL: post.imgURL,
+          createAt: post.createAt,
+        };
+      })
+    );
+    return returnPosts;
+  }
 }
 
 function getPublicId(imageUrl: string) {
-  const urlParts = imageUrl.split('/');
-  const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${urlParts[urlParts.length - 1].split('.')[0]}`;
+  const urlParts = imageUrl.split("/");
+  const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${
+    urlParts[urlParts.length - 1].split(".")[0]
+  }`;
   return publicId;
 }
 
-async function deletePost(postId: string) {
+async function remove(postId: string) {
   const deletedPost = await Post.findByIdAndDelete(postId);
   const publicId = getPublicId(deletedPost!.imgURL!);
-  postImageDB.uploader.destroy(publicId)
-    .then((result) => console.log(result))
-    .catch((error) => console.log(error));
+  postImageDB.uploader
+    .destroy(publicId)
+    .then((result: any) => console.log(result))
+    .catch((error: any) => console.log(error));
   return "Post deleted";
 }
 
-module.exports = {
-  createPost,
-  getAllPosts,
-  getPostsByAuthorId,
-  deletePost,
+export default {
+  create,
+  get,
+  remove,
 };

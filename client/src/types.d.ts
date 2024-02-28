@@ -32,3 +32,9 @@ export interface AuthState {
   isAuthenticated: boolean;
   user: Credentials | null;
 }
+
+export interface API {
+  success: boolean;
+  message: string;
+  data?: any;
+}

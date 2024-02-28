@@ -1,5 +1,5 @@
 import { useState, useContext, createContext, ReactNode } from "react";
-import { AuthState } from "@/types";
+import { AuthState } from "@types";
 
 interface ComponentProps {
   children: ReactNode;

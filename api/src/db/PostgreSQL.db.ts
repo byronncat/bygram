@@ -1,3 +1,5 @@
+import { PostgreSQL } from "./db";
+
 const initOptions = {
   /* initialization options */
 };
@@ -15,8 +17,7 @@ const connection = {
   allowExitOnIdle: true,
 };
 
-const db = pgp(connection);
-
+const db: PostgreSQL = pgp(connection);
 db.connect()
   .then(function (obj: any) {
     const serverVersion = obj.client.serverVersion;

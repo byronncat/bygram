@@ -1,67 +1,59 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "@libs/passport.lib";
-import { AccountSchema } from "@/type";
+import { IAPI, IAccount } from "@/type";
 
-interface CustomRequest<T> extends Request {
-  body: T;
-}
-
-function saveUser(req: CustomRequest<AccountSchema>, res: Response, next: NextFunction) {
-  const data = req.body as AccountSchema;
+function saveFormRequest(req: Request<{}, {}, IAccount>, res: Response, next: NextFunction) {
+  const data = req.body as IAccount;
   res.locals.user = data;
   next();
 }
 
 async function validateInformation(
-  req: CustomRequest<AccountSchema>,
+  req: Request<{}, {}, IAccount>,
   res: Response,
   next: NextFunction
 ) {
-  passport.authenticate(
-    "local-register",
-    function (error: any, user: AccountSchema[], info: any) {
-      if (error) {
-        return res.status(500).json({
-          success: false,
-          message: error.message,
-        });
-      }
-
-      if (user) {
-        res.locals.user = user;
-        return next();
-      } else {
-        return res.status(401).json({
-          success: false,
-          message: info.message,
-        });
-      }
+  passport.authenticate("local-register", function (error: any, user: IAccount) {
+    if (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      } as IAPI);
     }
-  )(req, res, next);
+
+    if (user) {
+      return next();
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Username or email already exists",
+      } as IAPI);
+    }
+  })(req, res, next);
 }
 
-const accountService = require("@services/account.service");
-async function addUser(req: CustomRequest<AccountSchema>, res: Response) {
-  const data = res.locals.user;
+import { accountService } from "@services";
+async function addUser(req: Request<{}, {}, IAccount>, res: Response) {
+  const data: IAccount = res.locals.user;
   await accountService
-    .addUser(data)
-    .then((result: AccountSchema) => {
+    .create(data)
+    .then((result: IAccount) => {
       delete data.password;
       res.status(201).json({
         success: true,
         message: "Account created successfully",
-        user: {
+        data: {
           id: result.id,
           ...data,
-        }
-      });
+        },
+      } as IAPI);
     })
     .catch((error: any) => {
       res.status(500).json({
         success: false,
         message: error.message,
-      });
+      } as IAPI);
     });
 }
 
-module.exports = [saveUser, validateInformation, addUser];
+export default [saveFormRequest, validateInformation, addUser];

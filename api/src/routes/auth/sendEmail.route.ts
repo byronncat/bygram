@@ -1,7 +1,7 @@
 import express from "express";
+import controller from "./controller/index";
 const router = express.Router();
-const controller = require("./controller/index");
 
-router.post("/", controller.sendEmailController);
+router.post("/", controller.sendEmail);
 
-module.exports = router;
+export default router;

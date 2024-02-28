@@ -1,4 +1,4 @@
-import { FormFieldProps } from "@/types";
+import { FormFieldProps } from "@types";
 
 export default function FormField({
   type,

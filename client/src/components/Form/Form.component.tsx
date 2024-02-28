@@ -1,5 +1,5 @@
 import { FieldError, useForm } from "react-hook-form";
-import { AuthenticationInformation, FormFieldProps } from "@/types";
+import { AuthenticationInformation, FormFieldProps } from "@types";
 import { SubmitHandler } from "react-hook-form";
 import FormField from "./FormField.component";
 

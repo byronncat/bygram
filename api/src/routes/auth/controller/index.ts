@@ -1,9 +1,9 @@
-const loginController = require('./login.controller');
-const registerController = require('./register.controller');
-const sendEmailController = require('./sendEmail.controller');
+import login from "./login.controller";
+import register from "./register.controller";
+import sendEmail from "./sendEmail.controller";
 
-module.exports = {
-  loginController,
-  registerController,
-  sendEmailController
+export default {
+  login,
+  register,
+  sendEmail,
 };
