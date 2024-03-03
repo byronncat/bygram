@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from "express";
-import passport from "@libs/passport.lib";
-import { IAccount, IAPI } from "@/type";
+import { NextFunction, Request, Response } from 'express';
+import passport from '@libs/passport.lib';
+import { Account, API } from '@/type';
 
 async function validateInformation(
-  req: Request<{}, {}, IAccount>,
+  req: Request<{}, {}, Account>,
   res: Response,
   next: NextFunction
 ) {
-  passport.authenticate("local-login", function (error: any, user: IAccount) {
+  passport.authenticate('local-login', function (error: any, user: Account) {
     let statusCode: number;
-    let api: IAPI;
+    let api: API;
     if (error) {
       statusCode = 500;
       api = {
@@ -22,14 +22,14 @@ async function validateInformation(
       statusCode = 200;
       api = {
         success: true,
-        message: "Logged in successfully",
+        message: 'Logged in successfully',
         data: user,
       };
     } else {
       statusCode = 401;
       api = {
         success: false,
-        message: "Incorrect username or password",
+        message: 'Incorrect username or password',
       };
     }
     return res.status(statusCode).json(api);

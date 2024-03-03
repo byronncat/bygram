@@ -10,7 +10,9 @@ import { useAuthLayoutContext } from '@layouts';
 import { useState } from 'react';
 
 const defaultValues: AuthenticationInformation = {
-  email: '',
+  username: 'test',
+  password: '123456',
+  email: 'test@gmail.com',
 };
 
 const fieldList: FormFieldProps[] = [
@@ -26,26 +28,56 @@ const fieldList: FormFieldProps[] = [
       },
     },
   },
+  {
+    name: 'username',
+    type: 'text',
+    placeholder: 'Username',
+    validation: {
+      required: 'Username is required',
+      minLength: {
+        value: 3,
+        message: 'Username must be at least 3 characters',
+      },
+    },
+  },
+  {
+    name: 'password',
+    type: 'password',
+    placeholder: 'Password',
+    validation: {
+      required: 'Password is required',
+      minLength: {
+        value: 6,
+        message: 'Password must be at least 6 characters',
+      },
+    },
+  },
 ];
 
-function ForgotPasswordPage() {
+function RegisterPage() {
   const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
+  const { setAuthenticationStorage } = useAuth();
   const { className } = useAuthLayoutContext();
-  const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext<any>();
-  setTitle('reset password');
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
+  const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
+    useOutletContext();
+  setTitle('sign up');
+
+  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => {
     axios
-      .post('/api/auth/send-email', data)
+      .post('/api/auth/register', data)
       .then((res: AxiosResponse) => {
-        setShow(true);
-        setMessage(res.data.message);
+        const response: API = res.data;
+        setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
+        navigate('/');
       })
       .catch((err) => {
-        setShow(true);
-        setMessage(err.response.data.message);
+        if (err.response) {
+          setMessage(err.response.data.message);
+          setShow(true);
+        }
       });
   };
 
@@ -65,7 +97,7 @@ function ForgotPasswordPage() {
         defaultValues={defaultValues}
         submitHandler={submitHandler}
         fieldClass={className.formField}
-        submitPlaceholder="Send Email"
+        submitPlaceholder="Register"
         submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
@@ -73,11 +105,11 @@ function ForgotPasswordPage() {
           to="/login"
           className={clsx('link d-block', ' fs-6 text-reset text-decoration-none text-center')}
         >
-          Turn back
+          Login here
         </Link>
       </Form>
     </>
   );
 }
 
-export default ForgotPasswordPage;
+export default RegisterPage;

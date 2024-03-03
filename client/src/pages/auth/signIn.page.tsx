@@ -10,42 +10,61 @@ import { useAuthLayoutContext } from '@layouts';
 import { useState } from 'react';
 
 const defaultValues: AuthenticationInformation = {
-  email: '',
+  username: '',
+  password: '123456',
 };
 
 const fieldList: FormFieldProps[] = [
   {
-    name: 'email',
-    type: 'email',
-    placeholder: 'Email',
+    name: 'username',
+    type: 'text',
+    placeholder: 'Username',
     validation: {
-      required: 'Email is required',
-      pattern: {
-        value: /\S+@\S+\.\S+/,
-        message: 'Entered value does not match email format',
+      required: 'Username is required',
+      minLength: {
+        value: 3,
+        message: 'Username must be at least 3 characters',
+      },
+    },
+  },
+  {
+    name: 'password',
+    type: 'password',
+    placeholder: 'Password',
+    validation: {
+      required: 'Password is required',
+      minLength: {
+        value: 6,
+        message: 'Password must be at least 6 characters',
       },
     },
   },
 ];
 
-function ForgotPasswordPage() {
+function LoginPage() {
   const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
+  const { setAuthenticationStorage } = useAuth();
   const { className } = useAuthLayoutContext();
+
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext<any>();
-  setTitle('reset password');
+    useOutletContext();
+  setTitle('sign in');
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
-      .post('/api/auth/send-email', data)
+      .post('/api/auth/login', data)
       .then((res: AxiosResponse) => {
-        setShow(true);
-        setMessage(res.data.message);
+        const response: API = res.data;
+        setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
+        navigate('/');
       })
       .catch((err) => {
-        setShow(true);
-        setMessage(err.response.data.message);
+        if (err.response) {
+          setMessage(err.response.data.message);
+          setShow(true);
+        }
       });
   };
 
@@ -65,19 +84,27 @@ function ForgotPasswordPage() {
         defaultValues={defaultValues}
         submitHandler={submitHandler}
         fieldClass={className.formField}
-        submitPlaceholder="Send Email"
+        submitPlaceholder="Login"
         submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        <Link
-          to="/login"
-          className={clsx('link d-block', ' fs-6 text-reset text-decoration-none text-center')}
-        >
-          Turn back
-        </Link>
+        <span className={clsx('d-flex justify-content-between', 'mt-4')}>
+          <Link
+            to="/register"
+            className={clsx('link d-block', 'fs-6 text-reset text-decoration-none text-center')}
+          >
+            Sign up
+          </Link>
+          <Link
+            to="/forgot-password"
+            className={clsx('d-block link', 'fs-6 text-reset text-decoration-none text-center')}
+          >
+            Forgot password?
+          </Link>
+        </span>
       </Form>
     </>
   );
 }
 
-export default ForgotPasswordPage;
+export default LoginPage;

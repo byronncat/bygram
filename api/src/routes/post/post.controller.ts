@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { postService } from "@services";
-import { IAPI, IPost } from "@/type";
+import { NextFunction, Request, Response } from 'express';
+import { postService } from '@services';
+import { API, Post } from '@/type';
 
 // setting options for multer
-import multer from "multer";
+import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -12,10 +12,10 @@ async function createPost(req: Request, res: Response) {
     if (!req.file) {
       res.status(409).json({
         success: false,
-        message: "No file uploaded",
-      } as IAPI);
+        message: 'No file uploaded',
+      } as API);
     } else {
-      const postInfo: IPost = {
+      const postInfo: Post = {
         author: req.body.author as number,
         content: req.body.content as string,
       };
@@ -24,14 +24,14 @@ async function createPost(req: Request, res: Response) {
         .then(() => {
           res.status(200).json({
             success: true,
-            message: "Post uploaded",
-          } as IAPI);
+            message: 'Post uploaded',
+          } as API);
         })
         .catch((error: any) => {
           res.status(409).json({
             success: false,
             message: error.message,
-          } as IAPI);
+          } as API);
         });
     }
   } catch (error) {
@@ -39,7 +39,7 @@ async function createPost(req: Request, res: Response) {
     res.status(500).json({
       success: false,
       message: error,
-    } as IAPI);
+    } as API);
   }
 }
 
@@ -48,14 +48,14 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
     const posts = await postService.get();
     res.status(200).json({
       success: true,
-      message: "Posts retrieved",
+      message: 'Posts retrieved',
       posts,
-    } as IAPI);
+    } as API);
   } catch (error) {
     res.status(404).json({
       success: false,
       message: error,
-    } as IAPI);
+    } as API);
   }
 }
 
@@ -65,19 +65,19 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
     await postService.remove(postId);
     res.status(200).json({
       success: true,
-      message: "Post deleted",
-    } as IAPI);
+      message: 'Post deleted',
+    } as API);
   } catch (error) {
     console.log(`[Post Controller Error]: ${error}`);
     res.status(500).json({
       success: false,
       message: error,
-    } as IAPI);
+    } as API);
   }
 }
 
 export default {
-  createPost: [upload.single("file"), createPost],
+  createPost: [upload.single('file'), createPost],
   getPosts: [getPosts],
   deletePost: [deletePost],
 };

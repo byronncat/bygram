@@ -1,32 +1,32 @@
-import { ObjectId } from "mongoose";
+import { ObjectId } from 'mongoose';
 
-export interface IAccount {
+export interface Account {
   id?: number;
   username?: string;
   email?: string;
   password?: string;
 }
 
-interface IProfile {
-  uid?: IAccount["id"];
+interface Profile {
+  uid?: Account['id'];
   avatar?: string;
 }
 
-export interface IPost {
+export interface Post {
   _id?: ObjectId;
-  author?: IAccount["id"];
+  author?: Account['id'];
   content?: string;
   imgURL?: string;
   createdAt?: Date;
 }
 
-export interface IAPI {
+export interface API {
   success: boolean;
   message: string;
   data?: any;
 }
 
-interface ICondition {
+interface Condition {
   and?: boolean;
   or?: boolean;
   one?: boolean;

@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import logo from "../../assets/imgs/logo.svg";
-import UploadPost from "../UploadPost/UploadPost.component";
+import { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import UploadPost from '../UploadPost/UploadPost.component';
 
 function Sidebar() {
-  const [activeLink, setActiveLink] = useState("Home");
+  const [activeLink, setActiveLink] = useState('Home');
 
   const activeHandler = (path: string) => {
     setActiveLink(path);
@@ -14,9 +13,9 @@ function Sidebar() {
   const [activeUploadPost, setIsActiveUploadPost] = useState(false);
 
   const logoutHandler = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
     return <Navigate to="/login" />;
   };
 
@@ -27,7 +26,7 @@ function Sidebar() {
           to="/"
           className="brand d-flex justify-content-center align-items-center my-2 text-decoration-none"
         >
-          <img src={logo} alt="logo" width="48" height="48" />
+          <img src="imgs/logo.svg" alt="logo" width="48" height="48" />
           <span className="brand-name ms-2 fs-2">Bygram</span>
         </Link>
         <hr />
@@ -36,36 +35,36 @@ function Sidebar() {
             <li className="nav-item fs-5">
               <Link
                 to="/"
-                className={`nav-link p-3 mb-3 ${activeLink === "Home" ? "active" : ""}`}
+                className={`nav-link p-3 mb-3 ${activeLink === 'Home' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => activeHandler("Home")}
+                onClick={() => activeHandler('Home')}
               >
                 <i className="nav-link-icon d-inline-block fa-solid fa-house me-3 fs-4"></i>
                 Home
               </Link>
               <Link
                 to="/"
-                className={`nav-link p-3 mb-3 ${activeLink === "Search" ? "active" : ""}`}
+                className={`nav-link p-3 mb-3 ${activeLink === 'Search' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => activeHandler("Search")}
+                onClick={() => activeHandler('Search')}
               >
                 <i className="nav-link-icon d-inline-block fa-solid fa-magnifying-glass me-3 fs-4"></i>
                 Search
               </Link>
               <Link
                 to="/"
-                className={`nav-link p-3 mb-3 ${activeLink === "Explore" ? "active" : ""}`}
+                className={`nav-link p-3 mb-3 ${activeLink === 'Explore' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => activeHandler("Explore")}
+                onClick={() => activeHandler('Explore')}
               >
                 <i className="nav-link-icon d-inline-block fa-regular fa-compass me-3 fs-4"></i>
                 Explore
               </Link>
               <Link
                 to="/"
-                className={`nav-link p-3 mb-3 ${activeLink === "Messages" ? "active" : ""}`}
+                className={`nav-link p-3 mb-3 ${activeLink === 'Messages' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => activeHandler("Messages")}
+                onClick={() => activeHandler('Messages')}
               >
                 <i className="nav-link-icon d-inline-block fa-solid fa-comments me-3 fs-4"></i>
                 Messages
@@ -82,10 +81,10 @@ function Sidebar() {
               </Button>
               {activeUploadPost && <UploadPost closeFunction={setIsActiveUploadPost} />}
               <Link
-                to={`/${JSON.parse(localStorage.getItem("user") || "{}").username}`}
-                className={`nav-link p-3 mb-3 ${activeLink === "Profile" ? "active" : ""}`}
+                to={`/${JSON.parse(localStorage.getItem('user') || '{}').username}`}
+                className={`nav-link p-3 mb-3 ${activeLink === 'Profile' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => activeHandler("Profile")}
+                onClick={() => activeHandler('Profile')}
               >
                 <i className="nav-link-icon d-inline-block fa-solid fa-user me-3 fs-4"></i>
                 Profile

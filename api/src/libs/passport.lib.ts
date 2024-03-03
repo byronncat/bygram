@@ -1,16 +1,16 @@
-import passport from "passport";
-import { IStrategyOptions, Strategy as LocalStrategy } from "passport-local";
-import { accountService } from "@services";
-import { escapeRegExp } from "@utils";
-import { IAccount } from "@type";
+import passport from 'passport';
+import { IStrategyOptions, Strategy as LocalStrategy } from 'passport-local';
+import { accountService } from '@services';
+import { escapeRegExp } from '@utils';
+import { Account } from '@type';
 
 passport.use(
-  "local-login",
+  'local-login',
   new LocalStrategy(async function verify(username, password, done) {
     password = escapeRegExp(password);
     accountService
       .get({ username, password }, { and: true, one: true })
-      .then((user: IAccount | IAccount[] | null) => {
+      .then((user: Account | Account[] | null) => {
         if (user) {
           return done(null, user);
         } else {
@@ -24,21 +24,20 @@ passport.use(
 );
 
 passport.use(
-  "local-register",
+  'local-register',
   new LocalStrategy(
     {
-      usernameField: "username",
-      passwordField: "email",
+      usernameField: 'username',
+      passwordField: 'email',
     } as IStrategyOptions,
     function verify(username, email, done) {
-      console.log(username, email);
       accountService
         .get({ username, email }, { or: true })
-        .then((users: IAccount | IAccount[] | null) => {
+        .then((users: Account | Account[] | null) => {
           if (users) {
-            return done(null, false, { message: "Username or email already exists" });
+            return done(null, false, { message: 'Username or email already exists' });
           } else {
-            const user: IAccount = { username, email };
+            const user: Account = { username, email };
             return done(null, user);
           }
         })
@@ -54,10 +53,9 @@ passport.serializeUser(function (user: any, done) {
 });
 
 passport.deserializeUser(function (id: any, done) {
-  console.log(id);
   accountService
     .get({ id }, { one: true })
-    .then((user: IAccount | IAccount[] | null) => {
+    .then((user: Account | Account[] | null) => {
       done(null, user!);
     })
     .catch((error: any) => {

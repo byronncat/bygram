@@ -1,0 +1,80 @@
+$logo-size: 76px
+
+$main-color: #bd1d82
+$hover-color: #d81d84
+$submit-btn-text-hover: white
+
+@mixin neon-effect
+  color: $submit-btn-text-hover
+  text-shadow: 0 0 1px $submit-btn-text-hover, 0 0 2px $submit-btn-text-hover, 0 0 4px $submit-btn-text-hover, 0 0 8px $submit-btn-text-hover
+  background: $hover-color
+  box-shadow: 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color, 0 0 16px $hover-color
+
+@mixin shadow-effect
+  box-shadow: 0 15px 25px rgba(0,0,0,.6)
+
+@mixin text-neon-effect($color)
+  text-shadow: 0 0 1px $color, 0 0 2px $color, 0 0 3px $color, 0 0 4px $color
+
+.form-side
+  background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+  transition: all 0.5s
+
+  & form
+    color: white
+    padding: 52px 36px
+    width: 400px
+    max-width: 100%
+    border-radius: 0.5rem
+    @include shadow-effect
+
+    background-color: #2a2b38b3
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg')
+    background-position: bottom center
+    background-repeat: no-repeat
+    background-size: 300%
+
+    & a
+      transition: all 0.5s
+      cursor: pointer
+
+      &:hover
+        color: $hover-color !important
+        @include text-neon-effect($hover-color)
+
+    & .form-input
+      color: inherit
+      background: var(--color-charade)
+      box-shadow: none
+      border-color: transparent
+      caret-color: white
+
+      &:-webkit-autofill
+        -webkit-box-shadow: none
+        -webkit-text-fill-color: white
+        transition: background-color 5000s ease-in-out 0s
+
+    // Bootstrap form field
+    & input:focus + label
+      color: white !important
+
+    & .form-label
+      color: rgba(255, 255, 255, 0.7) !important
+      transition: all 0.2s
+
+      &::after
+        background: none !important
+
+.logo
+  width: $logo-size
+
+.submit-btn
+  background: $main-color
+  color: white
+  transition: all 0.5s
+
+  &:hover
+    @include neon-effect
+
+.error-message
+  color: #ff0000

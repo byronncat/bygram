@@ -1,18 +1,24 @@
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister } from 'react-hook-form';
 
-export type AuthenticationInformationProps = "username" | "password" | "confirmPassword" | "email";
-export type AuthenticationInformation = {
+export type AuthenticationInformationProps = 'username' | 'password' | 'confirmPassword' | 'email';
+export interface AuthenticationInformation {
   username?: string;
   password?: string;
   confirmPassword?: string;
   email?: string;
-};
+}
 
 export type FormFieldProps = {
   key?: string;
   type: string;
   placeholder: string;
   name: AuthenticationInformationProps;
+  className?: {
+    field?: string;
+    input?: string;
+    label?: string;
+    errorMessage?: string;
+  };
 
   // react-hook-form
   register?: UseFormRegister<AuthenticationInformation>;
@@ -20,17 +26,15 @@ export type FormFieldProps = {
   validation?: {};
 };
 
+export type AuthenticationStorage = {
+  isAuthenticated: boolean;
+  user: Credentials | null;
+};
+
 export interface Credentials {
   id?: number;
   username?: string;
   email?: string;
-  password?: string;
-  confirmPassword?: string;
-}
-
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: Credentials | null;
 }
 
 export interface API {

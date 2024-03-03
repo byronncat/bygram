@@ -1,8 +1,8 @@
-import axios from "axios";
-import "./uploadPost.sass";
-import { Dispatch, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useAuth } from "../Authentication/Authentication.component";
+import axios from 'axios';
+import './uploadPost.sass';
+import { Dispatch, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '../authentication.component';
 
 function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
   const {
@@ -16,11 +16,11 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
   const submitForm = (data: any) => {
     const id = authentication.user!.id;
     const formData = new FormData();
-    formData.append("file", data.file[0]);
-    formData.append("content", data.content);
-    formData.append("author", id!.toString());
+    formData.append('file', data.file[0]);
+    formData.append('content', data.content);
+    formData.append('author', id!.toString());
     axios
-      .post("/api/post/create", formData)
+      .post('/api/post/create', formData)
       .then((result: any) => console.log(result))
       .catch((error: any) => console.log(error));
   };
@@ -44,7 +44,7 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
             <input
               type="file"
               className="upload-post-image"
-              {...register("file", {
+              {...register('file', {
                 onChange: (e) => {
                   const file = e.target.files[0];
                   const reader = new FileReader();
@@ -73,7 +73,7 @@ function UploadPost({ closeFunction }: { closeFunction: Dispatch<boolean> }) {
               className="w-100"
               placeholder="What's on your mind?"
               rows={3}
-              {...register("content", { required: true })}
+              {...register('content', { required: true })}
             ></textarea>
             <button type="submit" className="btn btn-primary mt-3">
               Share

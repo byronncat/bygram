@@ -1,19 +1,18 @@
-const { accountDB } = require("@db");
-import { IAccount, ICondition, IProfile } from "@/type";
+const { accountDB } = require('@db');
+import { Account, Condition, Profile } from '@/type';
 
 // Postgresql database
-async function get(data: IAccount, conditions?: ICondition) {
+async function get(data: Account, conditions?: Condition) {
   try {
     const query = parseQuery(data, conditions);
-    console.log(query, data);
-    const result: IAccount[] = await accountDB.any(query, data);
+    const result: Account[] = await accountDB.any(query, data);
     if (result.length === 0) {
       return null;
     }
     if (conditions?.one) {
-      return result[0] as IAccount;
+      return result[0] as Account;
     } else {
-      return result as IAccount[];
+      return result as Account[];
     }
   } catch (error) {
     console.log(`[Account service]: Read method error - ${error}`);
@@ -21,34 +20,34 @@ async function get(data: IAccount, conditions?: ICondition) {
   }
 }
 
-async function create(data: IAccount) {
+async function create(data: Account) {
   try {
     const result = await accountDB.one(
       `INSERT INTO accounts.users (username, email, password) VALUES ($(username), $(email), $(password)) RETURNING id`,
       data
     );
-    return result as IAccount;
+    return result as Account;
   } catch (error) {
     console.log(`[Account service]: Create method error - ${error}`);
     return Promise.reject(error);
   }
 }
 
-function parseQuery(data: IAccount, conditions?: ICondition) {
+function parseQuery(data: Account, conditions?: Condition) {
   // Be careful with type number (data.id = 0 => false)
-  const idQuery = "id" in data ? `id = $(id)` : "";
-  const usernameQuery = "username" in data ? `username = $(username)` : "";
-  const emailQuery = "email" in data ? `email = $(email)` : "";
-  const passwordQuery = "password" in data ? `password LIKE $(password)` : "";
+  const idQuery = 'id' in data ? `id = $(id)` : '';
+  const usernameQuery = 'username' in data ? `username = $(username)` : '';
+  const emailQuery = 'email' in data ? `email = $(email)` : '';
+  const passwordQuery = 'password' in data ? `password LIKE $(password)` : '';
 
-  let condition = "";
+  let condition = '';
   if (conditions) {
-    if (conditions.and) condition = " AND ";
-    if (conditions.or) condition = " OR ";
+    if (conditions.and) condition = ' AND ';
+    if (conditions.or) condition = ' OR ';
   }
 
   let query = [idQuery, usernameQuery, emailQuery, passwordQuery]
-    .filter((query) => query !== "")
+    .filter((query) => query !== '')
     .join(condition);
   query = `SELECT * FROM accounts.users WHERE ${query}`;
   return query;
@@ -56,14 +55,14 @@ function parseQuery(data: IAccount, conditions?: ICondition) {
 
 // MongoDB
 // Social media profile
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document } from 'mongoose';
 
-interface ProfileDocument extends IProfile, Document {
-  _doc?: IProfile;
+interface ProfileDocument extends Profile, Document {
+  _doc?: Profile;
 }
 
 const Profile = mongoose.model(
-  "profile",
+  'profile',
   new mongoose.Schema<ProfileDocument>({
     uid: { type: Number, required: true },
     avatar: { type: String, required: true },

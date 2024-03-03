@@ -1,11 +1,11 @@
-import { postImageDB } from "@db";
-import { CloudinaryApiResponse } from "@db/db";
-import { accountService } from "@services";
-import { IAccount, ICondition, IPost } from "@type";
+import { postImageDB } from '@db';
+import { CloudinaryApiResponse } from '@db/db';
+import { accountService } from '@services';
+import { Account, Condition, Post } from '@type';
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const Post = mongoose.model(
-  "post",
+  'post',
   new mongoose.Schema(
     {
       author: { type: Number, required: true },
@@ -19,11 +19,11 @@ const Post = mongoose.model(
   )
 );
 
-async function create(post: IPost, file: Express.Multer.File) {
-  const base64String = Buffer.from(file.buffer).toString("base64");
+async function create(post: Post, file: Express.Multer.File) {
+  const base64String = Buffer.from(file.buffer).toString('base64');
   const dataURL = `data:${file.mimetype};base64,${base64String}`;
 
-  let secure_url = "";
+  let secure_url = '';
   await postImageDB.uploader
     .upload(dataURL, { folder: `social-media-app/${post.author}` })
     .then((result: CloudinaryApiResponse) => {
@@ -41,7 +41,7 @@ async function create(post: IPost, file: Express.Multer.File) {
   });
 }
 
-async function get(post: IPost = {}, condition?: ICondition) {
+async function get(post: Post = {}, condition?: Condition) {
   if (condition?.one) {
     // TODO
   } else {
@@ -51,7 +51,7 @@ async function get(post: IPost = {}, condition?: ICondition) {
         const { username } = (await accountService.get(
           { id: post.author },
           { one: true }
-        )) as IAccount;
+        )) as Account;
         const profile = await accountService.readProfile(post.author);
         return {
           id: post._id.toString(),
@@ -68,9 +68,9 @@ async function get(post: IPost = {}, condition?: ICondition) {
 }
 
 function getPublicId(imageUrl: string) {
-  const urlParts = imageUrl.split("/");
+  const urlParts = imageUrl.split('/');
   const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${
-    urlParts[urlParts.length - 1].split(".")[0]
+    urlParts[urlParts.length - 1].split('.')[0]
   }`;
   return publicId;
 }
@@ -82,7 +82,6 @@ async function remove(postId: string) {
     .destroy(publicId)
     .then((result: any) => console.log(result))
     .catch((error: any) => console.log(error));
-  return "Post deleted";
 }
 
 export default {

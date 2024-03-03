@@ -1,25 +1,30 @@
-import { FormFieldProps } from "@types";
+import { FormFieldProps } from '@types';
 
-export default function FormField({
+function FormField({
   type,
   placeholder,
   name,
   register,
   errors,
   validation,
+  className,
 }: FormFieldProps) {
   return (
-    <div className="form-field form-floating">
+    <div className={className?.field}>
       <input
         key={name}
         type={type}
-        className="form-control"
+        className={className?.input}
         id={name}
         placeholder={placeholder}
         {...register!(name, { ...validation })}
       />
-      <label htmlFor={name}>{placeholder}</label>
-      <p className="error-message mt-1">{errors?.message}</p>
+      <label className={className?.label} htmlFor={name}>
+        {placeholder}
+      </label>
+      <p className={className?.errorMessage}>{errors?.message}</p>
     </div>
   );
 }
+
+export default FormField;

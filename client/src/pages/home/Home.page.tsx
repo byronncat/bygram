@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { UploadPost } from "../../components/index";
-import "./home.page.sass";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import { UploadPost } from '../../components/index';
+import './home.page.sass';
+import axios from 'axios';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     axios
-      .get("/api/post/all")
+      .get('/api/post/all')
       .then((res: any) => {
-        console.log(res.data.posts);
         setPosts(res.data.posts);
         setReady(true);
       })
@@ -50,7 +50,7 @@ function HomePage() {
               className="shadow-none btn-close position-absolute top-0 end-0 p-4"
               aria-label="Close"
               onClick={() => setShowMenu(false)}
-            ></button>{" "}
+            ></button>{' '}
           </span>
           <ul className="list-group w-50 position-relative top-50 start-50 translate-middle">
             <li
@@ -104,7 +104,7 @@ function HomePage() {
                 <a className="text-reset text-decoration-none fw-bold" href="https://example.com/">
                   <span>{post.author}</span>
                 </a>
-                <span className="ms-2" style={{ whiteSpace: "pre-line" }}>
+                <span className="ms-2" style={{ whiteSpace: 'pre-line' }}>
                   {post.content}
                 </span>
               </header>
