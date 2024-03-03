@@ -1,9 +1,9 @@
-import { PostgreSQL } from "./db";
+import { PostgreSQL } from './db';
 
 const initOptions = {
   /* initialization options */
 };
-const pgp = require("pg-promise")(initOptions);
+const pgp = require('pg-promise')(initOptions);
 
 const connection = {
   host: process.env.POSTGRES_HOST,
@@ -17,7 +17,7 @@ const connection = {
   allowExitOnIdle: true,
 };
 
-const db: PostgreSQL = pgp(connection);
+const db: PostgreSQL = pgp(process.env.POSTGRES_URL);
 db.connect()
   .then(function (obj: any) {
     const serverVersion = obj.client.serverVersion;

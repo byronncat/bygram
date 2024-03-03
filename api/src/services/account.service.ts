@@ -23,7 +23,7 @@ async function get(data: Account, conditions?: Condition) {
 async function create(data: Account) {
   try {
     const result = await accountDB.one(
-      `INSERT INTO accounts.users (username, email, password) VALUES ($(username), $(email), $(password)) RETURNING id`,
+      `INSERT INTO accounts (username, email, password) VALUES ($(username), $(email), $(password)) RETURNING id`,
       data
     );
     return result as Account;
@@ -49,7 +49,7 @@ function parseQuery(data: Account, conditions?: Condition) {
   let query = [idQuery, usernameQuery, emailQuery, passwordQuery]
     .filter((query) => query !== '')
     .join(condition);
-  query = `SELECT * FROM accounts.users WHERE ${query}`;
+  query = `SELECT * FROM accounts WHERE ${query}`;
   return query;
 }
 

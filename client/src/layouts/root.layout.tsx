@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { Sidebar, useAuth } from '../components/index';
+import { Sidebar, useAuth } from '@components';
 import clsx from 'clsx';
 
 function RootLayout() {
