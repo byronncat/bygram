@@ -33,27 +33,40 @@ async function validateInformation(
 }
 
 import { accountService } from '@services';
+import { Profile } from 'passport';
 async function addUser(req: Request<{}, {}, Account>, res: Response) {
   const data: Account = res.locals.user;
+  let response = {
+    success: false,
+    message: '',
+  } as API;
+  let status: number = 500;
   await accountService
     .create(data)
     .then((result: Account) => {
-      delete data.password;
-      res.status(201).json({
-        success: true,
-        message: 'Account created successfully',
-        data: {
-          id: result.id,
-          ...data,
-        },
-      } as API);
+      delete result.password;
+      status = 201;
+      response.data = {
+        id: result.id,
+        ...data,
+      };
     })
     .catch((error: any) => {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      } as API);
+      response.message = error.message;
     });
+
+  await accountService
+    .createProfile({ uid: response.data.id })
+    .then((data: any) => {
+      response.success = true;
+      response.message = 'User created';
+      status = 201;
+    })
+    .catch((error: any) => {
+      response.message = error.message;
+    });
+
+  res.status(status).json(response);
 }
 
 export default [saveFormRequest, validateInformation, addUser];

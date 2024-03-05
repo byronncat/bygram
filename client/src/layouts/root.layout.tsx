@@ -8,14 +8,13 @@ function RootLayout() {
   return authentication.isAuthenticated ? (
     <>
       <main
-        style={{ background: 'url(imgs/wallpaper.png) center center / cover' }}
-        className={clsx('row w-100 h-100 m-0 p-0', 'd-flex flex-column flex-shrink-0')}
+        style={{ background: 'url(imgs/wallpaper.jpg) center center / cover' }}
+        className={clsx('w-100 h-100 m-0 p-0', 'position-relative')}
       >
         <Sidebar />
-        <div className="col-4 h-100 p-0"></div>
-        <div className={clsx('col-8 h-100', 'overflow-auto')}>
+        <section className={clsx('w-auto h-100', 'overflow-auto', 'd-flex justify-content-center')}>
           <Outlet />
-        </div>
+        </section>
       </main>
     </>
   ) : (

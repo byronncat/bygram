@@ -1,0 +1,17 @@
+@mixin neon-effect($text-color, $hover-color)
+  color: $text-color
+  text-shadow: 0 0 1px $text-color, 0 0 2px $text-color, 0 0 4px $text-color, 0 0 8px $text-color
+  background: $hover-color
+  box-shadow: 0 0 2px $hover-color, 0 0 4px $hover-color, 0 0 8px $hover-color, 0 0 16px $hover-color
+
+@mixin shadow-effect-1($color)
+  box-shadow: 0 15px 25px $color
+
+@mixin shadow-effect-2($color)
+  box-shadow: 0 0 15px $color
+
+@mixin text-neon-effect($color)
+  text-shadow: 0 0 1px $color, 0 0 2px $color, 0 0 3px $color, 0 0 4px $color
+
+@mixin text-neon-effect-high($color)
+  text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px $color, 0 0 10px $color, 0 0 15px $color, 0 0 20px $color, 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)

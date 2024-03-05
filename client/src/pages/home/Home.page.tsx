@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { UploadPost } from '../../components/index';
 import './home.page.sass';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { API } from '@types';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
@@ -10,14 +11,15 @@ function HomePage() {
   useEffect(() => {
     axios
       .get('/api/post/all')
-      .then((res: any) => {
+      .then((res: AxiosResponse) => {
+        const response: API = res.data;
         setPosts(res.data.posts);
         setReady(true);
       })
       .catch((err: any) => {
-        console.log(err.response.data);
+        console.log(err.response);
       });
-  }, []);
+  });
 
   const [showMenu, setShowMenu] = useState(false);
   const [post, setPost] = useState({} as any);

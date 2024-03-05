@@ -1,0 +1,28 @@
+@import './mixin.sass'
+
+@font-face
+  font-family: 'Merienda'
+  src: url('https://fonts.googleapis.com/css2?family=Merienda&family=Zeyada&display=swap')
+
+.sidebar
+  color: white
+  font-family: 'Merienda', cursive
+
+  width: 248px
+  background: var(--color-black-pearl-07)
+  @include shadow-effect-1(rgba(0, 0, 0, 0.6))
+
+  & a
+    color: rgba(255, 255, 255, 0.7)
+
+  &-link
+    transition: all 0.3s
+    &:hover:not(.active)
+      @include text-neon-effect-high(var(--color-red-violet))
+
+.active
+  $hover-color: var(--color-red-violet)
+  background: $hover-color !important
+  font-weight: bold
+  letter-spacing: .2rem
+  @include neon-effect(none, $hover-color)

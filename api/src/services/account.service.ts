@@ -63,13 +63,29 @@ interface ProfileDocument extends Profile, Document {
 
 const Profile = mongoose.model(
   'profile',
-  new mongoose.Schema<ProfileDocument>({
-    uid: { type: Number, required: true },
-    avatar: { type: String, required: true },
-  })
+  new mongoose.Schema<ProfileDocument>(
+    {
+      uid: { type: Number, required: true },
+      avatar: { type: String },
+    },
+    {
+      versionKey: false,
+    }
+  )
 );
 
-async function readProfile(id: number) {
+async function createProfile(data: Profile) {
+  try {
+    const profile = new Profile(data);
+    await profile.save();
+    return profile;
+  } catch (error) {
+    console.log(`[Profile service]: Create method error - ${error}`);
+    return Promise.reject(error);
+  }
+}
+
+async function getProfile(id: number) {
   const profile = await Profile.findOne({ uid: id }).exec();
   return profile!;
 }
@@ -77,5 +93,6 @@ async function readProfile(id: number) {
 export default {
   create,
   get,
-  readProfile,
+  createProfile,
+  getProfile,
 };

@@ -52,7 +52,7 @@ async function get(post: Post = {}, condition?: Condition) {
           { id: post.author },
           { one: true }
         )) as Account;
-        const profile = await accountService.readProfile(post.author);
+        const profile = await accountService.getProfile(post.author);
         return {
           id: post._id.toString(),
           author: username,

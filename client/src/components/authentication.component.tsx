@@ -23,7 +23,6 @@ export default function Authentication({ children }: { children: ReactNode }) {
 
     setLocalState(authentication);
     setAuthentication(authentication);
-    console.log(authentication);
   };
 
   return (

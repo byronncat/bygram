@@ -1,70 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Merienda&family=Zeyada&display=swap')
+@use 'sidebar.module.sass'
+@use 'profile.module.sass'
 
-.sidebar
-  width: 400px
-  background: var(--color-black-pearl-07)
-  box-shadow: 0 15px 25px rgba(0,0,0,.6)
+//   & .brand-name
+//     color: #fff !important
+//     text-shadow: 0 0 10px var(--color-electric-violet)
+//     transition: all 1s
 
-  & a
-    color: rgba(255, 255, 255, 0.7)
+//   & .brand
+//     &:hover .brand-name
+//       text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
 
-  & button:not(.btn-close)
-    color: rgba(255, 255, 255, 0.7)
-    &:hover:not(.active)
-      background: transparent !important
-      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+//   // Dropdown
+//   & .dropdown-menu
+//     background: var(--color-black-pearl-07)
 
-  & hr
-    border-color: var(--color-electric-violet)
+//   & .dropdown-toggle
+//     color: rgba(255, 255, 255, 0.7) !important
+//     transition: all 0.3s
 
-  & .brand-name
-    color: #fff !important
-    font-family: 'Merienda', cursive
-    text-shadow: 0 0 10px var(--color-electric-violet)
-    transition: all 1s
+//     &::after
+//       display: none
 
-  & .brand
-    &:hover .brand-name
-      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+//     & i
+//       width: 28px
 
-  & .active
-    background: var(--color-red-violet) !important
-    color: #fff !important
-    font-weight: bold
-    box-shadow: 0 0 1px var(--color-red-violet), 0 0 2px var(--color-red-violet), 0 0 4px var(--color-red-violet), 0 0 8px var(--color-red-violet)
+//     &.show
+//       text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
 
-  & .nav-link
-    transition: all 0.3s
-    &:hover:not(.active)
-      color: #fff !important
-      background: transparent !important
-      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
-    & .nav-link-icon
-      width: 28px
+//   & .dropdown-item
+//     color: rgba(255, 255, 255, 0.7) !important
+//     transition: all 0.5s
 
-  // Dropdown
-  & .dropdown-menu
-    background: var(--color-black-pearl-07)
-
-  & .dropdown-toggle
-    color: rgba(255, 255, 255, 0.7) !important
-    transition: all 0.3s
-
-    &::after
-      display: none
-
-    & i
-      width: 28px
-
-    &.show
-      text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px var(--color-red-violet), 0 0 10px var(--color-red-violet), 0 0 15px var(--color-red-violet), 0 0 20px var(--color-red-violet), 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
-
-  & .dropdown-item
-    color: rgba(255, 255, 255, 0.7) !important
-    transition: all 0.5s
-
-    &:hover
-      background: var(--color-red-violet) !important
-      color: #fff !important
-      font-weight: bold
-      box-shadow: 0 0 1px var(--color-red-violet), 0 0 2px var(--color-red-violet), 0 0 4px var(--color-red-violet), 0 0 8px var(--color-red-violet)
+//     &:hover
+//       background: var(--color-red-violet) !important
+//       color: #fff !important
+//       font-weight: bold
+//       box-shadow: 0 0 1px var(--color-red-violet), 0 0 2px var(--color-red-violet), 0 0 4px var(--color-red-violet), 0 0 8px var(--color-red-violet)

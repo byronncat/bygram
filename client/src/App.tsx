@@ -1,13 +1,13 @@
-import { Authentication, GlobalStyles } from '@components';
+import { Authentication, Global } from '@components';
 import Router from './router';
 
 function App() {
   return (
-    <GlobalStyles>
+    <Global>
       <Authentication>
         <Router />
       </Authentication>
-    </GlobalStyles>
+    </Global>
   );
 }
 

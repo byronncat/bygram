@@ -7,7 +7,7 @@ import { useAuth, Form, ToastMessage } from '@components';
 import { API } from '@types';
 import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
@@ -33,8 +33,10 @@ function ForgotPasswordPage() {
   const [show, setShow] = useState(false);
   const { className } = useAuthLayoutContext();
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext<any>();
-  setTitle('reset password');
+    useOutletContext();
+  useEffect(() => {
+    setTitle('reset password');
+  }, []);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
@@ -51,15 +53,6 @@ function ForgotPasswordPage() {
 
   return (
     <>
-      {message && (
-        <ToastMessage
-          header="Message"
-          message={message}
-          className="m-4"
-          show={show}
-          setShow={setShow}
-        />
-      )}
       <Form
         fieldList={fieldList}
         defaultValues={defaultValues}

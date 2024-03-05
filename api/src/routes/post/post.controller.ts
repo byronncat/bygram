@@ -51,10 +51,11 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
       message: 'Posts retrieved',
       posts,
     } as API);
-  } catch (error) {
+  } catch (error: any) {
+    console.log(`[Post Controller Error]: ${error}`);
     res.status(404).json({
       success: false,
-      message: error,
+      message: error.message,
     } as API);
   }
 }

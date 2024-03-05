@@ -1,0 +1,16 @@
+@import './mixin.sass'
+
+.profile-wrapper
+  max-width: 1000px
+  backdrop-filter: blur(40px)
+
+.avatar-container
+  width: 160px
+  height: 160px
+  background: transparent
+  transition: all 0.5s
+  border: 3px solid transparent
+
+  &:hover
+    border-color: var(--color-red-violet)
+    @include shadow-effect-2(var(--color-red-violet))

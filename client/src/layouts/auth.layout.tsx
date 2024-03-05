@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import clsx from 'clsx';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from '@components';
 import styles from '@sass/authLayout.module.sass';
 
@@ -22,6 +22,9 @@ function AuthLayout() {
     logo: styles.logo as string,
   });
   const [title, setTitle] = useState('');
+  useEffect(() => {
+    return () => setTitle('');
+  }, []);
 
   return authentication.isAuthenticated ? (
     <Navigate to="/" />

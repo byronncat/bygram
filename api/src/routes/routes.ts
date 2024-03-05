@@ -1,32 +1,32 @@
-import { Express, Router } from "express";
-import authRouter from "./auth/index";
-import postRouter from "./post/post.route";
-import profileRouter from "./profile/profile.route";
+import { Express, Router } from 'express';
+import authRouter from './auth/index';
+import postRouter from './post/post.route';
+import profileRouter from './profile/profile.route';
 
 type Route = {
   path: string;
   router: Router;
-}
+};
 
 const routes: Route[] = [
   {
-    path: "/auth/login",
+    path: '/auth/login',
     router: authRouter.loginRouter,
   },
   {
-    path: "/auth/register",
+    path: '/auth/register',
     router: authRouter.registerRouter,
   },
   {
-    path: "/auth/send-email",
+    path: '/auth/send-email',
     router: authRouter.sendEmailRouter,
   },
   {
-    path: "/post",
+    path: '/post',
     router: postRouter,
   },
   {
-    path: "/profile",
+    path: '/profile',
     router: profileRouter,
   },
 ];

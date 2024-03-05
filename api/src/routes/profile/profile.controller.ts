@@ -11,7 +11,7 @@ async function getProfile(req: Request, res: Response) {
     } as API);
   }
 
-  const profile = await accountService.readProfile(id);
+  const profile = await accountService.getProfile(id);
   if (profile) {
     const { username } = (await accountService.get({ id }, { one: true })) as Account;
     const posts = await postService.get({ author: id });

@@ -3,14 +3,14 @@ import { SubmitHandler } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
 import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
-import { useAuth, Form, ToastMessage } from '@components';
+import { useAuth, Form, useGlobal } from '@components';
 import { API } from '@types';
 import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useState } from 'react';
+import { useEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
-  username: '',
+  username: 'fdsfa',
   password: '123456',
 };
 
@@ -42,15 +42,16 @@ const fieldList: FormFieldProps[] = [
 ];
 
 function LoginPage() {
-  const [message, setMessage] = useState('');
-  const [show, setShow] = useState(false);
+  const { displayToast } = useGlobal();
   const navigate = useNavigate();
   const { setAuthenticationStorage } = useAuth();
   const { className } = useAuthLayoutContext();
 
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
-  setTitle('sign in');
+  useEffect(() => {
+    setTitle('sign in');
+  }, []);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
@@ -62,23 +63,13 @@ function LoginPage() {
       })
       .catch((err) => {
         if (err.response) {
-          setMessage(err.response.data.message);
-          setShow(true);
+          displayToast(err.response.data.message);
         }
       });
   };
 
   return (
     <>
-      {message && (
-        <ToastMessage
-          header="Message"
-          message={message}
-          className="m-4"
-          show={show}
-          setShow={setShow}
-        />
-      )}
       <Form
         fieldList={fieldList}
         defaultValues={defaultValues}
