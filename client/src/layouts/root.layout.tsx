@@ -1,24 +1,29 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Sidebar, useAuth } from '@components';
 import clsx from 'clsx';
+import { useEffect } from 'react';
 
 function RootLayout() {
   const { authentication } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!authentication.isAuthenticated) {
+      navigate('/login');
+    }
+  }, [authentication, navigate]);
 
-  return authentication.isAuthenticated ? (
+  return (
     <>
       <main
         style={{ background: 'url(imgs/wallpaper.jpg) center center / cover' }}
         className={clsx('w-100 h-100 m-0 p-0', 'position-relative')}
       >
         <Sidebar />
-        <section className={clsx('w-auto h-100', 'overflow-auto', 'd-flex justify-content-center')}>
+        <section className={clsx('w-auto h-100', '', 'd-flex justify-content-center')}>
           <Outlet />
         </section>
       </main>
     </>
-  ) : (
-    <Navigate to="/login" replace />
   );
 }
 

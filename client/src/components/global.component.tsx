@@ -1,53 +1,38 @@
-import { ReactNode, useContext, useState, createContext } from 'react';
-// import { ToastContainer, toast, Bounce } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { ReactNode, useContext, createContext, useCallback } from 'react';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/js/bootstrap.min';
 import '@sass/global.sass';
-import { ToastMessage } from '@components';
 
 const GlobalContext = createContext(
   {} as {
-    // toastMessage: string[];
-    // setToastMessage: Dispatch<SetStateAction<string>>;
-    // showToast: boolean;
-    // setShowToast: Dispatch<SetStateAction<boolean>>;
-
-    displayToast: (message: string) => void;
+    displayToast: (message: string, type: ToastType) => void;
   }
 );
 
+type ToastType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 function Global({ children }: { children: ReactNode }) {
-  const [toastMessages, setToastMessages] = useState([] as { content: string; id: number }[]);
-
-  function displayToast(message: string) {
-    // toast(message, {
-    //   position: 'top-right',
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    //   theme: 'light',
-    //   transition: Bounce,
-    // });
-    setToastMessages([...toastMessages, { content: message, id: Math.random() }]);
-  }
-
-  function removeToast(id: number) {
-    setToastMessages((prev) => prev.filter((_, i) => _.id !== id));
-  }
+  const displayToast = useCallback((message: string, type: ToastType) => {
+    toast[type](message);
+  }, []);
 
   return (
     <>
       <GlobalContext.Provider value={{ displayToast }}>
-        <ToastMessage
-          header="Error"
-          messages={toastMessages}
-          removeToast={removeToast}
-          className="position-absolute top-0 end-0 m-5"
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          limit={4}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Slide}
         />
-        {/* <ToastContainer /> */}
         {children}
       </GlobalContext.Provider>
     </>

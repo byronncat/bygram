@@ -1,13 +1,13 @@
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
-import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
-import { useAuth, Form, ToastMessage } from '@components';
+import { AuthenticationInformation, FormFieldProps } from '@types';
+import { Form, useGlobal } from '@components';
 import { API } from '@types';
 import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
@@ -29,25 +29,24 @@ const fieldList: FormFieldProps[] = [
 ];
 
 function ForgotPasswordPage() {
-  const [message, setMessage] = useState('');
-  const [show, setShow] = useState(false);
+  const { displayToast } = useGlobal();
   const { className } = useAuthLayoutContext();
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
   useEffect(() => {
     setTitle('reset password');
-  }, []);
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
       .post('/api/auth/send-email', data)
       .then((res: AxiosResponse) => {
-        setShow(true);
-        setMessage(res.data.message);
+        const response: API = res.data;
+        displayToast(response.message, 'success');
       })
       .catch((err) => {
-        setShow(true);
-        setMessage(err.response.data.message);
+        const error = err.response.data;
+        displayToast(error.message, 'error');
       });
   };
 

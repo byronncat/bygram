@@ -9,7 +9,10 @@ export interface Account {
 
 interface Profile {
   uid?: Account['id'];
+  followers?: Account['id'][];
+  followings?: Account['id'][];
   avatar?: string;
+  description?: string;
 }
 
 export interface Post {

@@ -1,13 +1,11 @@
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
-import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
-import { useAuth, Form, ToastMessage } from '@components';
-import { API } from '@types';
+import { AuthenticationInformation, FormFieldProps } from '@types';
+import { Form } from '@components';
 import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
@@ -45,7 +43,7 @@ function ResetPasswordPage() {
     useOutletContext();
   useEffect(() => {
     setTitle('reset password');
-  }, []);
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => console.log(data);
 

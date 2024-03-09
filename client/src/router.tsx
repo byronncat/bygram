@@ -16,7 +16,7 @@ function Router() {
       errorElement: <div>404 not found</div>,
       children: [
         { path: '/', element: <HomePage /> },
-        { path: ':user-name', element: <ProfilePage /> },
+        { path: ':username', element: <ProfilePage /> },
       ],
     },
     {

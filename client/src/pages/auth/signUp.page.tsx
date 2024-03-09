@@ -3,11 +3,11 @@ import { SubmitHandler } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
 import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
-import { useAuth, Form, ToastMessage } from '@components';
+import { useAuth, Form, useGlobal } from '@components';
 import { API } from '@types';
 import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
   username: 'test',
@@ -55,8 +55,7 @@ const fieldList: FormFieldProps[] = [
 ];
 
 function RegisterPage() {
-  const [message, setMessage] = useState('');
-  const [show, setShow] = useState(false);
+  const { displayToast } = useGlobal();
   const navigate = useNavigate();
   const { setAuthenticationStorage } = useAuth();
   const { className } = useAuthLayoutContext();
@@ -65,7 +64,7 @@ function RegisterPage() {
     useOutletContext();
   useEffect(() => {
     setTitle('sign up');
-  }, []);
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => {
     axios
@@ -74,11 +73,11 @@ function RegisterPage() {
         const response: API = res.data;
         setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
         navigate('/');
+        displayToast(response.message, 'success');
       })
       .catch((err) => {
         if (err.response) {
-          setMessage(err.response.data.message);
-          setShow(true);
+          displayToast(err.response.data.message, 'error');
         }
       });
   };

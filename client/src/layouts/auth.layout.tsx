@@ -1,6 +1,6 @@
+import { createContext, useContext, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import clsx from 'clsx';
-import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from '@components';
 import styles from '@sass/authLayout.module.sass';
 
@@ -8,7 +8,6 @@ const AuthLayoutContext = createContext({} as any);
 const useAuthLayoutContext = () => useContext(AuthLayoutContext);
 
 function AuthLayout() {
-  const { authentication } = useAuth();
   const [className] = useState({
     leftSide: '',
     rightSide: styles['form-side'] as string,
@@ -21,10 +20,9 @@ function AuthLayout() {
     },
     logo: styles.logo as string,
   });
+
+  const { authentication } = useAuth();
   const [title, setTitle] = useState('');
-  useEffect(() => {
-    return () => setTitle('');
-  }, []);
 
   return authentication.isAuthenticated ? (
     <Navigate to="/" />
@@ -32,7 +30,7 @@ function AuthLayout() {
     <AuthLayoutContext.Provider value={{ className }}>
       <div className={clsx('w-100 h-100', 'd-flex')}>
         <div className={clsx('col-md-6', 'd-none d-md-block', 'overflow-hidden')}>
-          <img src="imgs/auth.gif" className="h-100" alt="auth-page-image" />
+          <img src="imgs/auth.gif" className="h-100" alt="auth" />
         </div>
 
         <div

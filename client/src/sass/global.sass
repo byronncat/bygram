@@ -2,10 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&display=swap')
 @import '~bootstrap/scss/bootstrap'
 
+input[type=file] // FF, IE7+, chrome (except button)
+input[type=file]::-webkit-file-upload-button // chromes and blink button
+  cursor: pointer
+
 html, body, #root
   height: 100%
   width: 100%
   font-family: 'Source Code Pro', monospace
+  box-sizing: border-box
 
 *
   --color-persian-pink: #f15fd2
@@ -25,27 +30,13 @@ html, body, #root
   width: 100vw
   height: 100vh
   position: absolute
-  &::after
-    content: ''
-    top: 0
-    left: 0
-    width: 100%
-    height: 100%
-    background: rgba(0, 0, 0, 0.5)
+  top: 0
+  left: 0
+  z-index: -1
+  background: rgba(0, 0, 0, 0.5)
 
-.toast
-  animation-name: example
-  animation-duration: 1s
-  animation-delay: 4s
-
-@keyframes example
-  from
-    opacity: 1
-
-  to
-    opacity: 0
-
-  // transition: all 0.5s ease
+.cur-pointer
+  cursor: pointer
 
 @keyframes animate
   from

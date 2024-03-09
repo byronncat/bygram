@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { UploadPost } from '../../components/index';
 import './home.page.sass';
 import axios, { AxiosResponse } from 'axios';
-import { API } from '@types';
+import { Link } from 'react-router-dom';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
@@ -12,21 +11,19 @@ function HomePage() {
     axios
       .get('/api/post/all')
       .then((res: AxiosResponse) => {
-        const response: API = res.data;
         setPosts(res.data.posts);
         setReady(true);
       })
       .catch((err: any) => {
         console.log(err.response);
       });
-  });
+  }, []);
 
   const [showMenu, setShowMenu] = useState(false);
   const [post, setPost] = useState({} as any);
   const menuHandler = (postItem: any) => {
     setShowMenu(!showMenu);
     setPost(postItem);
-    console.log(postItem);
   };
 
   function deletePost(post: any) {
@@ -35,15 +32,12 @@ function HomePage() {
     });
   }
 
-  const [activeUploadPost, setIsActiveUploadPost] = useState(false);
-
   if (!ready) {
     return <div>Loading...</div>;
   }
 
   return (
-    <section className="col-8 d-flex flex-column justify-content-center align-items-center">
-      {activeUploadPost && <UploadPost closeFunction={setIsActiveUploadPost} />}
+    <div className="col-8 d-flex flex-column align-items-center overflow-y-scroll">
       {showMenu && (
         <span className="overlay position-absolute z-2 top-0 start-0">
           <span className="overlay bg-black opacity-50">
@@ -65,7 +59,7 @@ function HomePage() {
             <li
               className="list-group-item btn btn-primary"
               aria-current="true"
-              onClick={() => setIsActiveUploadPost(true)}
+              // onClick={() => setIsActiveUploadPost(true)}
             >
               Edit
             </li>
@@ -103,9 +97,9 @@ function HomePage() {
                 <img className="img-fluid" alt="profile" src={post.imgURL} />
               </div>
               <header className="Meta">
-                <a className="text-reset text-decoration-none fw-bold" href="https://example.com/">
+                <Link className="text-reset text-decoration-none fw-bold" to="https://example.com/">
                   <span>{post.author}</span>
-                </a>
+                </Link>
                 <span className="ms-2" style={{ whiteSpace: 'pre-line' }}>
                   {post.content}
                 </span>
@@ -125,13 +119,13 @@ function HomePage() {
                     <i className="fa-solid fa-heart"></i> 12
                   </span>
                 </div>
-                <a className="">View comment</a>
+                <p className="">View comment</p>
                 <p className="Text">Comment ...</p>
               </div>
             </section>
           );
         })}
-    </section>
+    </div>
   );
 }
 

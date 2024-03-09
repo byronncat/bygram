@@ -2,6 +2,7 @@ import { postImageDB } from '@db';
 import { CloudinaryApiResponse } from '@db/db';
 import { accountService } from '@services';
 import { Account, Condition, Post } from '@type';
+import { getPublicId } from '@utils';
 
 import mongoose from 'mongoose';
 const Post = mongoose.model(
@@ -67,21 +68,13 @@ async function get(post: Post = {}, condition?: Condition) {
   }
 }
 
-function getPublicId(imageUrl: string) {
-  const urlParts = imageUrl.split('/');
-  const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${
-    urlParts[urlParts.length - 1].split('.')[0]
-  }`;
-  return publicId;
-}
-
 async function remove(postId: string) {
   const deletedPost = await Post.findByIdAndDelete(postId);
   const publicId = getPublicId(deletedPost!.imgURL!);
   postImageDB.uploader
     .destroy(publicId)
-    .then((result: any) => console.log(result))
-    .catch((error: any) => console.log(error));
+    .then((result: any) => console.log(`[Cloudinary]: ${result.result}`))
+    .catch((error: any) => console.log(`[Cloudinary Error]: ${error}`));
 }
 
 export default {

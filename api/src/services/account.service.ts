@@ -1,5 +1,7 @@
-const { accountDB } = require('@db');
+const { accountDB, postImageDB } = require('@db');
 import { Account, Condition, Profile } from '@/type';
+import { CloudinaryApiResponse } from '@db/db';
+import { getPublicId } from '@utils';
 
 // Postgresql database
 async function get(data: Account, conditions?: Condition) {
@@ -66,7 +68,10 @@ const Profile = mongoose.model(
   new mongoose.Schema<ProfileDocument>(
     {
       uid: { type: Number, required: true },
+      followers: { type: [Number], default: [], required: true },
+      followings: { type: [Number], default: [], required: true },
       avatar: { type: String },
+      description: { type: String },
     },
     {
       versionKey: false,
@@ -90,9 +95,56 @@ async function getProfile(id: number) {
   return profile!;
 }
 
+async function setAvatar(id: number, avatar: Express.Multer.File) {
+  const base64String = Buffer.from(avatar.buffer).toString('base64');
+  const dataURL = `data:${avatar.mimetype};base64,${base64String}`;
+  const profile = await Profile.findOne({ uid: id }).exec();
+  if (profile) {
+    if (profile.avatar) {
+      await postImageDB.uploader.destroy(getPublicId(profile.avatar!));
+    }
+
+    await postImageDB.uploader
+      .upload(dataURL, { folder: `social-media-app/${id}` })
+      .then((result: CloudinaryApiResponse) => {
+        profile.avatar = result.secure_url;
+        profile.save();
+      })
+      .catch((error: any) => {
+        console.log(`[Cloudinary Error]: ${error}`);
+        return Promise.reject(error);
+      });
+    return profile.avatar;
+  }
+  return Promise.reject("Profile doesn't exist");
+}
+
+async function follow(uid: number, target: number) {
+  const profile = await Profile.findOne({ uid }).exec();
+  profile?.followings!.push(target);
+  await profile?.save();
+  const targetProfile = await Profile.findOne({ uid: target }).exec();
+  targetProfile?.followers!.push(uid);
+  await targetProfile?.save();
+  return profile;
+}
+
+async function unfollow(uid: number, target: number) {
+  const profile = await Profile.findOne({ uid }).exec();
+  profile?.followings!.splice(profile?.followings!.indexOf(target), 1);
+  await profile?.save();
+  const targetProfile = await Profile.findOne({ uid: target }).exec();
+  targetProfile?.followers!.splice(targetProfile?.followers!.indexOf(uid), 1);
+  await targetProfile?.save();
+  return profile;
+}
+
 export default {
   create,
   get,
   createProfile,
   getProfile,
+  setAvatar,
+  follow,
+  unfollow,
 };

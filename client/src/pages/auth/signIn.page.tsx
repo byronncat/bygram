@@ -10,7 +10,7 @@ import { useAuthLayoutContext } from '@layouts';
 import { useEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
-  username: 'fdsfa',
+  username: 'test',
   password: '123456',
 };
 
@@ -51,7 +51,7 @@ function LoginPage() {
     useOutletContext();
   useEffect(() => {
     setTitle('sign in');
-  }, []);
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
     axios
@@ -60,10 +60,11 @@ function LoginPage() {
         const response: API = res.data;
         setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
         navigate('/');
+        displayToast(response.message, 'success');
       })
       .catch((err) => {
         if (err.response) {
-          displayToast(err.response.data.message);
+          displayToast(err.response.data.message, 'error');
         }
       });
   };
