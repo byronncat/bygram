@@ -5,3 +5,4 @@ export { default as Authentication, useAuth } from './authentication.component';
 export { default as UploadPost } from './uploadPost.component';
 export { default as Menu } from './menu.component';
 export { default as Overlay } from './overlay.component';
+export { default as PostWindow } from './post/windowView.component';

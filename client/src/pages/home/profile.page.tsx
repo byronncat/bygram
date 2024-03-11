@@ -1,4 +1,4 @@
-import { useAuth, useGlobal } from '@components';
+import { useAuth, useGlobal, PostWindow } from '@components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import styles from '@sass/rootLayout.module.sass';
@@ -78,10 +78,14 @@ function ProfilePage() {
       });
   }, [refresh, username, authentication.user, displayToast]);
 
+  const [showPost, setShowPost] = useState(false);
+  const [post, setPost] = useState({} as any);
+
   return !ready ? (
     <></>
   ) : (
     <>
+      {showPost && <PostWindow post={post} showPost={showPost} setShowPost={setShowPost} />}
       <div className={clsx(styles['profile-wrapper'], 'text-white overflow-y-scroll', 'w-100 p-5')}>
         <header className={clsx('d-flex', 'mb-5')}>
           <form
@@ -162,7 +166,18 @@ function ProfilePage() {
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
           <Masonry gutter="8px">
             {profile.posts.map((post: any, index: number) => {
-              return <img className="img-fluid" alt="profile" src={post.imgURL} key={index} />;
+              return (
+                <img
+                  className="img-fluid"
+                  alt="profile"
+                  src={post.imgURL}
+                  key={index}
+                  onClick={() => {
+                    setPost(post);
+                    setShowPost(true);
+                  }}
+                />
+              );
             })}
           </Masonry>
         </ResponsiveMasonry>

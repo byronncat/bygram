@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
-import { useAuth, Overlay, useGlobal, UploadPost } from '@components';
+import { useAuth, Overlay, useGlobal, UploadPost, PostWindow } from '@components';
 import styles from '@sass/home.module.sass';
 import clsx from 'clsx';
 
@@ -23,6 +23,7 @@ function HomePage() {
   }, [authentication]);
 
   const [showMenu, setShowMenu] = useState(false);
+  const [showPost, setShowPost] = useState(false);
   const [updatePost, setUpdatePost] = useState(false);
   const [post, setPost] = useState({} as any);
   const { displayToast } = useGlobal();
@@ -55,9 +56,7 @@ function HomePage() {
   }
 
   return (
-    <div
-      className={clsx(styles.wrapper, 'd-flex flex-column align-items-center', 'overflow-y-scroll')}
-    >
+    <div className={clsx(styles.wrapper, 'd-flex flex-column align-items-center')}>
       {showMenu && (
         <Overlay closeFunction={setShowMenu}>
           <ul className={clsx(styles.menu, 'list-group')}>
@@ -87,6 +86,7 @@ function HomePage() {
       {updatePost && (
         <UploadPost closeFunction={setUpdatePost} post={post} api="/api/post/update" method="put" />
       )}
+      {showPost && <PostWindow post={post} showPost={showPost} setShowPost={setShowPost} />}
       {ready &&
         posts.map((post: any, index: number) => {
           return (
@@ -117,7 +117,13 @@ function HomePage() {
                   Something
                 </span>
               </header>
-              <div className="my-3 mx-n3">
+              <div
+                className="my-3 mx-n3"
+                onClick={() => {
+                  setShowPost(true);
+                  setPost(post);
+                }}
+              >
                 <img className="img-fluid" alt="profile" src={post.imgURL} />
               </div>
               <header className="Meta">

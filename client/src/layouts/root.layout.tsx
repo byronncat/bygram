@@ -19,7 +19,9 @@ function RootLayout() {
         className={clsx('w-100 h-100 m-0 p-0', 'position-relative')}
       >
         <Sidebar />
-        <section className={clsx('w-auto h-100', '', 'd-flex justify-content-center')}>
+        <section
+          className={clsx('w-auto h-100', '', 'd-flex justify-content-center', 'overflow-y-scroll')}
+        >
           <Outlet />
         </section>
       </main>
