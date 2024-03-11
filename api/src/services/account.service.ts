@@ -58,6 +58,7 @@ function parseQuery(data: Account, conditions?: Condition) {
 // MongoDB
 // Social media profile
 import mongoose, { Document } from 'mongoose';
+import accountService from './account.service';
 
 interface ProfileDocument extends Profile, Document {
   _doc?: Profile;
@@ -68,6 +69,7 @@ const Profile = mongoose.model(
   new mongoose.Schema<ProfileDocument>(
     {
       uid: { type: Number, required: true },
+      name: { type: String, required: true },
       followers: { type: [Number], default: [], required: true },
       followings: { type: [Number], default: [], required: true },
       avatar: { type: String },
@@ -93,6 +95,11 @@ async function createProfile(data: Profile) {
 async function getProfile(id: number) {
   const profile = await Profile.findOne({ uid: id }).exec();
   return profile!;
+}
+
+async function getFollowings(id: number) {
+  const profile = await Profile.findOne({ uid: id }).exec();
+  return profile?.followings;
 }
 
 async function setAvatar(id: number, avatar: Express.Multer.File) {
@@ -147,4 +154,5 @@ export default {
   setAvatar,
   follow,
   unfollow,
+  getFollowings,
 };

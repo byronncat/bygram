@@ -1,7 +1,7 @@
 import { postImageDB } from '@db';
 import { CloudinaryApiResponse } from '@db/db';
 import { accountService } from '@services';
-import { Account, Condition, Post } from '@type';
+import { Condition, Post } from '@type';
 import { getPublicId } from '@utils';
 
 import mongoose from 'mongoose';
@@ -46,17 +46,14 @@ async function get(post: Post = {}, condition?: Condition) {
   if (condition?.one) {
     // TODO
   } else {
-    const posts = await Post.find(post).sort({ createAt: -1 });
+    const posts = await Post.find({ ...post, author: { $in: post.author } }).sort({ createAt: -1 });
     const returnPosts = await Promise.all(
       posts.map(async (post) => {
-        const { username } = (await accountService.get(
-          { id: post.author },
-          { one: true }
-        )) as Account;
         const profile = await accountService.getProfile(post.author);
         return {
           id: post._id.toString(),
-          author: username,
+          uid: post.author,
+          author: profile.name,
           avatar: profile.avatar,
           content: post.content,
           imgURL: post.imgURL,
@@ -68,6 +65,10 @@ async function get(post: Post = {}, condition?: Condition) {
   }
 }
 
+async function update(post: Post) {
+  return await Post.findByIdAndUpdate(post._id, post);
+}
+
 async function remove(postId: string) {
   const deletedPost = await Post.findByIdAndDelete(postId);
   const publicId = getPublicId(deletedPost!.imgURL!);
@@ -77,8 +78,14 @@ async function remove(postId: string) {
     .catch((error: any) => console.log(`[Cloudinary Error]: ${error}`));
 }
 
+async function replaceImage(_id: any, imgURL: string) {
+  return await Post.findByIdAndUpdate(_id, { imgURL });
+}
+
 export default {
   create,
   get,
+  update,
   remove,
+  replaceImage,
 };

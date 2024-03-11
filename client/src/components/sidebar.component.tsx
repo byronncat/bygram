@@ -6,7 +6,7 @@ import { useAuth } from './authentication.component';
 import { UploadPost } from '@components';
 
 function Sidebar() {
-  const [activeLink, setActiveLink] = useState(sessionStorage.getItem('activeLink'));
+  const [activeLink, setActiveLink] = useState(sessionStorage.getItem('activeLink') || 'home');
   const [username, setUsername] = useState('');
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function Sidebar() {
   function logoutHandler(event: any) {
     event.preventDefault();
     setAuthenticationStorage({ user: null, isAuthenticated: false });
+    sessionStorage.removeItem('activeLink');
     navigate('/login');
   }
 
@@ -60,6 +61,7 @@ function Sidebar() {
       name: 'logout',
       icon: 'fa-solid fa-sign-out-alt',
       path: '/login',
+      notActive: true,
       function: logoutHandler,
     },
     // {
@@ -70,7 +72,9 @@ function Sidebar() {
 
   return (
     <>
-      {createPost && <UploadPost closeFunction={setCreatePost} />}
+      {createPost && (
+        <UploadPost closeFunction={setCreatePost} api="/api/post/create" method="post" />
+      )}
       <nav
         className={clsx(
           styles.sidebar,

@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import './home.page.sass';
 import axios, { AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
+import { useAuth, Overlay, useGlobal, UploadPost } from '@components';
+import styles from '@sass/home.module.sass';
+import clsx from 'clsx';
 
 function HomePage() {
+  const { authentication } = useAuth();
   const [ready, setReady] = useState(false);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     axios
-      .get('/api/post/all')
+      .get('/api/post/all', { params: { id: authentication.user?.id } })
       .then((res: AxiosResponse) => {
         setPosts(res.data.posts);
         setReady(true);
@@ -17,19 +20,34 @@ function HomePage() {
       .catch((err: any) => {
         console.log(err.response);
       });
-  }, []);
+  }, [authentication]);
 
   const [showMenu, setShowMenu] = useState(false);
+  const [updatePost, setUpdatePost] = useState(false);
   const [post, setPost] = useState({} as any);
-  const menuHandler = (postItem: any) => {
-    setShowMenu(!showMenu);
-    setPost(postItem);
-  };
-
+  const { displayToast } = useGlobal();
+  const menu = [
+    {
+      name: 'Delete post',
+      function: (post: any) => deletePost(post),
+    },
+    {
+      name: 'Edit',
+      function: (post: any) => editPost(post),
+    },
+    {
+      name: 'Report',
+      function: (post: any) => console.log(post),
+    },
+  ];
   function deletePost(post: any) {
     axios.delete(`/api/post/delete/${post.id}`).then((res: any) => {
-      console.log(res);
+      displayToast('Post deleted', 'success');
     });
+  }
+
+  function editPost(post: any) {
+    setUpdatePost(true);
   }
 
   if (!ready) {
@@ -37,43 +55,49 @@ function HomePage() {
   }
 
   return (
-    <div className="col-8 d-flex flex-column align-items-center overflow-y-scroll">
+    <div
+      className={clsx(styles.wrapper, 'd-flex flex-column align-items-center', 'overflow-y-scroll')}
+    >
       {showMenu && (
-        <span className="overlay position-absolute z-2 top-0 start-0">
-          <span className="overlay bg-black opacity-50">
-            <button
-              type="button"
-              className="shadow-none btn-close position-absolute top-0 end-0 p-4"
-              aria-label="Close"
-              onClick={() => setShowMenu(false)}
-            ></button>{' '}
-          </span>
-          <ul className="list-group w-50 position-relative top-50 start-50 translate-middle">
-            <li
-              className="list-group-item btn btn-danger"
-              aria-current="true"
-              onClick={() => deletePost(post)}
-            >
-              Delete post
-            </li>
-            <li
-              className="list-group-item btn btn-primary"
-              aria-current="true"
-              // onClick={() => setIsActiveUploadPost(true)}
-            >
-              Edit
-            </li>
+        <Overlay closeFunction={setShowMenu}>
+          <ul className={clsx(styles.menu, 'list-group')}>
+            {menu.map((item, index) => {
+              return (
+                <li
+                  key={index}
+                  aria-current="true"
+                  className={clsx(styles['menu-item'], 'list-group-item text-center')}
+                  onClick={() => {
+                    if (authentication.user?.id !== post.uid) {
+                      displayToast('You are not authorized to perform this action', 'error');
+                      return;
+                    } else {
+                      item.function(post);
+                      setShowMenu(false);
+                    }
+                  }}
+                >
+                  {item.name}
+                </li>
+              );
+            })}
           </ul>
-        </span>
+        </Overlay>
+      )}
+      {updatePost && (
+        <UploadPost closeFunction={setUpdatePost} post={post} api="/api/post/update" method="put" />
       )}
       {ready &&
         posts.map((post: any, index: number) => {
           return (
-            <section className="post w-100 p-3 my-4 position-relative" key={index}>
+            <section className={clsx(styles.post, 'w-100 p-3 my-4 position-relative')} key={index}>
               <span
                 className="position-absolute top-0 end-0 p-3 fs-3 pe-auto"
                 role="button"
-                onClick={() => menuHandler(post)}
+                onClick={() => {
+                  setShowMenu(!showMenu);
+                  setPost(post);
+                }}
               >
                 <i className="fa-solid fa-ellipsis"></i>
               </span>
@@ -93,7 +117,7 @@ function HomePage() {
                   Something
                 </span>
               </header>
-              <div className="post-image my-3">
+              <div className="my-3 mx-n3">
                 <img className="img-fluid" alt="profile" src={post.imgURL} />
               </div>
               <header className="Meta">

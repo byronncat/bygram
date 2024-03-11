@@ -56,7 +56,7 @@ async function addUser(req: Request<{}, {}, Account>, res: Response) {
     });
 
   await accountService
-    .createProfile({ uid: response.data.id })
+    .createProfile({ uid: response.data.id, name: response.data.username })
     .then((data: any) => {
       response.success = true;
       response.message = 'User created';

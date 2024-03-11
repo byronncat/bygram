@@ -9,6 +9,7 @@ export interface Account {
 
 interface Profile {
   uid?: Account['id'];
+  name?: string;
   followers?: Account['id'][];
   followings?: Account['id'][];
   avatar?: string;
@@ -17,7 +18,7 @@ interface Profile {
 
 export interface Post {
   _id?: ObjectId;
-  author?: Account['id'];
+  author?: Account['id'] | Account['id'][];
   content?: string;
   imgURL?: string;
   createdAt?: Date;
