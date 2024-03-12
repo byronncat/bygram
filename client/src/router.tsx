@@ -6,6 +6,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   HomePage,
+  ExplorePage,
   ProfilePage,
 } from '@pages';
 
@@ -16,6 +17,7 @@ function Router() {
       errorElement: <div>404 not found</div>,
       children: [
         { path: '/', element: <HomePage /> },
+        { path: 'explore', element: <ExplorePage /> },
         { path: ':username', element: <ProfilePage /> },
       ],
     },

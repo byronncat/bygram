@@ -5,6 +5,7 @@ import { Condition, Post } from '@type';
 import { getPublicId } from '@utils';
 
 import mongoose from 'mongoose';
+import { TypeId } from 'pg-promise/typescript/pg-subset';
 const Post = mongoose.model(
   'post',
   new mongoose.Schema(
@@ -82,10 +83,28 @@ async function replaceImage(_id: any, imgURL: string) {
   return await Post.findByIdAndUpdate(_id, { imgURL });
 }
 
+async function getExplorePosts(id: number) {
+  // ! Weird type error
+  const followings = await accountService.getFollowings(id);
+  const posts = await Post.aggregate([
+    { $match: { author: { $nin: [...followings!, +id] } } },
+    { $sample: { size: 100 } },
+  ]);
+  const returnPosts = await Promise.all(
+    posts.map(async (post) => {
+      post.name = await accountService.getName(post.author);
+      console.log(post);
+      return post;
+    })
+  );
+  return returnPosts;
+}
+
 export default {
   create,
   get,
   update,
   remove,
   replaceImage,
+  getExplorePosts,
 };

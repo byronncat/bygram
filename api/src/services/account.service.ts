@@ -97,6 +97,11 @@ async function getProfile(id: number) {
   return profile!;
 }
 
+async function getName(id: number) {
+  const profile = await Profile.findOne({ uid: id }).exec();
+  return profile?.name;
+}
+
 async function getFollowings(id: number) {
   const profile = await Profile.findOne({ uid: id }).exec();
   return profile?.followings;
@@ -151,6 +156,7 @@ export default {
   get,
   createProfile,
   getProfile,
+  getName,
   setAvatar,
   follow,
   unfollow,

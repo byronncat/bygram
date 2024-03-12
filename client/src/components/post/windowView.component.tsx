@@ -37,7 +37,7 @@ function WindowView({
                 alt="profile"
               />
             </span>
-            <p className="m-0">{post.author}</p>
+            <p className="m-0">{post.name}</p>
           </div>
           <hr />
           <span className={styles['post-info-content']}>{post.content}</span>

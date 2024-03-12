@@ -35,10 +35,11 @@ function Sidebar() {
     //   name: 'search',
     //   icon: 'fa-solid fa-magnifying-glass',
     // },
-    // {
-    //   name: 'explore',
-    //   icon: 'fa-regular fa-compass',
-    // },
+    {
+      name: 'explore',
+      icon: 'fa-regular fa-compass',
+      path: '/explore',
+    },
     // {
     //   name: 'messages',
     //   icon: 'fa-solid fa-comments',
