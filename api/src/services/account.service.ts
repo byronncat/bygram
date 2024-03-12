@@ -151,6 +151,13 @@ async function unfollow(uid: number, target: number) {
   return profile;
 }
 
+async function search(searchTerm: string) {
+  const profiles = await Profile.find({
+    name: { $regex: searchTerm, $options: 'i' },
+  }).exec();
+  return profiles;
+}
+
 export default {
   create,
   get,
@@ -161,4 +168,5 @@ export default {
   follow,
   unfollow,
   getFollowings,
+  search,
 };

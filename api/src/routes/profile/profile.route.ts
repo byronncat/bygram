@@ -2,6 +2,7 @@ import express from 'express';
 import profileController from './profile.controller';
 const router = express.Router();
 
+router.get('/search/:searchTerm', profileController.search);
 router.get('/:username', profileController.getProfile);
 router.post('/follow', profileController.follow);
 router.put('/avatar', profileController.changeAvatar);

@@ -138,9 +138,29 @@ async function unfollow(req: Request, res: Response) {
     });
 }
 
+async function search(req: Request, res: Response) {
+  const searchTerm = req.params.searchTerm;
+  if (typeof searchTerm === 'undefined') {
+    return res.status(400).json({
+      success: false,
+      message: 'Missing search term',
+    } as API);
+  }
+
+  const results = await accountService.search(searchTerm);
+  res.json({
+    success: true,
+    message: 'Search results',
+    data: results,
+  } as API);
+
+  return;
+}
+
 export default {
   getProfile: [getProfile],
   changeAvatar: [upload.single('file'), changeAvatar],
   follow: [follow],
   unfollow: [unfollow],
+  search: [search],
 };

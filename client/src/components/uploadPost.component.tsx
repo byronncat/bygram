@@ -36,12 +36,12 @@ function UploadPost({
     const id = authentication.user!.id;
     const formData = new FormData();
     if (post && data.file !== post.imgURL) {
-      formData.append('file', data.file[0]);
       formData.append('oldImgURL', post.imgURL);
     }
     if (post) {
       formData.append('_id', post.id);
     }
+    formData.append('file', data.file[0]);
     formData.append('content', data.content);
     formData.append('author', id!.toString());
     axios[method](api, formData)
