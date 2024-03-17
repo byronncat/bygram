@@ -1,44 +1,49 @@
 import passport from 'passport';
 import { IStrategyOptions, Strategy as LocalStrategy } from 'passport-local';
+import { logger } from '@utils';
 import { accountService } from '@services';
-import { escapeRegExp } from '@utils';
-import { Account } from '@type';
+import { Account } from '@types';
+import { AuthenticationPassport } from '@services/types';
 
 passport.use(
   'local-login',
-  new LocalStrategy(async function verify(username, password, done) {
-    password = escapeRegExp(password);
-    accountService
-      .get({ username, password }, { and: true, one: true })
-      .then((user: Account | Account[] | null) => {
-        if (user) {
-          return done(null, user);
-        } else {
-          return done(null, false);
-        }
-      })
-      .catch((error: any) => {
-        return done(error);
-      });
-  })
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+      passwordField: 'password',
+    } as IStrategyOptions,
+    async function verify(email, password, done) {
+      accountService
+        .loginAuthenticate(email, password)
+        .then(({ user, message }: AuthenticationPassport) => {
+          if (user) {
+            return done(null, user, { message });
+          } else {
+            return done(null, false, { message });
+          }
+        })
+        .catch((error: any) => {
+          logger.error(`${error}`, 'Passport');
+          return done(error);
+        });
+    }
+  )
 );
 
 passport.use(
   'local-register',
   new LocalStrategy(
     {
-      usernameField: 'username',
-      passwordField: 'email',
+      usernameField: 'email',
     } as IStrategyOptions,
-    function verify(username, email, done) {
+    function verify(email, password, done) {
       accountService
-        .get({ username, email }, { or: true })
-        .then((users: Account | Account[] | null) => {
-          if (users) {
-            return done(null, false, { message: 'Username or email already exists' });
+        .registerAuthenticate(email)
+        .then(({ user, message }: AuthenticationPassport) => {
+          if (user) {
+            return done(null, user, { message });
           } else {
-            const user: Account = { username, email };
-            return done(null, user);
+            return done(null, false, { message });
           }
         })
         .catch((error: any) => {
@@ -48,14 +53,14 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user: any, done) {
+passport.serializeUser(function (user: Account, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function (id: any, done) {
+passport.deserializeUser(function (id: Account['id'], done) {
   accountService
-    .get({ id }, { one: true })
-    .then((user: Account | Account[] | null) => {
+    .getByID(id!)
+    .then((user: Account | null) => {
       done(null, user!);
     })
     .catch((error: any) => {

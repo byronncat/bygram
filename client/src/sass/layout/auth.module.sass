@@ -1,0 +1,93 @@
+@use '../utils.sass'
+
+.panel-bg
+  z-index: -1
+  background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+
+.logo
+  $logo-size: 76px
+  width: $logo-size
+
+.brand-name
+  font-family: 'Monoton', sans-serif
+  letter-spacing: 0.3rem
+  transform: skew(0, -8deg) rotateZ(5deg)
+
+.title
+  padding: 0.1rem 1rem
+  font-size: 2.5rem
+  font-family: 'Sacramento', sans-serif
+
+$main-color: var(--main-color)
+$hover-color: #d81d84
+$submit-btn-text-hover: white
+$transition-time: 0.5s
+
+.form-side
+  transition: all $transition-time
+
+  & form
+    color: white
+    padding: utils.pxToRem(52) utils.pxToRem(36)
+    width: utils.pxToRem(400)
+    max-width: 100%
+    border-radius: 0.5rem
+    @include utils.shadow-effect-1(rgba(0, 0, 0, 0.6))
+
+    background-color: #2a2b38b3
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg')
+    background-position: bottom center
+    background-repeat: no-repeat
+    background-size: 300%
+
+    & a
+      cursor: pointer
+      transition: all $transition-time
+
+      &:hover
+        @include utils.text-neon-effect-2(transparent)
+
+    & .form-input
+      color: rgba(255, 255, 255, 0.7)
+      background: var(--color-charade)
+      box-shadow: none
+      border-color: transparent
+      caret-color: white
+      transition: all $transition-time
+
+      &:focus
+        color: white
+
+      &:-webkit-autofill
+        -webkit-box-shadow: none
+        -webkit-text-fill-color: white
+        transition: background-color 5000s ease-in-out 0s
+
+    // Bootstrap form field
+    & input
+      & + label
+        transition: all $transition-time
+      &:focus + label
+        color: white !important
+
+    & .form-label
+      color: rgba(255, 255, 255, 0.7) !important
+
+      &::after
+        background: none !important
+
+.submit-btn
+  background: $main-color
+  color: white
+  transition: all $transition-time
+  border: none
+
+  &:hover
+    @include utils.btn-neon-effect(white, $hover-color)
+
+  &:active
+    background: $main-color !important
+    color: white !important
+
+.error-message
+  color: #ff0000

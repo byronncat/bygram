@@ -1,5 +1,4 @@
 import { useState, useContext, createContext, ReactNode } from 'react';
-import { setLocalState } from '@utils';
 import { AuthenticationStorage } from '@types';
 
 const AuthenticationContext = createContext(
@@ -21,8 +20,9 @@ export default function Authentication({ children }: { children: ReactNode }) {
       isAuthenticated: isAuthenticated,
     };
 
-    setLocalState(authentication);
     setAuthentication(authentication);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('isAuthenticated', isAuthenticated.toString());
   };
 
   return (

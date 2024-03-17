@@ -1,0 +1,90 @@
+@use '../utils.sass'
+@import "~bootstrap/scss/functions"
+@import "~bootstrap/scss/variables"
+@import "~bootstrap/scss/mixins"
+
+.logo
+  $logo-size: utils.pxToRem(40)
+  width: $logo-size
+
+$edge: utils.pxToRem(52)
+$hover-color: var(--main-color)
+$background-color: var(--color-black-pearl-07)
+$glowing-color: #FF1177
+$transition-time: 0.5s
+
+.brand
+  transition: all $transition-time
+  &-name
+    transition: all $transition-time ease-out
+  &:hover &-name
+    @include utils.text-neon-effect-3($glowing-color)
+
+.sidebar
+  $border-color: #f8b9b5
+  $border-width: utils.pxToRem(2)
+  width: utils.pxToRem(248)
+  color: white
+  font-family: 'Merienda', monospace
+  background: $background-color
+  border-right: $border-width solid $border-color
+  transition: all $transition-time
+  &:not(.minimize)
+    @include utils.shadow-neon-effect-1-right(4)
+
+  .active
+    font-weight: bold
+    letter-spacing: .2rem
+    @include utils.btn-neon-effect($glowing-color, $hover-color)
+
+  &-link
+    width: utils.pxToRem(200)
+    height: utils.pxToRem(52)
+    padding: utils.pxToRem(12) utils.pxToRem(12)
+    transition: all $transition-time
+    &:hover:not(.active)
+      @include utils.text-neon-effect-2($glowing-color)
+
+  & .link-icon::before
+    display: block
+    text-align: center
+    line-height: utils.pxToRem(28)
+    width: 100%
+    height: 100%
+
+  & .link-text
+    transition: opacity $transition-time ease-out
+
+@mixin minimize
+  width: calc(utils.pxToRem(72) + $border-width)
+  .sidebar-link
+    width: $edge
+    height: $edge
+  .link
+    justify-content: center
+  .link-icon
+    width: 100%
+  .link-text
+    display: none
+  .brand-name
+    display: none
+
+.minimize
+  @include minimize
+
+@include media-breakpoint-down(md)
+  .sidebar
+    @include minimize
+
+@include media-breakpoint-up(md)
+  .link-text,
+  .brand-name
+
+    animation: identifier $transition-time
+
+    @keyframes identifier
+      0%,
+      60%
+        opacity: 0
+      100%
+        opacity: 1

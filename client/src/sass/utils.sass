@@ -1,0 +1,47 @@
+@mixin shadow-effect-1($color)
+  box-shadow: 0 15px 25px $color
+
+@mixin shadow-effect-2($color)
+  box-shadow: 0 0 3px 2px #fff, 0 0 7px #fff, 0 0 14px #fff, 0 0 20px $color, 0 0 50px $color, 0 0 60px $color, 0 0 150px 30px $color, inset 0 0 3px 1px #fff, inset 0 0 5px 3px #fff, inset 0 0 20px $color, inset 0 0 50px $color, inset 0 0 80px $color
+
+@mixin shadow-neon-effect-1-right($coefficient: 1)
+  box-shadow: rgba(240, 46, 170, 0.4) pxToRem(1*$coefficient) 0px, rgba(240, 46, 170, 0.3) pxToRem(2*$coefficient) 0px, rgba(240, 46, 170, 0.2) pxToRem(3*$coefficient) 0px, rgba(240, 46, 170, 0.1) pxToRem(4*$coefficient) 0px, rgba(240, 46, 170, 0.05) pxToRem(5*$coefficient) 0px
+
+@mixin text-neon-effect-1($color)
+  text-shadow: 0 0 1px $color, 0 0 2px $color, 0 0 3px $color, 0 0 4px $color
+
+@mixin text-neon-effect-2($color)
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px $color, 0 0 35px $color, 0 0 40px $color, 0 0 50px $color, 0 0 75px $color
+
+@mixin text-neon-effect-3($color)
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px $color, 0 0 70px $color, 0 0 80px $color, 0 0 100px $color, 0 0 150px $color
+
+@mixin text-neon-effect-4($color)
+  text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px $color, 0 0 30px $color, 0 0 40px $color, 0 0 50px $color, 0 0 70px $color
+
+@mixin text-neon-glowing-1($color)
+  animation: neon-glowing 1.5s ease-in-out infinite alternate
+  @keyframes neon-glowing
+    from
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px $color, 0 0 70px $color, 0 0 80px $color, 0 0 100px $color, 0 0 150px $color
+    to
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px $color, 0 0 35px $color, 0 0 40px $color, 0 0 50px $color, 0 0 75px $color
+
+@mixin btn-neon-effect($text-color, $bg-color)
+  text-shadow: 0 0 1px $text-color, 0 0 2px $text-color, 0 0 4px $text-color, 0 0 8px $text-color
+  background: $bg-color
+  box-shadow: 0 0 2px $bg-color, 0 0 4px $bg-color, 0 0 8px $bg-color, 0 0 16px $bg-color
+
+@function pxToRem($value)
+  $remValue: ($value / 16) + rem
+  @return $remValue
+
+// Test
+@mixin shadow-effect-2($color)
+  box-shadow: 0 0 15px $color
+
+@mixin text-neon-effect-high($color)
+  text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px $color, 0 0 10px $color, 0 0 15px $color, 0 0 20px $color, 0 0 25px var(--color-electric-violet), 0 0 30px var(--color-electric-violet)
+
+@mixin bg-custom-1
+  background: url(https://image.ibb.co/h2hLAJ/bg.png)

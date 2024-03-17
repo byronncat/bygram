@@ -1,18 +1,17 @@
+import { useLayoutEffect } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
-import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
 import { useAuth, Form, useGlobal } from '@components';
-import { API } from '@types';
-import styles from '@sass/authLayout.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect } from 'react';
+import { AuthenticationInformation, FormFieldProps } from '@types';
+import styles from '@sass/layout/auth.module.sass';
+import { registerAPI } from '@services';
 
 const defaultValues: AuthenticationInformation = {
+  email: 'test@gmail.com',
   username: 'test',
   password: '123456',
-  email: 'test@gmail.com',
 };
 
 const fieldList: FormFieldProps[] = [
@@ -62,24 +61,19 @@ function RegisterPage() {
 
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTitle('sign up');
   }, [setTitle]);
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => {
-    axios
-      .post('/api/auth/register', data)
-      .then((res: AxiosResponse) => {
-        const response: API = res.data;
-        setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
-        navigate('/');
-        displayToast(response.message, 'success');
-      })
-      .catch((err) => {
-        if (err.response) {
-          displayToast(err.response.data.message, 'error');
-        }
-      });
+  const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
+    const response = await registerAPI(data);
+    if (response.success) {
+      setAuthenticationStorage({ user: response.data, isAuthenticated: true });
+      navigate('/');
+      displayToast(response.message, 'success');
+    } else {
+      displayToast(response.message, 'error');
+    }
   };
 
   return (

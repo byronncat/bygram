@@ -1,3 +1,3 @@
-export { default as socialMediaDB } from "./MongoDB.db";
-export { default as accountDB } from "./PostgreSQL.db";
-export { default as postImageDB } from "./Cloudinary.db";
+export { default as userDataDB } from './MongoDB.db';
+export { default as authenticationDB } from './PostgreSQL.db';
+export { default as fileDB } from './Cloudinary.db';

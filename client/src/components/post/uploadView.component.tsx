@@ -1,8 +1,8 @@
-import { Dispatch, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useGlobal, useAuth, Overlay } from '@components';
-import axios, { Axios } from 'axios';
-import styles from '@sass/upload.module.sass';
+import axios from 'axios';
+import styles from '@sass/layout/home.module.sass';
 import clsx from 'clsx';
 
 function UploadPost({
@@ -11,7 +11,7 @@ function UploadPost({
   method,
   post,
 }: {
-  closeFunction: Dispatch<boolean>;
+  closeFunction: React.Dispatch<React.SetStateAction<boolean>>;
   api: string;
   method: 'post' | 'put';
   post?: any;
@@ -43,7 +43,7 @@ function UploadPost({
     }
     formData.append('file', data.file[0]);
     formData.append('content', data.content);
-    formData.append('author', id!.toString());
+    formData.append('uid', id!.toString());
     axios[method](api, formData)
       .then((result: any) => displayToast(result.data.message, 'success'))
       .catch((error: any) => displayToast(error.response.data.message, 'error'));

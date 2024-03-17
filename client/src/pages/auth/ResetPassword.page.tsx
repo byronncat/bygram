@@ -3,9 +3,9 @@ import { SubmitHandler } from 'react-hook-form';
 import clsx from 'clsx';
 import { AuthenticationInformation, FormFieldProps } from '@types';
 import { Form } from '@components';
-import styles from '@sass/authLayout.module.sass';
+import styles from '@sass/layout/auth.module.sass';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
@@ -41,8 +41,8 @@ function ResetPasswordPage() {
   const { className } = useAuthLayoutContext();
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
-  useEffect(() => {
-    setTitle('reset password');
+  useLayoutEffect(() => {
+    setTitle('reset');
   }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = (data) => console.log(data);

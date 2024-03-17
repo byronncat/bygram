@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { Cloudinary } from './db';
+import { Cloudinary } from './types';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,4 +7,4 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export default cloudinary as Cloudinary;
+export default cloudinary.uploader as Cloudinary;

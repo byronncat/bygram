@@ -1,5 +1,5 @@
 import { ReactNode, useContext, createContext, useCallback } from 'react';
-import { ToastContainer, toast, Slide } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/js/bootstrap.min';
 import '@sass/global.sass';
@@ -17,25 +17,22 @@ function Global({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <>
-      <GlobalContext.Provider value={{ displayToast }}>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          limit={4}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-          transition={Slide}
-        />
-        {children}
-      </GlobalContext.Provider>
-    </>
+    <GlobalContext.Provider value={{ displayToast }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        limit={4}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      {children}
+    </GlobalContext.Provider>
   );
 }
 

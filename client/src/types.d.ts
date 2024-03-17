@@ -1,5 +1,6 @@
 import { FieldError, UseFormRegister } from 'react-hook-form';
 
+// react-hook-form
 export type AuthenticationInformationProps = 'username' | 'password' | 'confirmPassword' | 'email';
 export interface AuthenticationInformation {
   username?: string;
@@ -20,12 +21,12 @@ export type FormFieldProps = {
     errorMessage?: string;
   };
 
-  // react-hook-form
   register?: UseFormRegister<AuthenticationInformation>;
   errors?: FieldError | undefined;
   validation?: {};
 };
 
+// Authentication
 export type AuthenticationStorage = {
   isAuthenticated: boolean;
   user: Credentials | null;
@@ -37,8 +38,25 @@ export interface Credentials {
   email?: string;
 }
 
+// Backend API
 export interface API {
   success: boolean;
   message: string;
   data?: any;
+}
+
+// Entities
+export interface Post {
+  id?: string;
+  uid: Credentials['id'];
+  content: string;
+  file: File;
+  createdAt?: string;
+  likes?: number[];
+  comments?: Comment[];
+}
+
+export interface File {
+  dataURL: string;
+  sizeType: 'Landscape' | 'Portrait' | 'Square';
 }

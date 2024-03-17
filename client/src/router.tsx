@@ -8,17 +8,18 @@ import {
   HomePage,
   ExplorePage,
   ProfilePage,
+  ErrorPage,
 } from '@pages';
 
 function Router() {
   const router = createBrowserRouter([
     {
       element: <RootLayout />,
-      errorElement: <div>404 not found</div>,
+      errorElement: <ErrorPage />,
       children: [
         { path: '/', element: <HomePage /> },
         { path: 'explore', element: <ExplorePage /> },
-        { path: ':username', element: <ProfilePage /> },
+        { path: ':username/:uid', element: <ProfilePage /> },
       ],
     },
     {

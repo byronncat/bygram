@@ -1,15 +1,15 @@
 import { ObjectId } from 'mongoose';
 
+// Entity
 export interface Account {
   id?: number;
-  username?: string;
   email?: string;
   password?: string;
 }
 
 interface Profile {
   uid?: Account['id'];
-  name?: string;
+  username?: string;
   followers?: Account['id'][];
   followings?: Account['id'][];
   avatar?: string;
@@ -17,17 +17,35 @@ interface Profile {
 }
 
 export interface Post {
-  _id?: ObjectId;
-  author?: Account['id'] | Account['id'][];
+  uid?: Account['id'];
   content?: string;
-  imgURL?: string;
+  file?: File;
+  likes?: Account['id'][];
+  comments?: Comment[];
   createdAt?: Date;
 }
 
+export interface File {
+  dataURL?: string;
+  sizeType?: 'Landscape' | 'Portrait' | 'Square';
+}
+
+export interface Comment {
+  uid?: Account['id'];
+  content?: string;
+  createdAt?: Date;
+}
+
+// Frontend API
 export interface API {
   success: boolean;
   message: string;
   data?: any;
+}
+
+export interface Credentials {
+  id?: number;
+  email?: string;
 }
 
 interface Condition {

@@ -1,23 +1,25 @@
 import clsx from 'clsx';
+import styles from '@sass/component/overlay.module.sass';
 
 function Overlay({
   children,
   closeFunction,
 }: {
   children: React.ReactNode;
-  closeFunction: Function;
+  closeFunction: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <div
       data-bs-theme="dark"
       className={clsx(
+        styles.wrapper,
         'position-absolute top-0 start-0 z-1',
         'w-100 h-100',
         'd-flex justify-content-center align-items-center'
       )}
     >
       <span
-        className="overlay"
+        className={styles.overlay}
         onClick={() => {
           closeFunction(false);
         }}

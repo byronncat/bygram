@@ -1,0 +1,95 @@
+@use '../utils.sass'
+
+$text-color: var(--color-wild-sand)
+$image-edge: 740px
+$form-width: 400px
+$header-height: 40px
+$upload-post-width: $form-width + $image-edge
+$border-width: 2px
+
+.posts-wrapper
+  width: 100%
+  max-width: utils.pxToRem(640)
+
+.post
+  $padding: 20
+  $border-width: 2
+  color: $text-color
+  backdrop-filter: blur(utils.pxToRem(60))
+  padding: utils.pxToRem($padding)
+  $light-bg-color: #FFD2B0
+  $light-box-shadow: 0 0 16px 4px rgba(253, 93, 255, 0.6)
+  border: utils.pxToRem($border-width) solid $light-bg-color
+  box-shadow: $light-box-shadow
+
+  $name-height: 40
+  .avatar
+    width: utils.pxToRem(56)
+    height: utils.pxToRem(56)
+
+  .date-time
+    color: rgba(255, 255, 255, 0.7)
+
+  .post-image
+    margin: 0 utils.pxToRem(-$padding)
+
+  .post-content
+    white-space: pre-line
+    padding-top: utils.pxToRem($name-height + 8)
+
+  .content-username
+    padding: 0 utils.pxToRem(8)
+    margin: utils.pxToRem(8) utils.pxToRem(8) utils.pxToRem(8) 0
+    border: utils.pxToRem(2) dashed #FFF
+    border-left: none
+
+  .ribbon
+    height: utils.pxToRem($name-height)
+    background: blue
+    position: absolute
+    top: 0
+    left: utils.pxToRem(-$padding - 16)
+    &::before
+      content: ""
+      position: absolute
+      bottom: 100%
+      border-left: utils.pxToRem(14) solid transparent
+      border-bottom: utils.pxToRem(8) solid #EA4335
+
+// Post window
+$background-color: var(--color-black-pearl-07)
+.post-window
+  &-wrapper
+    color: white
+    height: utils.pxToRem(912)
+    background: $background-color
+    border: utils.pxToRem(1) solid white
+
+  &-image
+    background: rgba(0, 0, 0, 0.7)
+
+  &-content
+    width: utils.pxToRem(500)
+    border-left: utils.pxToRem(1) solid white
+
+.frame
+  width: $upload-post-width + 2*$border-width
+  height: $image-edge + $header-height + 2*$border-width
+  color: white
+  background: var(--color-black-pearl-07)
+  border: $border-width solid white
+
+.form
+  width: $form-width + $image-edge
+  height: $image-edge
+
+.header
+  width: 100%
+  height: $header-height
+  border-bottom: 1px solid white
+
+.content
+  $border-width: 1px
+  width: $form-width - $border-width
+  height: $image-edge
+  border-left: $border-width solid white

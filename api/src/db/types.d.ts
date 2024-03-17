@@ -8,17 +8,19 @@ export type PostgreSQL = {
   connect: function;
 };
 
-export type Cloudinary = {
-  uploader: {
-    upload: function;
-    destroy: function;
-  };
-};
+export interface Cloudinary {
+  upload: function;
+  destroy: function;
+}
 
-export interface CloudinaryApiResponse {
+export interface CloudinaryCreateResponse {
   public_id?: string;
   url?: string;
   secure_url?: string;
   width?: number;
   height?: number;
+}
+
+export interface CloudinaryDestroyResponse {
+  result?: 'ok' | 'not found' | 'error';
 }

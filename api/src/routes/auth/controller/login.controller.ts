@@ -1,39 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
-import passport from '@libs/passport.lib';
-import { Account, API } from '@/type';
+import { IVerifyOptions } from 'passport-local';
+import { passport } from '@libs';
+import { Account, API } from '@types';
+import { LoginAPI } from './auth.route';
+import { accountService } from '@services';
 
-async function validateInformation(
-  req: Request<{}, {}, Account>,
-  res: Response,
-  next: NextFunction
-) {
-  passport.authenticate('local-login', function (error: any, user: Account) {
-    let statusCode: number;
-    let api: API;
-    if (error) {
-      statusCode = 500;
-      api = {
-        success: false,
-        message: error.message,
-      };
-    }
-    if (user) {
-      delete user.password;
-      statusCode = 200;
-      api = {
+async function validateInformation(req: Request, res: Response, next: NextFunction) {
+  passport.authenticate(
+    'local-login',
+    async function (error: any, user: Account, info: IVerifyOptions) {
+      if (error) {
+        return res.status(500).json({
+          success: false,
+          message: error.message,
+        } as API);
+      }
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: info.message,
+        } as API);
+      }
+
+      const username = await accountService.getUsernameByID(user.id!);
+      return res.status(200).json({
         success: true,
-        message: 'Logged in successfully',
-        data: user,
-      };
-    } else {
-      statusCode = 401;
-      api = {
-        success: false,
-        message: 'Incorrect username or password',
-      };
+        message: info.message,
+        data: { ...user, username },
+      } as LoginAPI);
     }
-    return res.status(statusCode).json(api);
-  })(req, res, next);
+  )(req, res, next);
 }
 
 export default [validateInformation];

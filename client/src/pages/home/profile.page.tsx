@@ -1,7 +1,7 @@
 import { useAuth, useGlobal, PostWindow } from '@components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import styles from '@sass/rootLayout.module.sass';
+import styles from '@sass/profile.module.sass';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -85,7 +85,7 @@ function ProfilePage() {
     <></>
   ) : (
     <>
-      {showPost && <PostWindow post={post} showPost={showPost} setShowPost={setShowPost} />}
+      {showPost && <PostWindow post={post} closeFunction={setShowPost} />}
       <div className={clsx(styles['profile-wrapper'], 'text-white overflow-y-scroll', 'w-100 p-5')}>
         <header className={clsx('d-flex', 'mb-5')}>
           <form

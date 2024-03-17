@@ -1,29 +1,28 @@
+import { useLayoutEffect } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
 import clsx from 'clsx';
-import { AuthenticationInformation, Credentials, FormFieldProps } from '@types';
-import { useAuth, Form, useGlobal } from '@components';
-import { API } from '@types';
-import styles from '@sass/authLayout.module.sass';
+import { Form, useAuth, useGlobal } from '@components';
 import { useAuthLayoutContext } from '@layouts';
-import { useEffect } from 'react';
+import { AuthenticationInformation, FormFieldProps } from '@types';
+import styles from '@sass/layout/auth.module.sass';
+import { loginAPI } from '@services';
 
 const defaultValues: AuthenticationInformation = {
-  username: 'test',
+  email: 'test@gmail.com',
   password: '123456',
 };
 
 const fieldList: FormFieldProps[] = [
   {
-    name: 'username',
-    type: 'text',
-    placeholder: 'Username',
+    name: 'email',
+    type: 'email',
+    placeholder: 'Email',
     validation: {
-      required: 'Username is required',
-      minLength: {
-        value: 3,
-        message: 'Username must be at least 3 characters',
+      required: 'Email is required',
+      pattern: {
+        value: /\S+@\S+\.\S+/,
+        message: 'Wrong email format',
       },
     },
   },
@@ -42,31 +41,26 @@ const fieldList: FormFieldProps[] = [
 ];
 
 function LoginPage() {
-  const { displayToast } = useGlobal();
   const navigate = useNavigate();
   const { setAuthenticationStorage } = useAuth();
+  const { displayToast } = useGlobal();
   const { className } = useAuthLayoutContext();
 
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTitle('sign in');
   }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
-    axios
-      .post('/api/auth/login', data)
-      .then((res: AxiosResponse) => {
-        const response: API = res.data;
-        setAuthenticationStorage({ user: response.data as Credentials, isAuthenticated: true });
-        navigate('/');
-        displayToast(response.message, 'success');
-      })
-      .catch((err) => {
-        if (err.response) {
-          displayToast(err.response.data.message, 'error');
-        }
-      });
+    const response = await loginAPI(data);
+    if (response.success) {
+      setAuthenticationStorage({ user: response.data, isAuthenticated: true });
+      navigate('/');
+      displayToast(response.message, 'success');
+    } else {
+      displayToast(response.message, 'error');
+    }
   };
 
   return (
@@ -83,13 +77,13 @@ function LoginPage() {
         <span className={clsx('d-flex justify-content-between', 'mt-4')}>
           <Link
             to="/register"
-            className={clsx('link d-block', 'fs-6 text-reset text-decoration-none text-center')}
+            className={clsx('link d-block', 'text-reset text-decoration-none text-center fs-6')}
           >
             Sign up
           </Link>
           <Link
             to="/forgot-password"
-            className={clsx('d-block link', 'fs-6 text-reset text-decoration-none text-center')}
+            className={clsx('d-block link', 'text-reset text-decoration-none text-center fs-6')}
           >
             Forgot password?
           </Link>

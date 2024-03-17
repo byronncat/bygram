@@ -6,7 +6,7 @@ import { useAuth, PostWindow } from '@components';
 
 function ExplorePage() {
   const { authentication } = useAuth();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh] = useState(false);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -18,14 +18,14 @@ function ExplorePage() {
       .catch((err: any) => {
         console.log(err.response);
       });
-  }, [refresh]);
+  }, [refresh, authentication]);
 
   const [showPost, setShowPost] = useState(false);
   const [post, setPost] = useState({} as any);
 
   return (
     <>
-      {showPost && <PostWindow post={post} showPost={showPost} setShowPost={setShowPost} />}
+      {showPost && <PostWindow post={post} closeFunction={setShowPost} />}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }} className="w-100">
         <Masonry gutter="8px">
           {posts.map((post: any, index: number) => {

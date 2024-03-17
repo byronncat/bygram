@@ -1,9 +1,10 @@
-import nodemailer from "nodemailer";
-import path from "path";
-import fs from "fs";
+import nodemailer from 'nodemailer';
+import path from 'path';
+import fs from 'fs';
+import { logger } from '@utils';
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: 'gmail',
   host: process.env.EMAIL_HOST,
   auth: {
     user: process.env.EMAIL_USER,
@@ -12,24 +13,26 @@ const transporter = nodemailer.createTransport({
 });
 
 // SVG is not supported in many email clients
-const filePath = path.join(__dirname, "./reset-password/resetPassword.template.html");
-const htmlContent = fs.readFileSync(filePath, "utf8");
+const resetPasswordHTML = fs.readFileSync(
+  path.join(__dirname, './reset-password/resetPassword.template.html'),
+  'utf8'
+);
 const sendMail = async function (to: string, subject: any): Promise<void> {
   try {
     await transporter.sendMail({
       from: `Bygram <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      html: htmlContent,
+      html: resetPasswordHTML,
       attachments: [
         {
-          path: __dirname + "/logo.png",
-          cid: "logo",
+          path: __dirname + '/logo.png',
+          cid: 'logo',
         },
       ],
     });
   } catch (error) {
-    console.log(`[Nodemailer]: ${error}`);
+    logger.error(`${error}`, 'Nodemailer');
     return Promise.reject(error);
   }
 };

@@ -1,32 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import clsx from 'clsx';
-import { useAuth, UploadPost, useGlobal } from '@components';
-import styles from '@sass/rootLayout.module.sass';
 import axios from 'axios';
+import clsx from 'clsx';
+import { useAuth, PostUploadWindow, useGlobal } from '@components';
+import styles from '@sass/component/sidebar.module.sass';
 
 function Sidebar() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(sessionStorage.getItem('activeLink') || 'home');
-  const [username, setUsername] = useState('');
   const [minimize, setMinimize] = useState(false);
 
-  useEffect(() => {
-    setActiveLink(activeLink);
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    setUsername(user.username);
-  }, [activeLink]);
-
-  const navigate = useNavigate();
+  const [createPost, setCreatePost] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
+  const { register } = useForm();
+  const { displayToast } = useGlobal();
   const { setAuthenticationStorage } = useAuth();
-  function logoutHandler(event: any) {
+
+  function logoutHandler(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     setAuthenticationStorage({ user: null, isAuthenticated: false });
     sessionStorage.removeItem('activeLink');
     navigate('/login');
   }
 
-  const [createPost, setCreatePost] = useState(false);
+  function inputHandler(event: any) {
+    var lowerCase = event.target.value.toLowerCase();
+    setSearchTerm(lowerCase);
+  }
+
+  useLayoutEffect(() => {
+    setActiveLink(activeLink);
+  }, [activeLink]);
+
   const sidebarLinks = [
     {
       name: 'home',
@@ -62,7 +70,7 @@ function Sidebar() {
     {
       name: 'profile',
       icon: 'fa-solid fa-user',
-      path: `/${username}`,
+      path: `/${user.username}/${user.id}`,
     },
     {
       name: 'logout',
@@ -76,16 +84,6 @@ function Sidebar() {
     //   icon: 'fa-solid fa-cog',
     // },
   ];
-
-  const { register } = useForm();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
-  let inputHandler = (e: any) => {
-    var lowerCase = e.target.value.toLowerCase();
-    setSearchTerm(lowerCase);
-  };
-
-  const { displayToast } = useGlobal();
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
@@ -95,24 +93,86 @@ function Sidebar() {
           .then((res) => {
             setSearchResult(res.data.data);
           })
-          .catch((error) => {
+          .catch((error: any) => {
             displayToast('error', error.response.data.message);
           });
       }
     }, 2000);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, displayToast]);
 
   return (
     <>
       {createPost && (
-        <UploadPost closeFunction={setCreatePost} api="/api/post/create" method="post" />
+        <PostUploadWindow closeFunction={setCreatePost} api="/api/post/create" method="post" />
       )}
+      <nav
+        className={clsx(
+          styles.sidebar,
+          'float-start',
+          'h-100',
+          'd-flex flex-column',
+          minimize && styles.minimize
+        )}
+      >
+        <Link
+          to="/"
+          className={clsx(styles.brand, 'my-5', 'd-flex justify-content-center align-items-center')}
+          onClick={() => setActiveLink('home')}
+        >
+          <img src="imgs/logo.svg" className={styles.logo} alt="logo" />
+          <span className={clsx(styles['brand-name'], 'ms-2', 'fs-2 fw-bold')}>Bygram</span>
+        </Link>
+        <ul className={clsx('d-flex flex-column align-items-center')}>
+          {sidebarLinks.map((tag) => {
+            return (
+              <li
+                key={tag.name}
+                className={clsx(
+                  styles[`sidebar-link`],
+                  'mb-3 rounded-3',
+                  activeLink === tag.name ? `${styles.active} active` : ''
+                )}
+              >
+                <Link
+                  to={tag.path}
+                  className={clsx(
+                    styles['link'],
+                    'w-100 h-100',
+                    'd-flex align-items-center',
+                    'text-capitalize'
+                  )}
+                  aria-current="page"
+                  onClick={(event) => {
+                    if (tag.function) {
+                      tag.function(event);
+                    }
+                    if (!tag.notActive) {
+                      sessionStorage.setItem('activeLink', tag.name);
+                      setActiveLink(tag.name);
+                    }
+                  }}
+                >
+                  <i
+                    className={clsx(
+                      styles['link-icon'],
+                      `${tag.icon}`,
+                      'h-100',
+                      'fs-5 position-relative'
+                    )}
+                  />
+                  <p className={clsx(styles['link-text'], 'ms-3', 'text-nowrap')}>{tag.name}</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
       {minimize && (
         <div
-          className="h-100 position-absolute text-white"
-          style={{ width: '400px', left: '72px', background: 'var(--color-black-pearl-07)' }}
+          className="h-100 text-white float-start"
+          style={{ width: '400px', background: 'var(--color-black-pearl-07)' }}
         >
           <textarea
             className="w-100"
@@ -147,76 +207,6 @@ function Sidebar() {
           })}
         </div>
       )}
-      <nav
-        className={clsx(
-          styles.sidebar,
-          'float-start',
-          'h-100',
-          minimize ? 'p-3' : 'py-3',
-          'd-flex flex-column flex-shrink-0'
-        )}
-        style={{ width: minimize ? '72px' : '248px' }}
-      >
-        <Link
-          to="/"
-          className={clsx(
-            'mb-5',
-            'd-flex justify-content-center align-items-center',
-            'text-reset text-decoration-none'
-          )}
-          onClick={() => setActiveLink('home')}
-        >
-          <img src="imgs/logo.svg" alt="logo" width="40" height="40" />
-          {minimize || <span className={clsx('ms-2 fs-2')}>Bygram</span>}
-        </Link>
-        <div
-          className={clsx(
-            'h-100',
-            'd-flex flex-column justify-content-between',
-            minimize ? '' : 'p-3'
-          )}
-        >
-          <ul className={clsx('nav nav-pills', 'flex-column')}>
-            {sidebarLinks.map((tag) => {
-              return (
-                <li key={tag.name} className={clsx('nav-item', 'fs-6')}>
-                  <Link
-                    to={tag.path}
-                    className={clsx(
-                      styles[`sidebar-link`],
-                      'nav-link',
-                      'p-2 mb-3',
-                      'text-reset text-capitalize',
-                      activeLink === tag.name ? `active ${styles.active}` : ''
-                    )}
-                    aria-current="page"
-                    onClick={(event) => {
-                      if (tag.function) {
-                        tag.function(event);
-                      }
-                      if (!tag.notActive) {
-                        sessionStorage.setItem('activeLink', tag.name);
-                        setActiveLink(tag.name);
-                      }
-                    }}
-                  >
-                    <i
-                      className={clsx(
-                        'nav-link-icon',
-                        `${tag.icon}`,
-                        'd-inline-block',
-                        minimize ? '' : 'me-3',
-                        'fs-5'
-                      )}
-                    ></i>
-                    {minimize || tag.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </nav>
     </>
   );
 }

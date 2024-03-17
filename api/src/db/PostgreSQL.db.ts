@@ -1,4 +1,5 @@
-import { PostgreSQL } from './db';
+import { logger } from '@utils';
+import { PostgreSQL } from './types';
 
 const initOptions = {
   /* initialization options */
@@ -17,15 +18,15 @@ const connection = {
   allowExitOnIdle: true,
 };
 
-const db: PostgreSQL = pgp(process.env.POSTGRES_URL);
+const db: PostgreSQL = pgp(process.env.POSTGRES_URL || connection);
 db.connect()
   .then(function (obj: any) {
     const serverVersion = obj.client.serverVersion;
     obj.done();
-    console.log(`[Database]: PostgreSQL connected`);
+    logger.success(`Database connected - PostgreSQL v${serverVersion}`, 'PostgreSQL');
   })
   .catch(function (error: any) {
-    console.log(`[Database]: PostgreSQL`, error);
+    logger.error(`${error}`, 'PostgreSQL');
   });
 
 export default db;
