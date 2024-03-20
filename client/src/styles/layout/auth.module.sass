@@ -1,11 +1,17 @@
 @use '../utils.sass'
+@import "~bootstrap/scss/functions"
+@import "~bootstrap/scss/variables"
+@import "~bootstrap/scss/mixins"
+
+$transition-time: 0.3s
+$hover-color: #d81d84
 
 .panel-bg
   z-index: -1
   background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
 
 .logo
-  $logo-size: 76px
+  $logo-size: utils.pxToRem(60)
   width: $logo-size
 
 .brand-name
@@ -18,46 +24,35 @@
   font-size: 2.5rem
   font-family: 'Sacramento', sans-serif
 
-$main-color: var(--main-color)
-$hover-color: #d81d84
-$submit-btn-text-hover: white
-$transition-time: 0.5s
-
 .form-side
-  transition: all $transition-time
+  $slide-time: 0.8s
+  left: 0
+  transition: all $slide-time ease-in-out
+  color: white
 
   & form
-    color: white
     padding: utils.pxToRem(52) utils.pxToRem(36)
     width: utils.pxToRem(400)
     max-width: 100%
     border-radius: 0.5rem
-    @include utils.shadow-effect-1(rgba(0, 0, 0, 0.6))
-
-    background-color: #2a2b38b3
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg')
-    background-position: bottom center
-    background-repeat: no-repeat
-    background-size: 300%
+    @include utils.custom-bg-1(#2a2b38b3)
+    @include utils.box-shadow-effect-1(rgba(0, 0, 0, 0.6))
 
     & a
       cursor: pointer
       transition: all $transition-time
-
       &:hover
-        @include utils.text-neon-effect-2(transparent)
+        @include utils.text-shadow-effect-2($hover-color)
 
     & .form-input
       color: rgba(255, 255, 255, 0.7)
-      background: var(--color-charade)
-      box-shadow: none
-      border-color: transparent
       caret-color: white
+      background: var(--color-charade)
+      border-color: transparent
+      box-shadow: none
       transition: all $transition-time
-
       &:focus
         color: white
-
       &:-webkit-autofill
         -webkit-box-shadow: none
         -webkit-text-fill-color: white
@@ -72,22 +67,28 @@ $transition-time: 0.5s
 
     & .form-label
       color: rgba(255, 255, 255, 0.7) !important
-
       &::after
         background: none !important
 
 .submit-btn
-  background: $main-color
   color: white
-  transition: all $transition-time
+  background: $hover-color
   border: none
-
+  transition: all $transition-time
   &:hover
-    @include utils.btn-neon-effect(white, $hover-color)
-
+    background: $hover-color
+    @include utils.box-shadow-effect-4($hover-color, 4)
   &:active
-    background: $main-color !important
     color: white !important
+    background: $hover-color !important
 
 .error-message
   color: #ff0000
+
+// Responsive design
+@include media-breakpoint-up(lg)
+  .move-to-right
+    left: 50%
+@include media-breakpoint-down(lg)
+  .responsive-arrow
+    display: none

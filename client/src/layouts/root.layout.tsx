@@ -1,14 +1,16 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { Sidebar, useAuth } from '@components';
+import { Sidebar } from '@components';
+import { useStorageContext } from '@contexts';
 import clsx from 'clsx';
 
 function RootLayout() {
-  const { authentication } = useAuth();
-
-  return authentication.isAuthenticated ? (
+  // * /imgs/wallpaper.jpg different from imgs/wallpaper.jpg
+  const backgroundImageURL = '/imgs/wallpaper.jpg';
+  const { authenticationStorage } = useStorageContext();
+  return authenticationStorage.isAuthenticated ? (
     <>
       <main
-        style={{ background: 'url(imgs/wallpaper.jpg) center center / cover' }}
+        style={{ background: `url(${backgroundImageURL}) center center / cover` }}
         className={clsx('w-100 h-100', 'position-relative')}
       >
         <Sidebar />

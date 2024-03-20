@@ -1,44 +1,60 @@
-import { useAuth, useGlobal, PostWindow } from '@components';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import styles from '@sass/profile.module.sass';
+import { PostWindow, Loading, Overlay, Menu } from '@components';
+import { useGlobalContext, useStorageContext } from '@contexts';
+import axios, { AxiosResponse } from 'axios';
+import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import { AvatarAPI } from './types';
+import { Profile } from '@types';
+import styles from '@styles/page/profile.module.sass';
 
-interface ProfilePageProps {
+interface ProfilePageProps extends Profile {
   _id: string;
-  uid: number;
-  username: string;
-  avatar: string;
-  followers: number;
-  followings: number;
-  description: string;
+  description?: string;
   posts: any[];
-  isFolowing: boolean;
+  isFollowing?: boolean;
 }
 
 const defaultAvatar =
-  'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561629/social-media-app/7/jqbxw8xdruxihtkuujbh.jpg';
-
+  'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png';
 function ProfilePage() {
-  const [profile, setProfile] = useState({} as ProfilePageProps);
   const [ready, setReady] = useState(false);
-  const { authentication } = useAuth();
-  const { displayToast } = useGlobal();
-  const { register, handleSubmit } = useForm();
   const [refresh, setRefresh] = useState(false);
+  const [profile, setProfile] = useState({} as ProfilePageProps);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const [currentPost, setCurrentPost] = useState({} as any);
+  const [showCurrentPost, setShowCurrentPost] = useState(false);
+  const { authenticationStorage } = useStorageContext();
+  const { displayToast } = useGlobalContext();
+  const { register, handleSubmit } = useForm();
 
-  const submitForm = (data: any) => {
-    const id = authentication.user!.id;
+  const changeAvatar = async (data: any) => {
+    const uid = authenticationStorage.user!.id;
     const formData = new FormData();
     formData.append('file', data.file[0]);
-    formData.append('uid', id!.toString());
-    axios
+    formData.append('uid', uid!.toString());
+    await axios
       .put('/api/profile/avatar', formData)
-      .then((result: any) => {
-        displayToast(result.data.message, 'success');
+      .then((result: AxiosResponse) => {
+        const response = result.data as AvatarAPI;
+        setProfile({ ...profile, avatar: response.data });
+        displayToast(response.message, response.success ? 'success' : 'error');
+        setRefresh(!refresh);
+      })
+      .catch((error: any) => displayToast(error.response.data.message, 'error'));
+  };
+
+  const removeAvatar = async () => {
+    setShowAvatarMenu(false);
+    await axios
+      .put('/api/profile/avatar?type=remove', { uid: authenticationStorage.user!.id })
+      .then((result: AxiosResponse) => {
+        const response = result.data as AvatarAPI;
+        const { avatar, ...rest } = profile;
+        setProfile(rest);
+        displayToast(response.message, response.success ? 'success' : 'error');
         setRefresh(!refresh);
       })
       .catch((error: any) => displayToast(error.response.data.message, 'error'));
@@ -46,7 +62,7 @@ function ProfilePage() {
 
   function follow() {
     axios
-      .post('/api/profile/follow', { uid: authentication.user?.id, target: profile.uid })
+      .put('/api/profile/follow', { uid: authenticationStorage.user?.id, target: profile.uid })
       .then((res) => {
         displayToast(res.data.message, 'success');
         setRefresh(!refresh);
@@ -55,41 +71,70 @@ function ProfilePage() {
 
   function unfollow() {
     axios
-      .delete('/api/profile/unfollow', {
-        data: { uid: authentication.user?.id, target: profile.uid },
-      })
+      .put('/api/profile/unfollow', { uid: authenticationStorage.user?.id, target: profile.uid })
       .then((res) => {
         displayToast(res.data.message, 'success');
         setRefresh(!refresh);
       });
   }
 
-  let { username } = useParams();
+  const { uid } = useParams();
+  const [searchParams] = useSearchParams();
   useEffect(() => {
+    const ruid = searchParams.get('ruid');
     axios
-      .get(`/api/profile/${username}`, { params: { uid: authentication.user!.id } })
+      .get(`/api/profile/${uid}`, { params: { ruid } })
       .then((res) => {
         const response = res.data;
         setReady(true);
         setProfile(response.data);
+        console.log(response.data);
       })
       .catch((err) => {
         displayToast(err.response.data.message, 'error');
       });
-  }, [refresh, username, authentication.user, displayToast]);
+  }, [refresh, uid, authenticationStorage.user, displayToast, searchParams]);
 
-  const [showPost, setShowPost] = useState(false);
-  const [post, setPost] = useState({} as any);
+  const inpurRef = useRef<HTMLInputElement | null>(null);
+  const { ref, ...rest } = register('file', {
+    onChange: (data) => {
+      handleSubmit(changeAvatar)();
+    },
+    required: true,
+  });
+
+  const avatarMenu = [
+    {
+      name: 'Remove avatar',
+      function: () => removeAvatar(),
+    },
+    {
+      name: 'Upload avatar',
+      function: () => {
+        inpurRef.current?.click();
+        setShowAvatarMenu(false);
+      },
+    },
+    {
+      name: 'Cancel',
+      function: () => setShowAvatarMenu(false),
+    },
+  ];
 
   return !ready ? (
-    <></>
+    <Loading />
   ) : (
     <>
-      {showPost && <PostWindow post={post} closeFunction={setShowPost} />}
+      {showCurrentPost && <PostWindow post={currentPost} onExit={setShowCurrentPost} />}
+      {showAvatarMenu && (
+        <Overlay onExit={setShowAvatarMenu}>
+          <Menu list={avatarMenu} />
+        </Overlay>
+      )}
+
       <div className={clsx(styles['profile-wrapper'], 'text-white overflow-y-scroll', 'w-100 p-5')}>
         <header className={clsx('d-flex', 'mb-5')}>
           <form
-            onSubmit={handleSubmit(submitForm)}
             className={clsx(
               styles['avatar-container'],
               'd-flex justify-content-center align-items-center',
@@ -98,33 +143,38 @@ function ProfilePage() {
             )}
           >
             <img
-              className="w-100 h-auto"
-              src={profile.avatar ? profile.avatar : defaultAvatar}
+              className={profile.avatar?.sizeType === 'Landscape' ? 'w-auto h-100' : 'w-100 h-auto'}
+              src={'avatar' in profile ? profile.avatar!.dataURL : defaultAvatar}
               alt="profile"
+              onClick={
+                profile.uid === authenticationStorage.user?.id
+                  ? () => setShowAvatarMenu(true)
+                  : () => {}
+              }
             />
-            {authentication.user?.id === profile.uid && (
+            {authenticationStorage.user?.id === profile.uid && (
               <input
                 type="file"
                 className={clsx(
                   'cur-pointer',
-                  'h-100 w-100',
                   'position-absolute top-0 start-0',
-                  'opacity-0'
+                  'opacity-0',
+                  'avatar' in profile ? 'd-none' : 'h-100 w-100'
                 )}
-                {...register('file', {
-                  onChange: () => {
-                    handleSubmit(submitForm)();
-                  },
-                  required: true,
-                })}
-              ></input>
+                {...rest}
+                name="file"
+                ref={(e) => {
+                  ref(e);
+                  inpurRef.current = e;
+                }}
+              />
             )}
           </form>
           <div className="ps-5">
             <div className={clsx('d-flex align-items-center', 'my-3')}>
               <h2 className={clsx('m-0 me-5', 'fs-3 lh-1')}>{profile.username}</h2>
-              {profile.uid !== authentication.user!.id ? (
-                profile.isFolowing ? (
+              {profile.uid !== authenticationStorage.user?.id &&
+                (profile.isFollowing ? (
                   <button
                     className={clsx(styles['following-button'], 'd-block rounded', 'px-2 py-1')}
                     onClick={unfollow}
@@ -138,10 +188,7 @@ function ProfilePage() {
                   >
                     Follow
                   </button>
-                )
-              ) : (
-                <></>
-              )}
+                ))}
             </div>
 
             <ul className="d-flex p-0">
@@ -149,18 +196,17 @@ function ProfilePage() {
                 <span className="pe-1 fw-bolder">{profile.posts.length}</span>
                 posts
               </li>
-
               <li className={clsx('list-unstyled', 'me-4')}>
-                <span className="pe-1 fw-bolder">{profile.followers}</span>
+                <span className="pe-1 fw-bolder">{profile.followers.length}</span>
                 followers
               </li>
               <li className="list-unstyled">
-                <span className="pe-1 fw-bolder">{profile.followings}</span>
+                <span className="pe-1 fw-bolder">{profile.followings.length}</span>
                 following
               </li>
             </ul>
 
-            <p>{profile.description}</p>
+            {'description' in profile ? <p>profile.description</p> : <></>}
           </div>
         </header>
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
@@ -170,11 +216,11 @@ function ProfilePage() {
                 <img
                   className="img-fluid"
                   alt="profile"
-                  src={post.imgURL}
+                  src={post.file.dataURL}
                   key={index}
                   onClick={() => {
-                    setPost(post);
-                    setShowPost(true);
+                    setCurrentPost(post);
+                    setShowCurrentPost(true);
                   }}
                 />
               );

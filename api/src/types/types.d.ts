@@ -1,18 +1,12 @@
 import { ObjectId } from 'mongoose';
 
 // Entity
-export interface Account {
-  id?: number;
-  email?: string;
-  password?: string;
-}
-
 interface Profile {
   uid?: Account['id'];
   username?: string;
   followers?: Account['id'][];
   followings?: Account['id'][];
-  avatar?: string;
+  avatar?: File;
   description?: string;
 }
 
@@ -37,16 +31,6 @@ export interface Comment {
 }
 
 // Frontend API
-export interface API {
-  success: boolean;
-  message: string;
-  data?: any;
-}
-
-export interface Credentials {
-  id?: number;
-  email?: string;
-}
 
 interface Condition {
   and?: boolean;

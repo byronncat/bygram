@@ -1,15 +1,15 @@
-import { useState, useContext, createContext, ReactNode } from 'react';
-import { AuthenticationStorage } from '@types';
+import { useState, useContext, createContext } from 'react';
+import { AuthenticationStorage, ReactProps } from '@types';
 
-const AuthenticationContext = createContext(
+const StorageContext = createContext(
   {} as {
-    authentication: AuthenticationStorage;
+    authenticationStorage: AuthenticationStorage;
     setAuthenticationStorage: (data: AuthenticationStorage) => void;
   }
 );
 
-export default function Authentication({ children }: { children: ReactNode }) {
-  const [authentication, setAuthentication] = useState<AuthenticationStorage>({
+export default function Storage({ children }: ReactProps) {
+  const [authenticationStorage, setAuthenticationState] = useState<AuthenticationStorage>({
     user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
     isAuthenticated: localStorage.getItem('isAuthenticated') === 'true' ? true : false,
   });
@@ -20,18 +20,18 @@ export default function Authentication({ children }: { children: ReactNode }) {
       isAuthenticated: isAuthenticated,
     };
 
-    setAuthentication(authentication);
+    setAuthenticationState(authentication);
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('isAuthenticated', isAuthenticated.toString());
   };
 
   return (
-    <AuthenticationContext.Provider value={{ authentication, setAuthenticationStorage }}>
+    <StorageContext.Provider value={{ authenticationStorage, setAuthenticationStorage }}>
       {children}
-    </AuthenticationContext.Provider>
+    </StorageContext.Provider>
   );
 }
 
-export function useAuth() {
-  return useContext(AuthenticationContext);
+export function useStorageContext() {
+  return useContext(StorageContext);
 }

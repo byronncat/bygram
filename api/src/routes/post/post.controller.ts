@@ -21,7 +21,7 @@ async function getHomePosts(req: Request, res: Response, next: NextFunction) {
         message: 'No user id provided',
       } as API);
     } else {
-      const followings = await accountService.getFollowings(uid);
+      const followings = await accountService.getFollowingsByID(uid);
       const posts = await postService.getManyByID({ uid: [uid, ...followings!] });
       res.status(200).json({
         success: true,
@@ -31,6 +31,31 @@ async function getHomePosts(req: Request, res: Response, next: NextFunction) {
     }
   } catch (error: any) {
     logger.error(`${error}`, 'Post controller');
+    res.status(404).json({
+      success: false,
+      message: error.message,
+    } as API);
+  }
+}
+
+async function explorePosts(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { uid } = req.query as Profile;
+    if (!uid) {
+      return res.status(409).json({
+        success: false,
+        message: 'No user id provided',
+      } as API);
+    } else {
+      const posts = await postService.exploreByID(uid);
+      res.status(200).json({
+        success: true,
+        message: 'Posts retrieved',
+        posts,
+      } as API);
+    }
+  } catch (error: any) {
+    console.log(`[Post Controller Error]: ${error}`);
     res.status(404).json({
       success: false,
       message: error.message,
@@ -141,36 +166,11 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function explorePosts(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { id }: Account = req.query;
-    if (!id) {
-      res.status(409).json({
-        success: false,
-        message: 'No user id provided',
-      } as API);
-    } else {
-      const posts = await postService.getExplorePosts(id);
-      res.status(200).json({
-        success: true,
-        message: 'Posts retrieved',
-        posts,
-      } as API);
-    }
-  } catch (error: any) {
-    console.log(`[Post Controller Error]: ${error}`);
-    res.status(404).json({
-      success: false,
-      message: error.message,
-    } as API);
-  }
-}
-
 export default {
   home: [getHomePosts],
+  explore: [explorePosts],
   createPost: [upload.single('file'), createPost],
   deletePost: [deletePost],
   //
   updatePost: [upload.single('file'), updatePost],
-  explorePosts: [explorePosts],
 };

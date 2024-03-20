@@ -1,24 +1,97 @@
+@use './utils.sass'
+
 // G L O W I N G !
 .text-neon-glowing-1
   color: white
   animation: neon-glowing 1.5s ease-in-out infinite alternate
   @keyframes neon-glowing
     from
-      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #FF1177, 0 0 70px #FF1177, 0 0 80px #FF1177, 0 0 100px #FF1177, 0 0 150px #FF1177
+      @include utils.text-shadow-effect-1(#FF1177, 10)
     to
-      text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #FF1177, 0 0 35px #FF1177, 0 0 40px #FF1177, 0 0 50px #FF1177, 0 0 75px #FF1177
+      @include utils.text-shadow-effect-1(#FF1177, 5)
 
 .text-neon-glowing-2 // Have border
   color: white
-  text-shadow: 0 0 7px #fff,0 0 10px #fff,0 0 21px #fff,0 0 42px #bc13fe,0 0 82px #bc13fe,0 0 92px #bc13fe,0 0 102px #bc13fe,0 0 151px #bc13fe
   border: 0.2rem solid #fff
-  box-shadow: 0 0 .2rem #fff, 0 0 .2rem #fff, 0 0 2rem #bc13fe, 0 0 0.8rem #bc13fe, 0 0 2.8rem #bc13fe, inset 0 0 1.3rem #bc13fe
+  text-shadow: 0 0 7px #fff,0 0 10px #fff,0 0 21px #fff,0 0 42px #bc13fe,0 0 82px #bc13fe,0 0 92px #bc13fe,0 0 102px #bc13fe,0 0 151px #bc13fe
   animation: pulsate 5s infinite alternate
+  @include utils.box-shadow-effect-3(#bc13fe)
   @keyframes pulsate
     100%
       text-shadow: 0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 40px #bc13fe,0 0 80px #bc13fe,0 0 90px #bc13fe,0 0 100px #bc13fe,0 0 150px #bc13fe
     0%
       text-shadow: 0 0 2px #fff,0 0 4px #fff,0 0 6px #fff,0 0 10px #bc13fe,0 0 45px #bc13fe,0 0 55px #bc13fe,0 0 70px #bc13fe,0 0 80px #bc13fe
+
+// F L I C K E R I N G !
+.flicker-one
+  opacity: 0.5
+  animation: flicker 1.5s 1 forwards
+
+.glowing
+  animation: 0.8s ease-out infinite alternate glowing
+  @keyframes glowing
+    $color: red
+    0%
+      box-shadow: 0 0 2px 1px $color
+      opacity: 1
+    13%
+      box-shadow: 0 0 8px 1px $color
+      opacity: 0.9
+    20%
+      box-shadow: 0 0 2px 1px $color
+      opacity: 1
+    27%
+      box-shadow: 0 0 8px 1px $color
+      opacity: 0.9
+    34%
+      box-shadow: 0 0 5px 1px $color
+      opacity: 1
+    40%
+      box-shadow: 0 0 8px 1px $color
+      opacity: 0.9
+    48%
+      box-shadow: 0 0 3px 1px $color
+      opacity: 1
+    55%
+      box-shadow: 0 0 9px 1px $color
+      opacity: 0.9
+    62%
+      box-shadow: 0 0 5px 0 $color
+      opacity: 1
+    100%
+      box-shadow: 0 0 8px 0 $color
+
+.flicker-lite
+  animation: flicker-lite 1s infinite alternate
+  @keyframes flicker-lite
+    0%
+      opacity: 1
+    13%
+      opacity: 0.9
+    30%
+      opacity: 1
+    38%
+      opacity: 0.9
+    45%
+      opacity: 1
+    53%
+      opacity: 0.9
+    60%
+      opacity: 1
+    67%
+      opacity: 0.9
+    73%
+      opacity: 1
+    82%
+      opacity: 0.9
+    90%
+      opacity: 1
+    93%
+      opacity: 0.9
+    97%
+      opacity: 0.9
+    100%
+      opacity: 1
 
 // Start of effect
 .glitch-1-content
@@ -171,7 +244,7 @@
   font-size: 5em
   font-family: sans-serif
   letter-spacing: 13px
-  animation-name: flicker
+  animation-name: flicker-1
   animation-duration: 3s
   animation-delay: 2s
   animation-iteration-count: infinite
@@ -187,7 +260,7 @@
   animation-direction: alternate
   animation-timing-function: ease-in-out
 
-@keyframes flicker
+@keyframes flicker-1
   0%, 18%, 22%, 25%, 53%, 57%, 100%
     text-shadow: 0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 25px var(--shinyColor),0 0 30px var(--shinyColor),0 0 35px var(--shinyColor),20px 0px 100px white
   20%, 24%, 55%

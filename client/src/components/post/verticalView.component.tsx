@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { Menu, Overlay, PostWindow, useAuth, useGlobal } from '@components';
+import { Menu, Overlay, PostWindow } from '@components';
+import { useGlobalContext, useStorageContext } from '@contexts';
 import { useFormat } from '@hooks';
 import { HomePost } from '@pages/home/types';
-import styles from '@sass/layout/home.module.sass';
+import styles from '@styles/layout/home.module.sass';
 import { deletePost } from '@services';
 
+const defaultAvatar =
+  'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png';
 function PostsVerticalView({ posts }: { posts: HomePost[] }) {
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [showCurrentPost, setShowCurrentPost] = useState(false);
   const [currentPost, setCurrentPost] = useState({} as HomePost);
-  const { authentication } = useAuth();
-  const { displayToast } = useGlobal();
+  const { authenticationStorage } = useStorageContext();
+  const { displayToast } = useGlobalContext();
   const { formatTime } = useFormat();
 
   const authorPostMenu = [
@@ -56,13 +59,15 @@ function PostsVerticalView({ posts }: { posts: HomePost[] }) {
   return (
     <>
       {showActionMenu && (
-        <Overlay closeFunction={setShowActionMenu}>
+        <Overlay onExit={setShowActionMenu}>
           <Menu
-            list={authentication.user!.id === currentPost.uid ? authorPostMenu : followPostMenu}
+            list={
+              authenticationStorage.user!.id === currentPost.uid ? authorPostMenu : followPostMenu
+            }
           />
         </Overlay>
       )}
-      {showCurrentPost && <PostWindow post={currentPost} closeFunction={setShowCurrentPost} />}
+      {showCurrentPost && <PostWindow post={currentPost} onExit={setShowCurrentPost} />}
 
       <section className={styles['posts-wrapper']}>
         {posts.map((post: HomePost, index: number) => {
@@ -79,11 +84,22 @@ function PostsVerticalView({ posts }: { posts: HomePost[] }) {
                 <i className="fa-solid fa-ellipsis"></i>
               </span>
               <header className="d-flex">
-                <img
-                  className={clsx(styles.avatar, 'rounded-circle', 'me-3')}
-                  alt="profile"
-                  src={post.avatar}
-                />
+                <span
+                  className={clsx(
+                    styles.avatar,
+                    'd-block me-3 rounded-circle',
+                    'position-relative',
+                    'overflow-hidden'
+                  )}
+                >
+                  <img
+                    className={clsx(
+                      post.avatar?.sizeType === 'Landscape' ? 'w-auto h-100' : 'w-100 h-auto'
+                    )}
+                    alt="profile"
+                    src={'avatar' in post ? post.avatar!.dataURL : defaultAvatar}
+                  />
+                </span>
                 <span className="d-flex align-items-center">
                   <p className={clsx('d-block', 'fw-bolder')}>{post.username}</p>
                   <span className="mx-2 fw-bold">&middot;</span>
@@ -122,7 +138,12 @@ function PostsVerticalView({ posts }: { posts: HomePost[] }) {
               <main className={clsx('position-relative')}>
                 <Link
                   className={clsx(styles['ribbon'], 'd-flex align-items-center', 'fw-bold')}
-                  to={`/${post.username}/${post.uid}`}
+                  to={
+                    `/profile/${post.uid}` +
+                    (post.uid !== authenticationStorage.user?.id
+                      ? `?ruid=${authenticationStorage.user?.id}`
+                      : '')
+                  }
                 >
                   <span className={styles['content-username']}>{post.username}</span>
                 </Link>

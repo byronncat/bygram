@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import styles from '@sass/component/menu.module.sass';
+import styles from '@styles/component/menu.module.sass';
 
 function Menu({ list }: { list: any }) {
   return (

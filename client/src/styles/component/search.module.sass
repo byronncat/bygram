@@ -1,0 +1,31 @@
+@use '../utils'
+
+$border-width: 2
+$minimize-width: 72
+$search-wrapper-width: 400
+$transition-duration: 1s
+
+.search-wrapper
+  $border-color: #f8b9b5
+  color: white
+  width: utils.pxToRem($search-wrapper-width)
+  left: -40%
+  border-right: utils.pxToRem($border-width) solid $border-color
+  transition: left $transition-duration
+  @include utils.box-shadow-effect-right(4)
+
+  & .search-input
+    @include utils.custom-bg-2(blue)
+
+  & .link-avatar
+    width: utils.pxToRem(40)
+    height: utils.pxToRem(40)
+    margin: 0
+    padding: 0
+    border: none
+    background: none
+    transition: all $transition-duration
+    @include utils.box-shadow-effect-right(4)
+
+.slide-to-right
+  left: utils.pxToRem(72 + $border-width)

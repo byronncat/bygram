@@ -1,9 +1,8 @@
 import passport from 'passport';
 import { IStrategyOptions, Strategy as LocalStrategy } from 'passport-local';
-import { logger } from '@utils';
 import { accountService } from '@services';
-import { Account } from '@types';
-import { AuthenticationPassport } from '@services/types';
+import { logger } from '@utils';
+import { Account, AuthenticationAPI } from '@types';
 
 passport.use(
   'local-login',
@@ -15,12 +14,9 @@ passport.use(
     async function verify(email, password, done) {
       accountService
         .loginAuthenticate(email, password)
-        .then(({ user, message }: AuthenticationPassport) => {
-          if (user) {
-            return done(null, user, { message });
-          } else {
-            return done(null, false, { message });
-          }
+        .then(({ user, message }: AuthenticationAPI) => {
+          if (user) return done(null, user, { message });
+          else return done(null, false, { message });
         })
         .catch((error: any) => {
           logger.error(`${error}`, 'Passport');
@@ -39,14 +35,12 @@ passport.use(
     function verify(email, password, done) {
       accountService
         .registerAuthenticate(email)
-        .then(({ user, message }: AuthenticationPassport) => {
-          if (user) {
-            return done(null, user, { message });
-          } else {
-            return done(null, false, { message });
-          }
+        .then(({ user, message }: AuthenticationAPI) => {
+          if (user) return done(null, user, { message });
+          else return done(null, false, { message });
         })
         .catch((error: any) => {
+          logger.error(`${error}`, 'Passport');
           return done(error);
         });
     }

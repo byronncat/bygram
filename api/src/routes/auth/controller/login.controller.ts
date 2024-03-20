@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { IVerifyOptions } from 'passport-local';
 import { passport } from '@libs';
-import { Account, API } from '@types';
-import { LoginAPI } from './auth.route';
-import { accountService } from '@services';
+import { Account, API, LoginAPI } from '@types';
 
-async function validateInformation(req: Request, res: Response, next: NextFunction) {
+function validateInformation(req: Request, res: Response) {
   passport.authenticate(
     'local-login',
     async function (error: any, user: Account, info: IVerifyOptions) {
@@ -16,20 +14,20 @@ async function validateInformation(req: Request, res: Response, next: NextFuncti
         } as API);
       }
       if (!user) {
-        return res.status(401).json({
+        let statusCode = info.message === 'No user found' ? 404 : 401;
+        return res.status(statusCode).json({
           success: false,
           message: info.message,
         } as API);
       }
 
-      const username = await accountService.getUsernameByID(user.id!);
       return res.status(200).json({
         success: true,
         message: info.message,
-        data: { ...user, username },
+        data: { ...user },
       } as LoginAPI);
     }
-  )(req, res, next);
+  )(req, res);
 }
 
 export default [validateInformation];

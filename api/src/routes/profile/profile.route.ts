@@ -3,9 +3,9 @@ import profileController from './profile.controller';
 const router = express.Router();
 
 router.get('/search/:searchTerm', profileController.search);
-router.get('/:username/:id', profileController.getProfile);
-router.post('/follow', profileController.follow);
+router.get('/:uid', profileController.getProfile);
 router.put('/avatar', profileController.changeAvatar);
-router.delete('/unfollow', profileController.unfollow);
+router.put('/follow', profileController.follow);
+router.put('/unfollow', profileController.unfollow);
 
 export default router;

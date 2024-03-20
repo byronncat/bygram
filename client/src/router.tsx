@@ -19,7 +19,7 @@ function Router() {
       children: [
         { path: '/', element: <HomePage /> },
         { path: 'explore', element: <ExplorePage /> },
-        { path: ':username/:uid', element: <ProfilePage /> },
+        { path: 'profile/:uid', element: <ProfilePage /> },
       ],
     },
     {

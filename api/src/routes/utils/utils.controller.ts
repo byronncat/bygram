@@ -1,23 +1,24 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { nodemailer } from '@libs';
 import { API, Account } from '@types';
 
-async function sendEmailController(req: Request, res: Response) {
+async function sendEmail(req: Request, res: Response, next: NextFunction) {
   const { email: to } = req.body as Account;
-  await nodemailer
+  return await nodemailer
     .sendMail(to!, 'Reset password')
     .then(() => {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: 'Email sent',
       } as API);
     })
     .catch((error: any) => {
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: error.message,
       } as API);
     });
 }
 
-export default [sendEmailController];
+export default { sendEmail };

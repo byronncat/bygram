@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { IVerifyOptions } from 'passport-local';
 import { passport } from '@libs';
 import { accountService } from '@services';
-import { RegisterData } from '@services/types';
-import { API, Account } from '@types';
+import { API, Account, RegisterData, RegisterAPI } from '@types';
+import { IVerifyOptions } from 'passport-local';
 
 function saveFormRequest(req: Request, res: Response, next: NextFunction) {
   const data = req.body as RegisterData;
@@ -25,7 +24,7 @@ async function validateInformation(req: Request, res: Response, next: NextFuncti
       if (user) {
         return next();
       } else {
-        return res.status(401).json({
+        return res.status(409).json({
           success: false,
           message: info.message,
         } as API);
@@ -36,17 +35,17 @@ async function validateInformation(req: Request, res: Response, next: NextFuncti
 
 async function addUser(req: Request, res: Response) {
   const data: RegisterData = res.locals.user;
-  await accountService
+  return await accountService
     .register(data)
     .then((user) => {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: 'Registered successfully',
         data: user,
-      } as API);
+      } as RegisterAPI);
     })
     .catch((error: any) => {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: error.message,
       } as API);

@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { Cloudinary } from './types';
+import { Cloudinary } from '@types';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

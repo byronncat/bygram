@@ -2,34 +2,21 @@ import { useLayoutEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 import clsx from 'clsx';
-import { Form, useGlobal } from '@components';
+import { Form } from '@components';
+import { useGlobalContext } from '@contexts';
 import { useAuthLayoutContext } from '@layouts';
-import { API, AuthenticationInformation, FormFieldProps } from '@types';
-import styles from '@sass/layout/auth.module.sass';
 import { sendResetEmailAPI } from '@services';
+import { sendEmailField } from '../../constants';
+import { API, AuthenticationInformation, FormFieldProps } from '@types';
+import styles from '@styles/layout/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
 };
 
-const fieldList: FormFieldProps[] = [
-  {
-    name: 'email',
-    type: 'email',
-    placeholder: 'Email',
-    validation: {
-      required: 'Email is required',
-      pattern: {
-        value: /\S+@\S+\.\S+/,
-        message: 'Entered value does not match email format',
-      },
-    },
-  },
-];
-
 function ForgotPasswordPage() {
-  const { displayToast } = useGlobal();
   const { className } = useAuthLayoutContext();
+  const { displayToast } = useGlobalContext();
   const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
     useOutletContext();
   useLayoutEffect(() => {
@@ -44,18 +31,15 @@ function ForgotPasswordPage() {
   return (
     <>
       <Form
-        fieldList={fieldList}
+        fieldList={sendEmailField}
         defaultValues={defaultValues}
         submitHandler={submitHandler}
-        fieldClass={className.formField}
+        fieldClass={className}
         submitPlaceholder="Send Email"
         submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        <Link
-          to="/login"
-          className={clsx('link d-block', ' fs-6 text-reset text-decoration-none text-center')}
-        >
+        <Link to="/login" className={clsx('link d-block', ' text-center fs-6')}>
           Turn back
         </Link>
       </Form>

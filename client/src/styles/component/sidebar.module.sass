@@ -3,63 +3,72 @@
 @import "~bootstrap/scss/variables"
 @import "~bootstrap/scss/mixins"
 
-.logo
-  $logo-size: utils.pxToRem(40)
-  width: $logo-size
-
-$edge: utils.pxToRem(52)
+$border-width: 2
+$sidebar-width: 248 + $border-width
 $hover-color: var(--main-color)
-$background-color: var(--color-black-pearl-07)
 $glowing-color: #FF1177
+$background-color: var(--color-black-pearl-07)
 $transition-time: 0.5s
+$minimize-width: 72
+$link-height: 52
+
+.wrapper
+  width: utils.pxToRem(252)
 
 .brand
+  $brand-height: 52
+  height: utils.pxToRem($brand-height)
   transition: all $transition-time
   &-name
     transition: all $transition-time ease-out
   &:hover &-name
-    @include utils.text-neon-effect-3($glowing-color)
+    @include utils.text-shadow-effect-1($glowing-color, 10)
 
 .sidebar
   $border-color: #f8b9b5
-  $border-width: utils.pxToRem(2)
-  width: utils.pxToRem(248)
+  width: utils.pxToRem($sidebar-width)
   color: white
   font-family: 'Merienda', monospace
   background: $background-color
-  border-right: $border-width solid $border-color
+  border-right: utils.pxToRem($border-width) solid $border-color
   transition: all $transition-time
-  &:not(.minimize)
-    @include utils.shadow-neon-effect-1-right(4)
+  user-select: none
+  @include utils.box-shadow-effect-right(4)
 
+  $link-line-height: 28
   .active
     font-weight: bold
     letter-spacing: .2rem
-    @include utils.btn-neon-effect($glowing-color, $hover-color)
+    background: $hover-color
+    @include utils.box-shadow-effect-4($hover-color, 8)
 
   &-link
-    width: utils.pxToRem(200)
-    height: utils.pxToRem(52)
-    padding: utils.pxToRem(12) utils.pxToRem(12)
+    width: utils.pxToRem($sidebar-width - 36)
+    height: utils.pxToRem($link-height)
+    padding: utils.pxToRem(calc(($link-height - $link-line-height)/2)) utils.pxToRem(12)
     transition: all $transition-time
     &:hover:not(.active)
-      @include utils.text-neon-effect-2($glowing-color)
+      @include utils.text-shadow-effect-2($glowing-color, 8)
 
   & .link-icon::before
     display: block
     text-align: center
-    line-height: utils.pxToRem(28)
+    line-height: utils.pxToRem($link-line-height)
     width: 100%
     height: 100%
 
   & .link-text
     transition: opacity $transition-time ease-out
 
+.logo
+  $logo-size: utils.pxToRem(40)
+  width: $logo-size
+
 @mixin minimize
-  width: calc(utils.pxToRem(72) + $border-width)
+  width: utils.pxToRem($minimize-width + $border-width)
   .sidebar-link
-    width: $edge
-    height: $edge
+    width: utils.pxToRem($link-height)
+    height: utils.pxToRem($link-height)
   .link
     justify-content: center
   .link-icon

@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import styles from '@sass/component/overlay.module.sass';
+import styles from '@styles/component/overlay.module.sass';
 
 function Overlay({
   children,
-  closeFunction,
+  onExit,
 }: {
   children: React.ReactNode;
-  closeFunction: React.Dispatch<React.SetStateAction<boolean>>;
+  onExit: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <div
@@ -21,14 +21,14 @@ function Overlay({
       <span
         className={styles.overlay}
         onClick={() => {
-          closeFunction(false);
+          onExit(false);
         }}
       />
       <button
         type="button"
         className={clsx('shadow-none', 'btn-close', 'position-absolute top-0 end-0', 'p-4')}
         aria-label="Close"
-        onClick={() => closeFunction(false)}
+        onClick={() => onExit(false)}
       ></button>
       {children}
     </div>

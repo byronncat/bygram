@@ -1,15 +1,19 @@
-const { authenticationDB, fileDB } = require('@db');
-import { Condition, Profile } from '@types';
-import { CloudinaryCreateResponse } from '@db/types';
+const { authenticationDB } = require('@db');
+import { Condition, Profile, UserToken } from '@types';
 
-import { ProfileModel } from '@db/schema.mongodb';
-import { logger, escapeRegExp } from '@utils';
-import { Account, Credentials } from '@types';
-import { AuthenticationPassport, RegisterData } from './types';
+import { ProfileDocument, ProfileModel } from '@db/schema.mongodb';
+import { logger, escapeRegExp, isEmptyObject } from '@utils';
+import { Account, AuthenticationAPI, RegisterData } from '@types';
+import fileService from './file.service';
 
 // Postgresql database
-async function loginAuthenticate(email: string, password: string): Promise<AuthenticationPassport> {
+async function loginAuthenticate(
+  email: Account['email'],
+  password: Account['password']
+): Promise<AuthenticationAPI> {
+  if (!password) return Promise.reject('Password is required');
   password = escapeRegExp(password);
+
   try {
     const result = await authenticationDB.oneOrNone(
       `SELECT * FROM accounts WHERE email = $(email)`,
@@ -18,66 +22,98 @@ async function loginAuthenticate(email: string, password: string): Promise<Authe
     if (!result) return { user: null, message: 'No user found' };
     if (result.password !== password) return { user: null, message: 'Incorrect password' };
     delete result.password;
+    result.username = await getUsernameByID(result.id);
     return { user: result, message: 'Logged in successfully' };
   } catch (error) {
-    logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
 }
 
-async function registerAuthenticate(email: string): Promise<AuthenticationPassport> {
+async function registerAuthenticate(email: Account['email']): Promise<AuthenticationAPI> {
   try {
     const result = await authenticationDB.oneOrNone(
       `SELECT * FROM accounts WHERE email = $(email)`,
       { email }
     );
-    if (result) if (result.email === email) return { user: null, message: 'Email already exists' };
+    if (result && result.email === email) return { user: null, message: 'Email already exists' };
     return { user: { email }, message: 'Can register' };
   } catch (error) {
-    logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
 }
 
-async function register(data: RegisterData) {
-  if (data.email == undefined || data.password == undefined) {
+async function register(data: RegisterData): Promise<UserToken> {
+  if (data.email == undefined || data.password == undefined)
     return Promise.reject('Email and password are required');
-  }
+
   try {
     const { id, email } = await createAccount(data.email, data.password);
     const { username } = await createProfile({ uid: id, username: data.username });
-    return { id, username, email } as Credentials;
+    return { id, username, email };
   } catch (error) {
-    logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
 }
 
-async function createAccount(email: string, password: string): Promise<Account> {
+async function setAvatar(uid: Account['id'], avatar: Express.Multer.File) {
+  const profile = (await ProfileModel.findOne({ uid }, 'avatar').catch((error) => {
+    logger.error(`${error}`, 'Account service');
+    return Promise.reject(error);
+  })) as ProfileDocument | null;
+  if (!profile) return Promise.reject('Profile not found');
+  if (!isEmptyObject(profile.avatar)) fileService.deleteImage(profile.avatar!.dataURL!);
+  const image = await fileService.addImage(avatar, uid);
+  if (image) {
+    profile.avatar = {
+      dataURL: image.secure_url,
+      sizeType: image.sizeType as 'Landscape' | 'Portrait' | 'Square',
+    };
+    await profile.save();
+    return profile.avatar;
+  }
+  return Promise.reject('Image upload failed');
+}
+
+async function removeAvatar(uid: Account['id']) {
+  const profile = (await ProfileModel.findOne({ uid }, 'avatar').catch((error) => {
+    return Promise.reject(error);
+  })) as ProfileDocument | null;
+  if (!profile) return Promise.reject('Profile not found');
+  if (isEmptyObject(profile.avatar)) return Promise.reject('No avatar found');
+  const success = await fileService.deleteImage(profile.avatar!.dataURL!);
+  if (success) {
+    await ProfileModel.updateOne({ uid }, { $unset: { avatar: '' } });
+    return true;
+  }
+  return Promise.reject('Image deletion failed');
+}
+
+async function createAccount(
+  email: Account['email'],
+  password: Account['password']
+): Promise<Account> {
   try {
     const result = await authenticationDB.one(
-      `INSERT INTO accounts (email, password) VALUES ($(email), $(password)) RETURNING id`,
+      `INSERT INTO accounts (email, password) VALUES ($(email), $(password)) RETURNING id, email`,
       { email, password }
     );
     return result;
   } catch (error) {
-    logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
 }
 
-async function createProfile(data: Profile) {
+async function createProfile(data: Profile): Promise<ProfileDocument> {
   try {
     const profile = new ProfileModel(data);
     await profile.save();
     return profile;
   } catch (error) {
-    logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
 }
 
-async function getUsernameByID(id: number): Promise<string | null> {
+async function getUsernameByID(id: Account['id']): Promise<string | null> {
   try {
     const profile = (await ProfileModel.findOne({
       uid: id,
@@ -90,7 +126,7 @@ async function getUsernameByID(id: number): Promise<string | null> {
   }
 }
 
-async function getByID(id: number): Promise<Account | null> {
+async function getByID(id: Account['id']): Promise<Account | null> {
   try {
     const result = await authenticationDB.oneOrNone(`SELECT * FROM accounts WHERE id = $(id)`, {
       id,
@@ -103,9 +139,9 @@ async function getByID(id: number): Promise<Account | null> {
   }
 }
 
-async function getProfileByID(id: any) {
+async function getProfileByID(id: Profile['uid']) {
   try {
-    const profile = (await ProfileModel.findOne({ uid: id }).exec()) as Profile | null;
+    const profile = (await ProfileModel.findOne({ uid: id }).exec()) as ProfileDocument | null;
     if (!profile) return Promise.reject('Profile not found');
     return profile;
   } catch (error) {
@@ -114,15 +150,46 @@ async function getProfileByID(id: any) {
   }
 }
 
-async function getFollowings(id: number) {
+async function getFollowingsByID(id: number) {
   try {
-    const profile = (await ProfileModel.findOne({ uid: id }).exec()) as Profile | null;
+    const profile = (await ProfileModel.findOne({ uid: id }).exec()) as ProfileDocument | null;
     if (!profile) return Promise.reject('Profile not found');
     return profile.followings;
   } catch (error) {
     logger.error(`${error}`, 'Account service');
     return Promise.reject(error);
   }
+}
+
+async function searchProfile(searchTerm: string) {
+  const profiles = await ProfileModel.find({
+    username: { $regex: searchTerm, $options: 'i' },
+  });
+  const profiles2 = await ProfileModel.find({
+    $text: { $search: searchTerm },
+  });
+  logger.warn(`${profiles} ${profiles2}`, 'Account service');
+  return profiles;
+}
+
+async function follow(uid: number, target: number) {
+  const profile = await ProfileModel.findOne({ uid }).exec();
+  profile?.followings!.push(target);
+  await profile?.save();
+  const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
+  targetProfile?.followers!.push(uid);
+  await targetProfile?.save();
+  return profile;
+}
+
+async function unfollow(uid: number, target: number) {
+  const profile = await ProfileModel.findOne({ uid }).exec();
+  profile?.followings!.splice(profile?.followings!.indexOf(target), 1);
+  await profile?.save();
+  const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
+  targetProfile?.followers!.splice(targetProfile?.followers!.indexOf(uid), 1);
+  await targetProfile?.save();
+  return profile;
 }
 
 // No filter
@@ -186,73 +253,23 @@ async function getName(id: number) {
   return profile?.username;
 }
 
-// async function setAvatar(id: number, avatar: Express.Multer.File) {
-//   const base64String = Buffer.from(avatar.buffer).toString('base64');
-//   const dataURL = `data:${avatar.mimetype};base64,${base64String}`;
-//   const profile = await ProfileModel.findOne({ uid: id }).exec();
-//   if (profile) {
-//     if (profile.avatar) {
-//       await fileDB.destroy(getPublicId(profile.avatar!));
-//     }
-
-//     await fileDB
-//       .upload(dataURL, { folder: `social-media-app/${id}` })
-//       .then((result: CloudinaryCreateResponse) => {
-//         profile.avatar = result.secure_url;
-//         profile.save();
-//       })
-//       .catch((error: any) => {
-//         console.log(`[Cloudinary Error]: ${error}`);
-//         return Promise.reject(error);
-//       });
-//     return profile.avatar;
-//   }
-//   return Promise.reject("Profile doesn't exist");
-// }
-
-async function follow(uid: number, target: number) {
-  const profile = await ProfileModel.findOne({ uid }).exec();
-  profile?.followings!.push(target);
-  await profile?.save();
-  const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
-  targetProfile?.followers!.push(uid);
-  await targetProfile?.save();
-  return profile;
-}
-
-async function unfollow(uid: number, target: number) {
-  const profile = await ProfileModel.findOne({ uid }).exec();
-  profile?.followings!.splice(profile?.followings!.indexOf(target), 1);
-  await profile?.save();
-  const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
-  targetProfile?.followers!.splice(targetProfile?.followers!.indexOf(uid), 1);
-  await targetProfile?.save();
-  return profile;
-}
-
-async function search(searchTerm: string) {
-  const profiles = await ProfileModel.find({
-    name: { $regex: searchTerm, $options: 'i' },
-  }).exec();
-  return profiles;
-}
-
 export default {
   loginAuthenticate,
   registerAuthenticate,
   register,
+  setAvatar,
+  removeAvatar,
   createAccount,
+  getByID,
   getProfileByID,
   getUsernameByID,
-  getByID,
+  getFollowingsByID,
+  searchProfile,
+  follow,
+  unfollow,
   //
   create,
   get,
   createProfile,
   getName,
-  // setAvatar,
-  follow,
-  unfollow,
-  getFollowings,
-  search,
 };

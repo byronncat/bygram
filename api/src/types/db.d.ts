@@ -13,7 +13,7 @@ export interface Cloudinary {
   destroy: function;
 }
 
-export interface CloudinaryCreateResponse {
+export interface CloudinaryUploadResponse {
   public_id?: string;
   url?: string;
   secure_url?: string;

@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from './controller/index';
+import controller from './utils.controller';
 const router = express.Router();
 
 router.post('/', controller.sendEmail);

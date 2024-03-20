@@ -1,26 +1,28 @@
 import mongoose, { Document } from 'mongoose';
-import { Profile, Post, File } from '@types';
+import { Profile, Post } from '@types';
 
 interface ProfileDocument extends Profile, Document {
   _doc?: Profile;
 }
 
-const ProfileModel = mongoose.model(
-  'profile',
-  new mongoose.Schema<ProfileDocument>(
-    {
-      uid: { type: Number, required: true },
-      username: { type: String, required: true },
-      followers: { type: [Number], default: [], required: true },
-      followings: { type: [Number], default: [], required: true },
-      avatar: { type: String },
-      description: { type: String },
+const ProfileSchema = new mongoose.Schema<ProfileDocument>(
+  {
+    uid: { type: Number, required: true },
+    username: { type: String, required: true },
+    followers: { type: [Number], default: [], required: true },
+    followings: { type: [Number], default: [], required: true },
+    avatar: {
+      dataURL: { type: String },
+      sizeType: { type: String },
     },
-    {
-      versionKey: false,
-    }
-  )
+    description: { type: String },
+  },
+  {
+    versionKey: false,
+  }
 );
+ProfileSchema.index({ username: 'text' });
+const ProfileModel = mongoose.model('profile', ProfileSchema);
 
 interface PostDocument extends Post, Document {
   _doc?: Post;

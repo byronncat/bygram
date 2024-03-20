@@ -1,4 +1,4 @@
-import styles from '@sass/component/loading.module.sass';
+import styles from '@styles/component/loading.module.sass';
 import clsx from 'clsx';
 
 function Loading() {

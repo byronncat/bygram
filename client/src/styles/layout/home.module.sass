@@ -1,11 +1,6 @@
 @use '../utils.sass'
 
 $text-color: var(--color-wild-sand)
-$image-edge: 740px
-$form-width: 400px
-$header-height: 40px
-$upload-post-width: $form-width + $image-edge
-$border-width: 2px
 
 .posts-wrapper
   width: 100%
@@ -71,25 +66,3 @@ $background-color: var(--color-black-pearl-07)
   &-content
     width: utils.pxToRem(500)
     border-left: utils.pxToRem(1) solid white
-
-.frame
-  width: $upload-post-width + 2*$border-width
-  height: $image-edge + $header-height + 2*$border-width
-  color: white
-  background: var(--color-black-pearl-07)
-  border: $border-width solid white
-
-.form
-  width: $form-width + $image-edge
-  height: $image-edge
-
-.header
-  width: 100%
-  height: $header-height
-  border-bottom: 1px solid white
-
-.content
-  $border-width: 1px
-  width: $form-width - $border-width
-  height: $image-edge
-  border-left: $border-width solid white

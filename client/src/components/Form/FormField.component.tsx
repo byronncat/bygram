@@ -1,4 +1,5 @@
 import { FormFieldProps } from '@types';
+import clsx from 'clsx';
 
 function FormField({
   type,
@@ -10,19 +11,26 @@ function FormField({
   className,
 }: FormFieldProps) {
   return (
-    <div className={className?.field}>
+    <div className={className?.formField}>
       <input
         key={name}
         type={type}
-        className={className?.input}
+        className={className?.formInput}
         id={name}
         placeholder={placeholder}
         {...register!(name, { ...validation })}
       />
-      <label className={className?.label} htmlFor={name}>
+      <label className={className?.formLabel} htmlFor={name}>
         {placeholder}
       </label>
-      <p className={className?.errorMessage}>{errors?.message}</p>
+      <p
+        className={clsx(
+          className?.formErrorMessage,
+          errors?.message && className?.formErrorMessageAnimation
+        )}
+      >
+        {errors?.message}
+      </p>
     </div>
   );
 }

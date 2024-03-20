@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useGlobal, useAuth, Overlay } from '@components';
+import { Overlay } from '@components';
+import { useGlobalContext, useStorageContext } from '@contexts';
 import axios from 'axios';
-import styles from '@sass/layout/home.module.sass';
+import styles from '@styles/post/upload.module.sass';
 import clsx from 'clsx';
 
 function UploadPost({
-  closeFunction,
+  onExit,
   api,
   method,
   post,
 }: {
-  closeFunction: React.Dispatch<React.SetStateAction<boolean>>;
+  onExit: () => void;
   api: string;
   method: 'post' | 'put';
   post?: any;
 }) {
-  const { displayToast } = useGlobal();
-  const { authentication } = useAuth();
+  const { displayToast } = useGlobalContext();
+  const { authenticationStorage } = useStorageContext();
   const {
     register,
     handleSubmit,
@@ -32,8 +33,8 @@ function UploadPost({
   if (errors.file) displayToast('Please select an image', 'error');
 
   const submitForm = (data: any) => {
-    closeFunction(false);
-    const id = authentication.user!.id;
+    onExit();
+    const id = authenticationStorage.user!.id;
     const formData = new FormData();
     if (post && data.file !== post.imgURL) {
       formData.append('oldImgURL', post.imgURL);
@@ -58,7 +59,7 @@ function UploadPost({
   }, [post]);
 
   return (
-    <Overlay closeFunction={closeFunction}>
+    <Overlay onExit={onExit}>
       <div className={clsx(styles.frame, 'rounded')}>
         <h3 className={clsx(styles.header, 'm-0', 'text-center')}>Create new post</h3>
         <form className={styles.form} onSubmit={handleSubmit(submitForm)}>

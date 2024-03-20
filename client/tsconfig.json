@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    // "target": "es5",
     "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -18,8 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@*": ["./src/*"],
-      "@sass/*": ["./src/sass/*"]
+      "@*": ["./src/*"]
     }
   },
   "include": ["src"]

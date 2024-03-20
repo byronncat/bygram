@@ -1,12 +1,12 @@
-import { Authentication, Global } from '@components';
+import { Storage, Global } from '@contexts';
 import Router from './router';
 
 function App() {
   return (
     <Global>
-      <Authentication>
+      <Storage>
         <Router />
-      </Authentication>
+      </Storage>
     </Global>
   );
 }

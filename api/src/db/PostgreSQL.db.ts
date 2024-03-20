@@ -1,5 +1,5 @@
 import { logger } from '@utils';
-import { PostgreSQL } from './types';
+import { PostgreSQL } from '@types';
 
 const initOptions = {
   /* initialization options */

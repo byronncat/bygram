@@ -1,10 +1,10 @@
-export { default as Global, useGlobal } from './global.component';
+export { default as Arrow } from './common/arrow.component';
+export { default as Sidebar } from './common/sidebar.component';
+export { default as SearchSide } from './common/searchSide.component';
 export { default as Form } from './form/form.component';
-export { default as Sidebar } from './sidebar.component';
-export { default as Authentication, useAuth } from './authentication.component';
 export { default as PostUploadWindow } from './post/uploadView.component';
 export { default as Menu } from './common/menu.component';
-export { default as Overlay } from './overlay.component';
+export { default as Overlay } from './common/overlay.component';
 export { default as PostWindow } from './post/windowView.component';
 export { default as PostsVerticalView } from './post/verticalView.component';
 export { default as Loading } from './common/loading.component';

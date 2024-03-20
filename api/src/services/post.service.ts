@@ -1,9 +1,9 @@
 import { accountService, fileService } from '@services';
-import { logger } from '@utils';
+import { isEmptyObject, logger } from '@utils';
 import { fileDB } from '@db';
 import { PostModel, PostDocument } from '@db/schema.mongodb';
 import { Account, Post } from '@types';
-import { CloudinaryCreateResponse } from '@db/types';
+import { CloudinaryUploadResponse } from '@types';
 import { PostData } from './types';
 import { log } from 'console';
 
@@ -26,7 +26,7 @@ async function getManyByID(post: PostQuery): Promise<PostData[]> {
           id: post._id.toString(),
           uid: post.uid,
           username: profile.username,
-          avatar: profile.avatar,
+          avatar: isEmptyObject(profile.avatar) ? undefined : profile.avatar,
           content: post.content,
           file: post.file,
           createdAt: post.createdAt,
@@ -42,7 +42,7 @@ async function getManyByID(post: PostQuery): Promise<PostData[]> {
 }
 
 async function create(post: Post, file: Express.Multer.File): Promise<PostDocument | null> {
-  const fileUpload = await fileService.addImage(file, `social-media-app/${post.uid}`);
+  const fileUpload = await fileService.addImage(file, post.uid);
   if (!fileUpload) return Promise.reject('Image upload failed');
   const returnValue = await PostModel.create({
     uid: post.uid,
@@ -65,6 +65,32 @@ async function removeByID(postId: PostData['id']): Promise<PostDocument | null> 
   return await PostModel.findByIdAndDelete(postId);
 }
 
+async function exploreByID(id: Account['id']): Promise<PostData[] | null> {
+  if (!id) return Promise.reject('No user id provided');
+  const followings = await accountService.getFollowingsByID(id);
+  const posts = await PostModel.aggregate([
+    { $match: { uid: { $nin: [...followings!, +id] } } },
+    { $sample: { size: 100 } },
+  ]);
+  return await Promise.all(
+    posts.map(async (post: PostDocument) => {
+      const profile = await accountService.getProfileByID(post.uid);
+      if (!profile) return Promise.reject('Profile not found');
+      return {
+        id: post._id.toString(),
+        uid: post.uid,
+        username: profile.username,
+        avatar: isEmptyObject(profile.avatar) ? undefined : profile.avatar,
+        content: post.content,
+        file: post.file,
+        createdAt: post.createdAt,
+        likes: post.likes,
+        comments: post.comments,
+      } as PostData;
+    })
+  );
+}
+
 // ! Need to maintain
 
 async function update(post: any) {
@@ -75,28 +101,12 @@ async function replaceImage(_id: any, imgURL: string) {
   return await PostModel.findByIdAndUpdate(_id, { imgURL });
 }
 
-async function getExplorePosts(id: number) {
-  // ! Weird type error
-  const followings = await accountService.getFollowings(id);
-  const posts = await PostModel.aggregate([
-    { $match: { uid: { $nin: [...followings!, +id] } } },
-    { $sample: { size: 100 } },
-  ]);
-  const returnPosts = await Promise.all(
-    posts.map(async (post) => {
-      post.name = await accountService.getName(post.uid);
-      return post;
-    })
-  );
-  return returnPosts;
-}
-
 export default {
   getManyByID,
   create,
   removeByID,
+  exploreByID,
   // Test
   update,
   replaceImage,
-  getExplorePosts,
 };
