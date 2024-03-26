@@ -7,7 +7,7 @@ import { useGlobalContext, useStorageContext } from '@contexts';
 import { useAuthLayoutContext } from '@layouts';
 import { registerAPI } from '@services';
 import { registerField } from '../../constants';
-import { AuthenticationInformation, FormFieldProps } from '@types';
+import { AuthenticationInformation } from '@types';
 import styles from '@styles/layout/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
@@ -35,7 +35,6 @@ function RegisterPage() {
       navigate('/');
     }
     displayToast(response.message, response.success ? 'success' : 'error');
-    console.log(response);
   };
 
   return (

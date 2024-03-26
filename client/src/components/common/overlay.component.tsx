@@ -1,34 +1,27 @@
 import clsx from 'clsx';
 import styles from '@styles/component/overlay.module.sass';
+import { ReactProps } from '@types';
 
-function Overlay({
-  children,
-  onExit,
-}: {
-  children: React.ReactNode;
-  onExit: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+interface OverlayProps extends ReactProps {
+  zIndex?: number;
+}
+function Overlay({ children, onExit, zIndex = 1 }: OverlayProps) {
   return (
     <div
       data-bs-theme="dark"
       className={clsx(
         styles.wrapper,
-        'position-absolute top-0 start-0 z-1',
+        `position-absolute top-0 start-0 z-${zIndex}`,
         'w-100 h-100',
         'd-flex justify-content-center align-items-center'
       )}
     >
-      <span
-        className={styles.overlay}
-        onClick={() => {
-          onExit(false);
-        }}
-      />
+      <span className={styles.overlay} onClick={onExit} />
       <button
         type="button"
         className={clsx('shadow-none', 'btn-close', 'position-absolute top-0 end-0', 'p-4')}
         aria-label="Close"
-        onClick={() => onExit(false)}
+        onClick={onExit}
       ></button>
       {children}
     </div>

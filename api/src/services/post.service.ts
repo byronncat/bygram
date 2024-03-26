@@ -1,11 +1,8 @@
+import mongoose from 'mongoose';
 import { accountService, fileService } from '@services';
 import { isEmptyObject, logger } from '@utils';
-import { fileDB } from '@db';
 import { PostModel, PostDocument } from '@db/schema.mongodb';
-import { Account, Post } from '@types';
-import { CloudinaryUploadResponse } from '@types';
-import { PostData } from './types';
-import { log } from 'console';
+import { Account, PostData, Post, CommentData } from '@types';
 
 interface PostQuery extends Omit<Post, 'uid'> {
   uid?: Account['id'] | Account['id'][];
@@ -41,31 +38,54 @@ async function getManyByID(post: PostQuery): Promise<PostData[]> {
   }
 }
 
-async function create(post: Post, file: Express.Multer.File): Promise<PostDocument | null> {
-  const fileUpload = await fileService.addImage(file, post.uid);
-  if (!fileUpload) return Promise.reject('Image upload failed');
-  const returnValue = await PostModel.create({
+async function create(post: Post, file: Express.Multer.File): Promise<PostDocument> {
+  const fileUpload = await fileService
+    .addImage(file, post.uid)
+    .catch((error) => Promise.reject(error));
+  return await PostModel.create({
     uid: post.uid,
     content: post.content,
     file: {
       dataURL: fileUpload.secure_url,
       sizeType: fileUpload.sizeType,
     },
+  }).catch((error) => {
+    fileService.deleteImage(fileUpload.secure_url);
+    return Promise.reject(error);
   });
-  return returnValue;
+}
+
+async function updateByID(
+  postId: PostData['id'],
+  post: PostData,
+  file: Express.Multer.File | undefined
+): Promise<PostDocument | null> {
+  const _id = new mongoose.Types.ObjectId(postId);
+  if (file) {
+    const oldFile = (await PostModel.findById(_id)
+      .select('file')
+      .catch((error) => Promise.reject(error))) as PostDocument;
+    if (!oldFile) return Promise.reject('Post not found');
+    const fileUpload = await fileService
+      .replaceImage(file, oldFile.file!.dataURL!)
+      .catch((error) => Promise.reject(error));
+    post.file = {
+      dataURL: fileUpload.secure_url,
+      sizeType: fileUpload.sizeType,
+    };
+  }
+  return await PostModel.findByIdAndUpdate(_id, post);
 }
 
 async function removeByID(postId: PostData['id']): Promise<PostDocument | null> {
   const deletedPost = await PostModel.findById(postId);
   if (!deletedPost) return Promise.reject('Post not found');
-
   const success = await fileService.deleteImage(deletedPost.file!.dataURL!);
   if (!success) return Promise.reject('Image deletion failed');
-
   return await PostModel.findByIdAndDelete(postId);
 }
 
-async function exploreByID(id: Account['id']): Promise<PostData[] | null> {
+async function exploreByID(id: Account['id']): Promise<PostData[]> {
   if (!id) return Promise.reject('No user id provided');
   const followings = await accountService.getFollowingsByID(id);
   const posts = await PostModel.aggregate([
@@ -91,22 +111,63 @@ async function exploreByID(id: Account['id']): Promise<PostData[] | null> {
   );
 }
 
-// ! Need to maintain
-
-async function update(post: any) {
-  return await PostModel.findByIdAndUpdate(post._id, post);
+async function likeByID(uid: Account['id'], postId: PostData['id']): Promise<PostDocument | null> {
+  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+  if (!post) return Promise.reject('Post not found');
+  const liked = post.likes!.includes(uid);
+  if (liked) post.likes = post.likes!.filter((id) => id !== uid);
+  else post.likes!.push(uid);
+  return await post.save();
 }
 
-async function replaceImage(_id: any, imgURL: string) {
-  return await PostModel.findByIdAndUpdate(_id, { imgURL });
+async function addCommentByID(
+  uid: Account['id'],
+  postId: PostData['id'],
+  content: Post['comments']
+): Promise<PostDocument | null> {
+  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+  if (!post) return Promise.reject('Post not found');
+  post.comments!.push({ uid, content });
+  return await post.save();
+}
+
+async function getCommentsByID(postId: PostData['id']): Promise<CommentData[] | null> {
+  const post = await PostModel.findById(postId).select('comments');
+  if (!post) return Promise.reject('Post not found');
+  return await Promise.all(
+    post.comments!.map(async (comment) => {
+      const profile = await accountService.getProfileByID(comment.uid);
+      if (!profile) return Promise.reject('Profile not found');
+      return {
+        id: comment._id.toString(),
+        uid: comment.uid,
+        username: profile.username,
+        avatar: isEmptyObject(profile.avatar) ? undefined : profile.avatar,
+        content: comment.content,
+        createdAt: comment.createdAt,
+      };
+    })
+  );
+}
+
+async function removeCommentByID(
+  postId: PostData['id'],
+  commentId: CommentData['id']
+): Promise<PostDocument | null> {
+  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+  if (!post) return Promise.reject('Post not found');
+  post.comments = post.comments!.filter((comment) => comment._id != commentId);
+  return await post.save();
 }
 
 export default {
   getManyByID,
   create,
+  updateByID,
   removeByID,
   exploreByID,
-  // Test
-  update,
-  replaceImage,
+  likeByID,
+  addCommentByID,
+  getCommentsByID,
+  removeCommentByID,
 };

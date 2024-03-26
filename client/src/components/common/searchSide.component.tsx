@@ -2,89 +2,104 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
-import axios from 'axios';
 import { useGlobalContext, useStorageContext } from '@contexts';
-import { ReactProps } from '@types';
+import { searchProfile } from '@services';
+import { Profile, ReactProps } from '@types';
 import styles from '@styles/component/search.module.sass';
 
+const defaultAvatar =
+  'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png';
 function SearchSide({ className, onExit }: ReactProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResult, setSearchResult] = useState([] as Profile[]);
   const { register } = useForm();
   const { authenticationStorage } = useStorageContext();
   const { displayToast } = useGlobalContext();
 
   function inputHandler(event: any) {
     var lowerCase = event.target.value.toLowerCase();
-    setSearchTerm(lowerCase);
+    setSearchInput(lowerCase);
   }
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm) {
-        // ! searchTarm if empty became /api/profile/search match wrong route
-        axios
-          .get(`/api/profile/search/${searchTerm}`)
-          .then((res) => {
-            console.log(res.data.data);
-            setSearchResult(res.data.data);
-          })
-          .catch((error: any) => {
-            displayToast('error', error.response.data.message);
-          });
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchInput) {
+        // ! searchInput if empty became /api/profile/search match wrong route
+        const response = await searchProfile(searchInput);
+        if (response.success && response.data) setSearchResult(response.data);
+        else displayToast(response.message, 'error');
       }
     }, 1000);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, displayToast]);
+    return () => {
+      setSearchResult([]);
+      clearTimeout(delayDebounceFn);
+    };
+  }, [searchInput, displayToast]);
 
   return (
     <>
+      {className && (
+        <div
+          className={clsx('h-100 w-100', 'position-absolute top-0 start-0 z-1')}
+          onClick={() => {
+            if (onExit) onExit();
+          }}
+        />
+      )}
       <div
         className={clsx(
           styles['search-wrapper'],
           'h-100 px-4 py-3',
+          'd-flex flex-column',
           'float-start',
           'position-absolute top-0 z-2',
           className
         )}
         style={{ background: 'var(--color-black-pearl-07)' }}
+        onClick={(event) => event.stopPropagation()}
       >
+        <span className={clsx(styles['brand-name'], 'd-block', 'text-capitalize fs-2 fw-bold')}>
+          search
+        </span>
         <textarea
-          className={clsx(styles['search-input'], 'w-100', 'border-0', 'p-2', 'rounded-3')}
+          className={clsx(styles['search-input'], 'w-100', 'p-2 my-4')}
           placeholder="What's on your mind?"
+          spellCheck="false"
           {...register('search')}
           onChange={inputHandler}
-        ></textarea>
-        {searchResult.map((result: any) => {
-          return (
-            <Link
-              to={
-                `/profile/${result.uid}` +
-                (result.uid !== result.user?.id ? `?ruid=${authenticationStorage.user?.id}` : '')
-              }
-              key={result.uid}
-              className={clsx('d-block', 'text-reset', 'text-capitalize')}
-              onClick={() => {
-                localStorage.setItem('activeLink', 'profile');
-                if (onExit) onExit();
-              }}
-            >
-              <div className="d-flex align-items-center">
+        />
+        <div className={clsx(styles['result-panel'], 'flex-fill overflow-y-scroll')}>
+          {searchResult.map((result: any, index) => {
+            if (result.uid === authenticationStorage.user?.id) return null;
+            return (
+              <Link
+                to={`/profile/${result.uid}`}
+                key={index}
+                className={clsx(
+                  styles.link,
+                  'd-flex align-items-center',
+                  'my-3',
+                  'text-capitalize'
+                )}
+                onClick={() => {
+                  localStorage.setItem('activeLink', 'profile');
+                  if (onExit) onExit();
+                }}
+              >
                 <span className={clsx(styles['link-avatar'], 'rounded-circle', 'overflow-hidden')}>
                   <img
-                    src={result.avatar.dataURL}
+                    src={result.avatar?.dataURL || defaultAvatar}
                     className={
-                      result.avatar.sizeType === 'Landscape' ? 'h-100 w-auto' : 'h-auto w-100'
+                      result.avatar?.sizeType === 'landscape' ? 'h-100 w-auto' : 'h-auto w-100'
                     }
                     alt="avatar"
                   />
                 </span>
-                <span className={clsx('ms-2', 'fs-5')}>{result.username}</span>
-              </div>
-            </Link>
-          );
-        })}
+                <p className={clsx('ms-2', 'fs-5')}>{result.username}</p>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </>
   );

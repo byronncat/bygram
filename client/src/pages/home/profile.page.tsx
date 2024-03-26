@@ -1,104 +1,67 @@
+import { useState, useEffect, useRef } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import clsx from 'clsx';
 import { PostWindow, Loading, Overlay, Menu } from '@components';
 import { useGlobalContext, useStorageContext } from '@contexts';
-import axios, { AxiosResponse } from 'axios';
-import { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
-import { useForm } from 'react-hook-form';
-import { useParams, useSearchParams } from 'react-router-dom';
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import { AvatarAPI } from './types';
-import { Profile } from '@types';
+import { changeAvatar, follow, getProfile, removeAvatar, unfollow } from '@services';
+import { MenuItem, PostData, ProfileData } from '@types';
 import styles from '@styles/page/profile.module.sass';
-
-interface ProfilePageProps extends Profile {
-  _id: string;
-  description?: string;
-  posts: any[];
-  isFollowing?: boolean;
-}
 
 const defaultAvatar =
   'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png';
 function ProfilePage() {
   const [ready, setReady] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [profile, setProfile] = useState({} as ProfilePageProps);
+  const [profile, setProfile] = useState({} as ProfileData);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
-  const [currentPost, setCurrentPost] = useState({} as any);
+  const [currentPost, setCurrentPost] = useState({} as PostData);
   const [showCurrentPost, setShowCurrentPost] = useState(false);
   const { authenticationStorage } = useStorageContext();
   const { displayToast } = useGlobalContext();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<{ file: FileList }>();
 
-  const changeAvatar = async (data: any) => {
-    const uid = authenticationStorage.user!.id;
-    const formData = new FormData();
-    formData.append('file', data.file[0]);
-    formData.append('uid', uid!.toString());
-    await axios
-      .put('/api/profile/avatar', formData)
-      .then((result: AxiosResponse) => {
-        const response = result.data as AvatarAPI;
-        setProfile({ ...profile, avatar: response.data });
-        displayToast(response.message, response.success ? 'success' : 'error');
-        setRefresh(!refresh);
-      })
-      .catch((error: any) => displayToast(error.response.data.message, 'error'));
+  const changeAvatarHandler: SubmitHandler<{ file: FileList }> = async (data) => {
+    const response = await changeAvatar(authenticationStorage.user!.id, data.file[0]);
+    if (response.success) setRefresh(!refresh);
+    displayToast(response.message, response.success ? 'success' : 'error');
   };
 
-  const removeAvatar = async () => {
+  const removeAvatarHandler = async () => {
     setShowAvatarMenu(false);
-    await axios
-      .put('/api/profile/avatar?type=remove', { uid: authenticationStorage.user!.id })
-      .then((result: AxiosResponse) => {
-        const response = result.data as AvatarAPI;
-        const { avatar, ...rest } = profile;
-        setProfile(rest);
-        displayToast(response.message, response.success ? 'success' : 'error');
-        setRefresh(!refresh);
-      })
-      .catch((error: any) => displayToast(error.response.data.message, 'error'));
+    const response = await removeAvatar(authenticationStorage.user!.id);
+    if (response.success) setRefresh(!refresh);
+    displayToast(response.message, response.success ? 'success' : 'error');
   };
 
-  function follow() {
-    axios
-      .put('/api/profile/follow', { uid: authenticationStorage.user?.id, target: profile.uid })
-      .then((res) => {
-        displayToast(res.data.message, 'success');
-        setRefresh(!refresh);
-      });
+  async function followHandler() {
+    const response = await follow(authenticationStorage.user!.id, profile.uid);
+    if (response.success) setRefresh(!refresh);
+    displayToast(response.message, response.success ? 'success' : 'error');
   }
 
-  function unfollow() {
-    axios
-      .put('/api/profile/unfollow', { uid: authenticationStorage.user?.id, target: profile.uid })
-      .then((res) => {
-        displayToast(res.data.message, 'success');
-        setRefresh(!refresh);
-      });
+  async function unfollowHandler() {
+    const response = await unfollow(authenticationStorage.user!.id, profile.uid);
+    if (response.success) setRefresh(!refresh);
+    displayToast(response.message, response.success ? 'success' : 'error');
   }
 
   const { uid } = useParams();
-  const [searchParams] = useSearchParams();
   useEffect(() => {
-    const ruid = searchParams.get('ruid');
-    axios
-      .get(`/api/profile/${uid}`, { params: { ruid } })
-      .then((res) => {
-        const response = res.data;
+    (async function fetchProfile() {
+      const response = await getProfile(uid as unknown as number);
+      if (response.success && response.data) {
         setReady(true);
         setProfile(response.data);
-        console.log(response.data);
-      })
-      .catch((err) => {
-        displayToast(err.response.data.message, 'error');
-      });
-  }, [refresh, uid, authenticationStorage.user, displayToast, searchParams]);
+      } else displayToast(response.message, 'error');
+    })();
+  }, [refresh, uid, displayToast]);
 
   const inpurRef = useRef<HTMLInputElement | null>(null);
   const { ref, ...rest } = register('file', {
     onChange: (data) => {
-      handleSubmit(changeAvatar)();
+      handleSubmit(changeAvatarHandler)();
     },
     required: true,
   });
@@ -106,28 +69,29 @@ function ProfilePage() {
   const avatarMenu = [
     {
       name: 'Remove avatar',
-      function: () => removeAvatar(),
+      functionHandler: () => removeAvatarHandler(),
     },
     {
       name: 'Upload avatar',
-      function: () => {
+      functionHandler: () => {
         inpurRef.current?.click();
         setShowAvatarMenu(false);
       },
     },
     {
       name: 'Cancel',
-      function: () => setShowAvatarMenu(false),
+      functionHandler: () => setShowAvatarMenu(false),
     },
-  ];
+  ] as MenuItem[];
 
-  return !ready ? (
-    <Loading />
-  ) : (
+  if (!ready) return <Loading />;
+  return (
     <>
-      {showCurrentPost && <PostWindow post={currentPost} onExit={setShowCurrentPost} />}
+      {showCurrentPost && (
+        <PostWindow post={currentPost} onExit={() => setShowCurrentPost(false)} />
+      )}
       {showAvatarMenu && (
-        <Overlay onExit={setShowAvatarMenu}>
+        <Overlay onExit={() => setShowAvatarMenu(false)}>
           <Menu list={avatarMenu} />
         </Overlay>
       )}
@@ -143,7 +107,7 @@ function ProfilePage() {
             )}
           >
             <img
-              className={profile.avatar?.sizeType === 'Landscape' ? 'w-auto h-100' : 'w-100 h-auto'}
+              className={profile.avatar?.sizeType === 'landscape' ? 'w-auto h-100' : 'w-100 h-auto'}
               src={'avatar' in profile ? profile.avatar!.dataURL : defaultAvatar}
               alt="profile"
               onClick={
@@ -174,17 +138,17 @@ function ProfilePage() {
             <div className={clsx('d-flex align-items-center', 'my-3')}>
               <h2 className={clsx('m-0 me-5', 'fs-3 lh-1')}>{profile.username}</h2>
               {profile.uid !== authenticationStorage.user?.id &&
-                (profile.isFollowing ? (
+                (profile.followers?.includes(authenticationStorage.user!.id) ? (
                   <button
                     className={clsx(styles['following-button'], 'd-block rounded', 'px-2 py-1')}
-                    onClick={unfollow}
+                    onClick={unfollowHandler}
                   >
                     Unfollow
                   </button>
                 ) : (
                   <button
                     className={clsx(styles['following-button'], 'd-block rounded', 'px-2 py-1')}
-                    onClick={follow}
+                    onClick={followHandler}
                   >
                     Follow
                   </button>
@@ -193,7 +157,7 @@ function ProfilePage() {
 
             <ul className="d-flex p-0">
               <li className={clsx('list-unstyled', 'me-4')}>
-                <span className="pe-1 fw-bolder">{profile.posts.length}</span>
+                <span className="pe-1 fw-bolder">{profile.posts?.length}</span>
                 posts
               </li>
               <li className={clsx('list-unstyled', 'me-4')}>
@@ -211,7 +175,7 @@ function ProfilePage() {
         </header>
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
           <Masonry gutter="8px">
-            {profile.posts.map((post: any, index: number) => {
+            {profile.posts?.map((post: any, index: number) => {
               return (
                 <img
                   className="img-fluid"

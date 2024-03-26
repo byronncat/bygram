@@ -3,56 +3,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { PostUploadWindow, SearchSide } from '@components';
 import { useStorageContext } from '@contexts';
-import { ReactProps } from '@types';
+import { ReactProps, SidebarLink } from '@types';
 import styles from '@styles/component/sidebar.module.sass';
 import searchStyles from '@styles/component/search.module.sass';
 import effects from '@styles/effects.module.sass';
 
-type SidebarBtn = 'home' | 'search' | 'explore' | 'create post' | 'profile' | 'logout';
-interface SidebarLink {
-  name: SidebarBtn;
-  icon: string;
-  path: string;
-  notActive?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-  onExit?: () => void;
-}
 function Sidebar() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState<SidebarBtn>(getActiveLink());
   const [minimize, setMinimize] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const { setAuthenticationStorage } = useStorageContext();
+  const { setAuthenticationStorage, activeLink, setActiveLink, getActiveLink, handleActiveLink } =
+    useStorageContext();
 
   function logoutHandler(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     setAuthenticationStorage({ user: null, isAuthenticated: false });
     localStorage.removeItem('activeLink');
+    setActiveLink('home');
     navigate('/login');
-  }
-
-  function getActiveLink() {
-    let activeLink;
-    if (localStorage.getItem('activeLink'))
-      activeLink = localStorage.getItem('activeLink') as SidebarBtn;
-    else return 'home';
-    const notActive = ['create post', 'logout', 'search'];
-    if (notActive.includes(activeLink))
-      activeLink = localStorage.getItem('previousLink') as SidebarBtn;
-    return activeLink;
-  }
-
-  function handleActiveLink(name: SidebarBtn) {
-    const notActive = ['create post', 'logout', 'search'];
-    if (!notActive.includes(name)) localStorage.setItem('previousLink', name);
-    setActiveLink(name);
   }
 
   useLayoutEffect(() => {
     setActiveLink(activeLink);
-  }, [activeLink]);
+  }, [activeLink, setActiveLink]);
 
   const sidebarLinks = [
     {
@@ -116,7 +91,6 @@ function Sidebar() {
             createPostExitHandler();
             handleActiveLink(getActiveLink());
           }}
-          api="/api/post/create"
           method="post"
         />
       )}

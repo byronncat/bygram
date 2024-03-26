@@ -1,4 +1,4 @@
-import { useContext, createContext, useCallback } from 'react';
+import { useState, useContext, createContext, useCallback } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { ReactProps, ToastTypeStrings } from '@types';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,16 +8,19 @@ import '@styles/global.sass';
 const GlobalContext = createContext(
   {} as {
     displayToast: (message: string, type: ToastTypeStrings) => void;
+    refresh: boolean;
+    setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
   }
 );
 
 function Global({ children }: ReactProps) {
+  const [refresh, setRefresh] = useState(false);
   const displayToast = useCallback((message: string, type: ToastTypeStrings) => {
     toast[type](message);
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ displayToast }}>
+    <GlobalContext.Provider value={{ refresh, setRefresh, displayToast }}>
       <ToastContainer
         position="top-right"
         autoClose={10000}

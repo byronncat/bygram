@@ -1,33 +1,37 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-
-import { PostWindow } from '@components';
-import { useStorageContext } from '@contexts';
+import { PostWindow, Loading } from '@components';
+import { useGlobalContext, useStorageContext } from '@contexts';
+import { explorePost } from '@services';
+import { Post } from '@types';
+import clsx from 'clsx';
+import styles from '@styles/page/explore.module.sass';
 
 function ExplorePage() {
+  const { displayToast } = useGlobalContext();
   const { authenticationStorage } = useStorageContext();
-  const [refresh] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const [ready, setReady] = useState(false);
+  const [post, setPost] = useState({} as any);
+  const [showPost, setShowPost] = useState(false);
+  const [posts, setPosts] = useState([] as Post[]);
 
   useEffect(() => {
-    axios
-      .get('/api/post/explore', { params: { uid: authenticationStorage.user?.id } })
-      .then((res: any) => {
-        setPosts(res.data.posts);
-      })
-      .catch((err: any) => {
-        console.log(err.response);
-      });
-  }, [refresh, authenticationStorage]);
-
-  const [showPost, setShowPost] = useState(false);
-  const [post, setPost] = useState({} as any);
-
+    (async function FetchData() {
+      const response = await explorePost(authenticationStorage.user!.id);
+      if (response.success && response.data) {
+        setPosts(response.data);
+        setReady(true);
+      } else displayToast(response.message, 'error');
+    })();
+  }, [ready, authenticationStorage, displayToast]);
+  if (!ready) return <Loading />;
   return (
     <>
-      {showPost && <PostWindow post={post} onExit={setShowPost} />}
-      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }} className="w-100">
+      {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 576: 1, 768: 2, 992: 3 }}
+        className={clsx(styles.wrapper, 'w-100 p-3')}
+      >
         <Masonry gutter="8px">
           {posts.map((post: any, index: number) => {
             return (

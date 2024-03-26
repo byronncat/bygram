@@ -1,40 +1,44 @@
 import { NextFunction, Request, Response } from 'express';
-import { accountService, fileService, postService } from '@services';
-import { API, Account, Post, Profile } from '@types';
-import mongoose, { ObjectId } from 'mongoose';
+import { accountService, postService } from '@services';
+import { API, Profile, PostData, PostAPI, CommentAPI } from '@types';
 
 // setting options for multer
 import multer from 'multer';
 import { logger } from '@utils';
-import { HomeAPI } from './types';
-import { PostData } from '@services/types';
 import { PostDocument } from '@db/schema.mongodb';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 async function getHomePosts(req: Request, res: Response, next: NextFunction) {
+  const { uid }: Profile = req.query;
+  if (!uid)
+    return res.status(409).json({
+      success: false,
+      message: 'No user id provided',
+    } as PostAPI);
   try {
-    const { uid }: Profile = req.query;
-    if (!uid) {
-      res.status(409).json({
-        success: false,
-        message: 'No user id provided',
-      } as API);
-    } else {
-      const followings = await accountService.getFollowingsByID(uid);
-      const posts = await postService.getManyByID({ uid: [uid, ...followings!] });
-      res.status(200).json({
-        success: true,
-        message: 'Posts retrieved',
-        data: posts,
-      } as HomeAPI);
-    }
+    const followings = await accountService.getFollowingsByID(uid);
+    return await postService
+      .getManyByID({ uid: [uid, ...followings!] })
+      .then((posts) =>
+        res.status(200).json({
+          success: true,
+          message: 'Posts retrieved',
+          data: posts,
+        } as PostAPI)
+      )
+      .catch((error) =>
+        res.status(404).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as PostAPI)
+      );
   } catch (error: any) {
     logger.error(`${error}`, 'Post controller');
     res.status(404).json({
       success: false,
       message: error.message,
-    } as API);
+    } as PostAPI);
   }
 }
 
@@ -45,70 +49,68 @@ async function explorePosts(req: Request, res: Response, next: NextFunction) {
       return res.status(409).json({
         success: false,
         message: 'No user id provided',
-      } as API);
-    } else {
-      const posts = await postService.exploreByID(uid);
-      res.status(200).json({
-        success: true,
-        message: 'Posts retrieved',
-        posts,
-      } as API);
+      } as PostAPI);
     }
+
+    return await postService
+      .exploreByID(uid)
+      .then((posts) =>
+        res.status(200).json({
+          success: true,
+          message: 'Posts retrieved',
+          data: posts,
+        } as PostAPI)
+      )
+      .catch((error) =>
+        res.status(404).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as PostAPI)
+      );
   } catch (error: any) {
-    console.log(`[Post Controller Error]: ${error}`);
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       message: error.message,
-    } as API);
+    } as PostAPI);
   }
 }
 
 async function createPost(req: Request, res: Response) {
-  try {
-    if (!req.file) {
-      res.status(409).json({
-        success: false,
-        message: 'No file uploaded',
-      } as API);
-    } else {
-      const postInfo = {
-        uid: req.body.uid,
-        content: req.body.content,
-      } as PostData;
-
-      postService
-        .create(postInfo, req.file)
-        .then((post: PostDocument | null) => {
-          if (!post) {
-            res.status(409).json({
-              success: false,
-              message: 'Post not uploaded',
-            } as API);
-          }
-          res.status(200).json({
-            success: true,
-            message: 'Post uploaded',
-          } as API);
-        })
-        .catch((error: any) => {
-          res.status(409).json({
-            success: false,
-            message: error.message,
-          } as API);
-        });
-    }
-  } catch (error) {
-    logger.error(`${error}`, 'Post controller');
-    res.status(500).json({
+  if (!req.file)
+    return res.status(409).json({
       success: false,
-      message: error,
+      message: 'No file uploaded',
+    } as API);
+  try {
+    const postInfo = {
+      uid: req.body.uid,
+      content: req.body.content,
+    } as PostData;
+    return postService
+      .create(postInfo, req.file)
+      .then((post: PostDocument) => {
+        return res.status(200).json({
+          success: true,
+          message: 'Post uploaded',
+        } as API);
+      })
+      .catch((error) =>
+        res.status(409).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as API)
+      );
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: JSON.stringify(error),
     } as API);
   }
 }
 
 async function deletePost(req: Request, res: Response, next: NextFunction) {
+  const postId: PostData['id'] = req.params.id;
   try {
-    const postId: PostData['id'] = req.params.id;
     const post = await postService.removeByID(postId);
     if (post) {
       res.status(200).json({
@@ -124,44 +126,156 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error,
+      message: JSON.stringify(error),
     } as API);
   }
 }
 
-// ! Need to maintain
-
 async function updatePost(req: Request, res: Response, next: NextFunction) {
   try {
-    const postInfo: any = {
-      _id: req.body._id as ObjectId,
-      author: req.body.author as number,
+    const postInfo: PostData = {
+      id: req.body.id as string,
       content: req.body.content as string,
     };
-    if (!req.file) {
-      await postService.update({ _id: postInfo._id, content: postInfo.content });
-      res.status(200).json({
-        success: true,
-        message: 'Post updated',
-      } as API);
-    } else {
-      const imgUrl = await fileService.replaceImage(
-        req.file,
-        req.body.oldImgURL as string,
-        `social-media-app/${postInfo.author}`
-      );
-      const id = new mongoose.Types.ObjectId(req.body._id);
-      await postService.replaceImage(id, imgUrl);
-      res.status(200).json({
-        success: true,
-        message: 'Post updated',
-      } as API);
-    }
+    return await postService
+      .updateByID(postInfo.id, { content: postInfo.content }, req.file)
+      .then((result) => {
+        if (result)
+          return res.status(200).json({
+            success: true,
+            message: 'Post updated',
+          } as API);
+        return res.status(409).json({
+          success: false,
+          message: 'Post not updated',
+        } as API);
+      });
   } catch (error) {
-    console.log(`[Post Controller Error]: ${error}`);
     res.status(500).json({
       success: false,
-      message: error,
+      message: JSON.stringify(error),
+    } as API);
+  }
+}
+
+async function likePost(req: Request, res: Response, next: NextFunction) {
+  const { uid, postID } = req.body;
+  try {
+    return await postService
+      .likeByID(uid, postID)
+      .then((result) => {
+        if (result)
+          return res.status(200).json({
+            success: true,
+            message: 'Post liked',
+          } as API);
+        return res.status(409).json({
+          success: false,
+          message: 'Post not liked',
+        } as API);
+      })
+      .catch((error) =>
+        res.status(409).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as API)
+      );
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: JSON.stringify(error),
+    } as API);
+  }
+}
+
+async function commentPost(req: Request, res: Response, next: NextFunction) {
+  const { uid, postID, content } = req.body;
+  try {
+    return await postService
+      .addCommentByID(uid, postID, content)
+      .then((result) => {
+        if (result)
+          return res.status(200).json({
+            success: true,
+            message: 'Post commented',
+          } as API);
+        return res.status(409).json({
+          success: false,
+          message: 'Post not commented',
+        } as API);
+      })
+      .catch((error) =>
+        res.status(409).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as API)
+      );
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: JSON.stringify(error),
+    } as API);
+  }
+}
+
+async function getComments(req: Request, res: Response, next: NextFunction) {
+  const postID: PostData['id'] = req.params.id;
+  try {
+    return await postService
+      .getCommentsByID(postID)
+      .then((comments) =>
+        res.status(200).json({
+          success: true,
+          message: 'Comments retrieved',
+          data: comments,
+        } as CommentAPI)
+      )
+      .catch((error) =>
+        res.status(409).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as CommentAPI)
+      );
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: JSON.stringify(error),
+    } as CommentAPI);
+  }
+}
+
+async function deleteComment(req: Request, res: Response, next: NextFunction) {
+  const { postID, commentID } = req.body;
+  console.log(postID, commentID);
+  if (!postID || !commentID)
+    return res.status(409).json({
+      success: false,
+      message: 'No post or comment id provided',
+    } as API);
+  try {
+    return await postService
+      .removeCommentByID(postID, commentID)
+      .then((result) => {
+        if (result)
+          return res.status(200).json({
+            success: true,
+            message: 'Comment deleted',
+          } as API);
+        return res.status(409).json({
+          success: false,
+          message: 'Comment not deleted',
+        } as API);
+      })
+      .catch((error: any) =>
+        res.status(409).json({
+          success: false,
+          message: JSON.stringify(error),
+        } as API)
+      );
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: JSON.stringify(error),
     } as API);
   }
 }
@@ -170,7 +284,10 @@ export default {
   home: [getHomePosts],
   explore: [explorePosts],
   createPost: [upload.single('file'), createPost],
-  deletePost: [deletePost],
-  //
   updatePost: [upload.single('file'), updatePost],
+  deletePost: [deletePost],
+  likePost: [likePost],
+  commentPost: [commentPost],
+  getComments: [getComments],
+  deleteComment: [deleteComment],
 };

@@ -1,6 +1,7 @@
-import { FormFieldProps } from '@types';
+import { deletePost, uploadPost } from '@services';
+import { FormFieldProps, PostData, PostUploadData, MenuItem } from '@types';
 
-const loginField: FormFieldProps[] = [
+export const loginField = [
   {
     name: 'email',
     type: 'email',
@@ -25,9 +26,9 @@ const loginField: FormFieldProps[] = [
       },
     },
   },
-];
+] as FormFieldProps[];
 
-const registerField: FormFieldProps[] = [
+export const registerField = [
   {
     name: 'email',
     type: 'email',
@@ -64,9 +65,9 @@ const registerField: FormFieldProps[] = [
       },
     },
   },
-];
+] as FormFieldProps[];
 
-const sendEmailField: FormFieldProps[] = [
+export const sendEmailField = [
   {
     name: 'email',
     type: 'email',
@@ -79,6 +80,24 @@ const sendEmailField: FormFieldProps[] = [
       },
     },
   },
-];
+] as FormFieldProps[];
 
-export { loginField, registerField, sendEmailField };
+export const authorPostMenu = [
+  {
+    name: 'Delete post',
+    function: async (id: PostData['id']) => await deletePost(id),
+  },
+  {
+    name: 'Edit',
+    function: async (post: PostUploadData) => await uploadPost(post, 'put'),
+  },
+] as MenuItem[];
+
+export const followPostMenu = [
+  {
+    name: 'Go to post',
+  },
+  {
+    name: 'About this account',
+  },
+] as MenuItem[];

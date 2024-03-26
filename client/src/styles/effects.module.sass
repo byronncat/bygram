@@ -27,6 +27,10 @@
   opacity: 0.5
   animation: flicker 1.5s 1 forwards
 
+// I C O N S
+.clicking-icon
+  &:hover
+
 .glowing
   animation: 0.8s ease-out infinite alternate glowing
   @keyframes glowing
@@ -63,35 +67,6 @@
 
 .flicker-lite
   animation: flicker-lite 1s infinite alternate
-  @keyframes flicker-lite
-    0%
-      opacity: 1
-    13%
-      opacity: 0.9
-    30%
-      opacity: 1
-    38%
-      opacity: 0.9
-    45%
-      opacity: 1
-    53%
-      opacity: 0.9
-    60%
-      opacity: 1
-    67%
-      opacity: 0.9
-    73%
-      opacity: 1
-    82%
-      opacity: 0.9
-    90%
-      opacity: 1
-    93%
-      opacity: 0.9
-    97%
-      opacity: 0.9
-    100%
-      opacity: 1
 
 // Start of effect
 .glitch-1-content
@@ -238,11 +213,8 @@
   width: 350px
   text-align: center
   background-color: transparent
-  color: transparent
   text-shadow: 0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 25px var(--shinyColor),0 0 30px var(--shinyColor),0 0 40px var(--shinyColor),20px 0px 100px white
-  -webkit-text-stroke: 5px white
   font-size: 5em
-  font-family: sans-serif
   letter-spacing: 13px
   animation-name: flicker-1
   animation-duration: 3s

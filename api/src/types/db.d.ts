@@ -16,9 +16,9 @@ export interface Cloudinary {
 export interface CloudinaryUploadResponse {
   public_id?: string;
   url?: string;
-  secure_url?: string;
-  width?: number;
-  height?: number;
+  secure_url: string;
+  width: number;
+  height: number;
 }
 
 export interface CloudinaryDestroyResponse {

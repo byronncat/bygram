@@ -1,106 +1,148 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import clsx from 'clsx';
 import { Overlay } from '@components';
 import { useGlobalContext, useStorageContext } from '@contexts';
-import axios from 'axios';
+import { uploadPost } from '@services';
+import { PostData, ReactProps } from '@types';
 import styles from '@styles/post/upload.module.sass';
-import clsx from 'clsx';
 
-function UploadPost({
-  onExit,
-  api,
-  method,
-  post,
-}: {
-  onExit: () => void;
-  api: string;
+interface PostSubmitData {
+  file: FileList;
+  content: string;
+}
+
+interface UploadPostProps extends ReactProps {
   method: 'post' | 'put';
-  post?: any;
-}) {
-  const { displayToast } = useGlobalContext();
+  defaultPost?: PostData;
+}
+function UploadPost({ onExit, method, defaultPost, zIndex = 1 }: UploadPostProps) {
+  const defaultValues = {
+    content: defaultPost?.content || '',
+  } as PostSubmitData;
+  type Image = {
+    imgURL: string | ArrayBuffer | null;
+    sizeType: 'landscape' | 'portrait';
+  };
+  const [selectedImage, setSelectedImage] = useState<Image>({
+    imgURL: null,
+    sizeType: 'portrait',
+  });
+  const { displayToast, refresh, setRefresh } = useGlobalContext();
   const { authenticationStorage } = useStorageContext();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      file: post ? post.imgURL : '',
-      content: post ? post.content : '',
-    },
-  });
+  } = useForm({ defaultValues });
 
-  if (errors.file) displayToast('Please select an image', 'error');
-
-  const submitForm = (data: any) => {
-    onExit();
-    const id = authenticationStorage.user!.id;
-    const formData = new FormData();
-    if (post && data.file !== post.imgURL) {
-      formData.append('oldImgURL', post.imgURL);
-    }
-    if (post) {
-      formData.append('_id', post.id);
-    }
-    formData.append('file', data.file[0]);
-    formData.append('content', data.content);
-    formData.append('uid', id!.toString());
-    axios[method](api, formData)
-      .then((result: any) => displayToast(result.data.message, 'success'))
-      .catch((error: any) => displayToast(error.response.data.message, 'error'));
+  const submitForm: SubmitHandler<PostSubmitData> = async (data) => {
+    if (onExit) onExit();
+    let postData =
+      method === 'post'
+        ? {
+            uid: authenticationStorage.user!.id,
+            content: data.content,
+            file: data.file[0] as File,
+          }
+        : {
+            id: defaultPost!.id,
+            content: data.content,
+            file: data.file[0] as File,
+          };
+    const response = await uploadPost(postData, method);
+    setRefresh(!refresh);
+    displayToast(response.message, response.success ? 'success' : 'error');
   };
 
-  type variable = string | ArrayBuffer | null;
-  const [selectedImage, setSelectedImage] = useState<variable>(null);
-  useEffect(() => {
-    if (post) {
-      setSelectedImage(post.imgURL);
+  useLayoutEffect(() => {
+    if (defaultPost) {
+      setSelectedImage({ imgURL: defaultPost.file.dataURL, sizeType: defaultPost.file.sizeType });
     }
-  }, [post]);
+  }, [defaultPost]);
+
+  useEffect(() => {
+    if (errors.file) displayToast('Please select an image', 'error');
+  }, [errors.file, displayToast]);
 
   return (
-    <Overlay onExit={onExit}>
-      <div className={clsx(styles.frame, 'rounded')}>
-        <h3 className={clsx(styles.header, 'm-0', 'text-center')}>Create new post</h3>
-        <form className={styles.form} onSubmit={handleSubmit(submitForm)}>
-          <span className={clsx(styles.image, 'float-start', 'position-relative')}>
-            {selectedImage && (
-              <span className={clsx('w-100 h-100', 'position-relative start-0 top-0')}>
+    <Overlay onExit={onExit} zIndex={zIndex}>
+      <div
+        className={clsx(
+          styles.frame,
+          'rounded',
+          'd-flex flex-column',
+          'mw-100',
+          'position-relative'
+        )}
+      >
+        <h3 className={clsx(styles.header, 'm-0', 'text-center text-capitalize')}>
+          create new post
+        </h3>
+        <form
+          className={clsx(styles['form-wraper'], 'flex-fill', 'w-100')}
+          onSubmit={handleSubmit(submitForm)}
+        >
+          <div className={clsx(styles['image-wrapper'], 'float-start position-relative h-100')}>
+            <span
+              className={clsx(
+                styles.image,
+                'w-100 h-100',
+                'd-flex justify-content-center align-items-center',
+                'position-relative start-0 top-0',
+                'd-block'
+              )}
+            >
+              {selectedImage.imgURL ? (
                 <img
-                  src={selectedImage as string}
-                  className="d-block w-100 h-100 object-fit-contain"
-                  alt="Preview"
+                  src={selectedImage.imgURL as string}
+                  className={clsx(
+                    'd-block',
+                    selectedImage.sizeType === 'landscape' ? 'w-100 h-auto' : 'w-auto h-100'
+                  )}
+                  alt="preview"
                 />
-              </span>
-            )}
+              ) : (
+                <p className={clsx(styles['help-text'])}>Drag file or Click to upload image</p>
+              )}
+            </span>
             <input
               type="file"
               className={clsx('w-100 h-100', 'position-absolute top-0 start-0', 'opacity-0')}
               {...register('file', {
                 onChange: (e) => {
-                  console.log(e.target.files);
-                  const file = e.target.files[0];
-                  const reader = new FileReader();
-                  reader.onload = (event) => {
-                    setSelectedImage(event.target!.result);
-                  };
-                  reader.readAsDataURL(file);
+                  if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const img = new Image();
+                      img.src = event.target!.result as string;
+                      img.onload = () => {
+                        const sizeType = img.width > img.height ? 'landscape' : 'portrait';
+                        setSelectedImage({ imgURL: img.src, sizeType });
+                      };
+                    };
+                    reader.readAsDataURL(file);
+                  }
                 },
-                required: selectedImage ? false : true,
+                required: method === 'post',
               })}
             />
-          </span>
-          <span className={clsx(styles.content, 'float-end')}>
+          </div>
+          <div className={clsx(styles.content, 'float-end', 'h-100')}>
             <textarea
-              className="w-100"
+              className={clsx(styles['text-zone'], 'w-100 h-50 px-2 py-3')}
               placeholder="What's on your mind?"
               rows={3}
               {...register('content')}
             ></textarea>
-            <button type="submit" className="btn btn-primary mt-3">
+            <button
+              type="submit"
+              className={clsx(styles.submit, 'position-absolute top-0 end-0', 'pe-3', 'fs-5')}
+            >
               Share
             </button>
-          </span>
+          </div>
         </form>
       </div>
     </Overlay>

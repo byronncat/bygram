@@ -1,5 +1,6 @@
 @use './effects.module.sass'
 @use './fonts.sass'
+@use './utils.sass' as utils
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
 @import '~bootstrap/scss/bootstrap'
 
@@ -35,3 +36,19 @@ html, body, #root
   width: 100%
   font-family: $global-font-family
   box-sizing: border-box
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+*
+  scrollbar-width: thin
+  scrollbar-color: var(--main-color) transparent
+
+/* Chrome, Edge, and Safari */
+::-webkit-scrollbar
+  width: utils.pxToRem(4)
+  background-color: var(--color-black-pearl-07)
+::-webkit-scrollbar-track
+  border-radius: utils.pxToRem(2)
+  background-color: var(--color-black-pearl-07)
+::-webkit-scrollbar-thumb
+  background-color: var(--main-color)

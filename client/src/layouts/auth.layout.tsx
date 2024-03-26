@@ -22,7 +22,8 @@ function AuthLayout() {
   const backgroundImageURL = '/imgs/night-neon.jpg';
   const { authenticationStorage } = useStorageContext();
   const [title, setTitle] = useState('');
-  const [side, setSide] = useState<Direction>('left');
+  const [side, setSide] = useState<Direction>('right');
+  /* eslint-disable */
   function toggleSideHandler(event: React.MouseEvent) {
     setSide(side === 'left' ? 'right' : 'left');
     event.preventDefault();
@@ -51,7 +52,7 @@ function AuthLayout() {
           )}
         >
           <Title data={title} />
-          <SwitchSideButton onClick={toggleSideHandler} direction={side} />
+          {/* <SwitchSideButton onClick={toggleSideHandler} direction={side} /> */}
           <PanelBackground />
           <Brand />
           <Outlet context={{ setTitle }} />
@@ -80,6 +81,7 @@ function Title({ data }: { data: string }) {
 interface SwitchSideButtonProps extends ReactProps {
   direction: Direction;
 }
+
 function SwitchSideButton({ onClick, direction }: SwitchSideButtonProps) {
   return (
     <Arrow
@@ -96,6 +98,7 @@ function SwitchSideButton({ onClick, direction }: SwitchSideButtonProps) {
     />
   );
 }
+/* eslint-enable */
 
 function PanelBackground() {
   return (

@@ -7,7 +7,7 @@ import { useGlobalContext } from '@contexts';
 import { useAuthLayoutContext } from '@layouts';
 import { sendResetEmailAPI } from '@services';
 import { sendEmailField } from '../../constants';
-import { API, AuthenticationInformation, FormFieldProps } from '@types';
+import { API, AuthenticationInformation } from '@types';
 import styles from '@styles/layout/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {

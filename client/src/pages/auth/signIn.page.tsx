@@ -11,8 +11,8 @@ import { AuthenticationInformation } from '@types';
 import styles from '@styles/layout/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
-  email: 'test@gmail.com',
-  password: '123456',
+  email: '',
+  password: '',
 };
 
 function LoginPage() {
@@ -47,14 +47,14 @@ function LoginPage() {
         submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        <span className={clsx('d-flex justify-content-between', 'mt-4')}>
-          <Link to="/register" className={clsx('link d-block', 'text-center fs-6')}>
-            Sign up
-          </Link>
-          <Link to="/forgot-password" className={clsx('d-block link', 'text-center fs-6')}>
+        {/* <span className={clsx('d-flex justify-content-between', 'mt-4')}> */}
+        <Link to="/register" className={clsx('link d-block', 'text-center fs-6')}>
+          Sign up
+        </Link>
+        {/* <Link to="/forgot-password" className={clsx('d-block link', 'text-center fs-6')}>
             Forgot password?
           </Link>
-        </span>
+        </span> */}
       </Form>
     </>
   );

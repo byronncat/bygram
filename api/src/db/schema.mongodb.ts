@@ -21,7 +21,7 @@ const ProfileSchema = new mongoose.Schema<ProfileDocument>(
     versionKey: false,
   }
 );
-ProfileSchema.index({ username: 'text' });
+// ProfileSchema.index({ username: 'text' });
 const ProfileModel = mongoose.model('profile', ProfileSchema);
 
 interface PostDocument extends Post, Document {
@@ -33,14 +33,20 @@ const PostModel = mongoose.model(
   new mongoose.Schema<PostDocument>(
     {
       uid: { type: Number, required: true },
-      content: { type: String, required: true },
+      content: { type: String },
       file: {
         dataURL: { type: String, required: true },
         sizeType: { type: String, required: true },
       },
       createdAt: { type: Date, default: Date.now },
-      likes: { type: [Number], default: [] },
-      comments: { type: Array, default: [] },
+      likes: { type: [Number], required: true, default: [] },
+      comments: [
+        {
+          uid: { type: Number, required: true },
+          content: { type: String, required: true },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
     },
     {
       versionKey: false,
