@@ -5,11 +5,14 @@
   "scripts": {
     "ts-node": "npx ts-node ./src/index.ts",
     "nodemon": "nodemon --config ../configs/nodemon.json ./src/index.ts",
-    "build": "tsc"
+    "build": "npx webpack",
+    "build-tsc": "tsc",
+    "start": "npm run build && node ./dist/bundle.js"
   },
   "dependencies": {
     "cloudinary": "^2.0.1",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.3.1",
     "express": "~4.16.1",

@@ -10,9 +10,16 @@ import createError from 'http-errors';
 import logger from 'morgan';
 import { userDataDB } from './db'; // Run the database connection
 import { logger as log } from '@utils';
+var cors = require('cors');
 
 const app: Express = express();
 
+app.use(
+  cors({
+    origin: process.env.FRONTEND_API || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -11,8 +11,8 @@ import { AuthenticationInformation } from '@types';
 import styles from '@styles/layout/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
-  email: '',
-  password: '',
+  email: 'withdanh@gmail.com',
+  password: '123456',
 };
 
 function LoginPage() {
@@ -28,6 +28,7 @@ function LoginPage() {
   }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
+    displayToast("Waiting for server's response", 'loading');
     const response = await loginAPI(data);
     if (response.success && response.data) {
       setAuthenticationStorage({ user: response.data, isAuthenticated: true });

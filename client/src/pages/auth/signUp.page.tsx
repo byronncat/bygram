@@ -29,6 +29,7 @@ function RegisterPage() {
   }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
+    displayToast("Waiting for server's response", 'loading');
     const response = await registerAPI(data);
     if (response.success && response.data) {
       setAuthenticationStorage({ user: response.data, isAuthenticated: true });

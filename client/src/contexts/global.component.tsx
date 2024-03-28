@@ -16,6 +16,7 @@ const GlobalContext = createContext(
 function Global({ children }: ReactProps) {
   const [refresh, setRefresh] = useState(false);
   const displayToast = useCallback((message: string, type: ToastTypeStrings) => {
+    toast.dismiss();
     toast[type](message);
   }, []);
 
