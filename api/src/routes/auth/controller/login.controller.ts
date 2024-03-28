@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { IVerifyOptions } from 'passport-local';
 import { passport } from '@libs';
 import { Account, API, LoginAPI } from '@types';
@@ -20,7 +20,6 @@ function validateInformation(req: Request, res: Response) {
           message: info.message,
         } as API);
       }
-
       return res.status(200).json({
         success: true,
         message: info.message,

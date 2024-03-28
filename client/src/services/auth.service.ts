@@ -3,6 +3,7 @@ import { getURLServer } from './fetchAPI';
 import { API, AuthenticationInformation, LoginAPI, RegisterAPI } from '@types';
 
 export async function loginAPI(data: AuthenticationInformation): Promise<LoginAPI> {
+  console.log(getURLServer('/api/auth/login'));
   return await axios
     .post(getURLServer('/api/auth/login'), data)
     .then((res: AxiosResponse) => res.data)
