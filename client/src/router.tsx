@@ -1,15 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AuthLayout, RootLayout } from '@layouts';
-import {
-  LoginPage,
-  RegisterPage,
-  ForgotPasswordPage,
-  ResetPasswordPage,
-  HomePage,
-  ExplorePage,
-  ProfilePage,
-  ErrorPage,
-} from '@pages';
+import { AuthLayout, LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from '@auth';
+import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
+import { ErrorPage } from '@global';
 
 function Router() {
   const router = createBrowserRouter([

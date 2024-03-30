@@ -1,0 +1,49 @@
+@use '@sass/utils.sass' as utils
+
+$border-width: 2
+$minimize-width: 72
+$search-wrapper-width: 400
+$transition-duration: 1s
+
+.search-wrapper
+  $border-color: #f8b9b5
+  color: white
+  width: utils.pxToRem($search-wrapper-width)
+  left: -100%
+  border-right: utils.pxToRem($border-width) solid $border-color
+  transition: left $transition-duration
+  @include utils.box-shadow-effect-right(4)
+
+  & .brand-name
+    font-family: "Merienda", monospace
+
+  & .search-input
+    $text-color: var(--main-color)
+    color: $text-color
+    caret-color: $text-color
+    height: utils.pxToRem(60)
+    border: none
+    opacity: 0.5
+    resize: none
+    @include utils.custom-bg-3($text-color)
+    &:focus
+      outline: none
+      animation: flicker 1s 1 forwards
+
+  & .result-panel
+
+  & .link
+    opacity: 0.5
+    &:hover
+      animation: flicker 1s 1 forwards
+      @include utils.text-shadow-effect-2(var(--main-color), 8)
+
+  & .link-avatar
+    width: utils.pxToRem(40)
+    height: utils.pxToRem(40)
+    border: none
+    background: none
+    transition: all $transition-duration
+
+.slide-to-right
+  left: utils.pxToRem(72 + $border-width)

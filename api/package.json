@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ts-node": "npx ts-node ./src/index.ts",
-    "nodemon": "nodemon --config ../configs/nodemon.json ./src/index.ts",
+    "nodemon": "nodemon --config ./nodemon.json ./src/index.ts",
     "build": "npx webpack",
     "build-tsc": "tsc",
     "start": "npm run build && node ./dist/bundle.js"

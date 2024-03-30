@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { logger } from '@utils';
 
-const connection = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+const connection = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGDO_DATABASE}?retryWrites=true&w=majority`;
 mongoose
   .connect(connection)
   .then(() => {

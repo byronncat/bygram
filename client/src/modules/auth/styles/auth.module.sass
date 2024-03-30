@@ -1,0 +1,94 @@
+@use '@sass/utils' as utils
+@import "~bootstrap/scss/functions"
+@import "~bootstrap/scss/variables"
+@import "~bootstrap/scss/mixins"
+
+$transition-time: 0.3s
+$hover-color: #d81d84
+
+.panel-bg
+  z-index: -1
+  background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+
+.logo
+  $logo-size: utils.pxToRem(60)
+  width: $logo-size
+
+.brand-name
+  font-family: 'Monoton', sans-serif
+  letter-spacing: 0.3rem
+  transform: skew(0, -8deg) rotateZ(5deg)
+
+.title
+  padding: 0.1rem 1rem
+  font-size: 2.5rem
+  font-family: 'Sacramento', sans-serif
+
+.form-side
+  $slide-time: 0.8s
+  left: 0
+  transition: all $slide-time ease-in-out
+  color: white
+
+  & form
+    padding: utils.pxToRem(52) utils.pxToRem(36)
+    width: utils.pxToRem(400)
+    max-width: 100%
+    border-radius: 0.5rem
+    @include utils.custom-bg-1(#2a2b38b3)
+    @include utils.box-shadow-effect-1(rgba(0, 0, 0, 0.6))
+
+    & a
+      cursor: pointer
+      transition: all $transition-time
+      &:hover
+        @include utils.text-shadow-effect-2($hover-color)
+
+    & .form-input
+      color: rgba(255, 255, 255, 0.7)
+      caret-color: white
+      background: var(--color-charade)
+      border-color: transparent
+      box-shadow: none
+      transition: all $transition-time
+      &:focus
+        color: white
+      &:-webkit-autofill
+        -webkit-box-shadow: none
+        -webkit-text-fill-color: white
+        transition: background-color 5000s ease-in-out 0s
+
+    // Bootstrap form field
+    & input
+      & + label
+        transition: all $transition-time
+      &:focus + label
+        color: white !important
+
+    & .form-label
+      color: rgba(255, 255, 255, 0.7) !important
+      &::after
+        background: none !important
+
+.submit-btn
+  color: white
+  background: $hover-color
+  border: none
+  transition: all $transition-time
+  &:hover
+    background: $hover-color
+    @include utils.box-shadow-effect-4($hover-color, 4)
+  &:active
+    color: white !important
+    background: $hover-color !important
+
+.error-message
+  color: #ff0000
+
+// Responsive design
+@include media-breakpoint-up(lg)
+  .move-to-right
+    left: 50%
+@include media-breakpoint-down(lg)
+  .responsive-arrow
+    display: none

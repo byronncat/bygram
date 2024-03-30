@@ -2,6 +2,7 @@ import { fileDB } from '@db';
 import { CloudinaryUploadResponse, CloudinaryDestroyResponse } from '@types';
 import { Account } from '@types';
 import { logger } from '@utils';
+import { url } from 'inspector';
 
 async function addImage(file: Express.Multer.File, uid: Account['id']) {
   const dataURL = getDataURL(file);
@@ -36,7 +37,7 @@ async function deleteImage(imgURL: string) {
 async function replaceImage(file: Express.Multer.File, deleteURL: string) {
   if (!deleteURL) return Promise.reject('No image to replace');
   const urlParts = deleteURL.split('/');
-  const uid: number = +urlParts[urlParts.length - 3];
+  const uid: number = +urlParts[urlParts.length - 2];
   const image = await addImage(file, uid);
   await deleteImage(deleteURL);
   return image;

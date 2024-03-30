@@ -1,12 +1,10 @@
-import { Storage, Global } from '@contexts';
+import { Global } from '@global';
 import Router from './router';
 
 function App() {
   return (
     <Global>
-      <Storage>
-        <Router />
-      </Storage>
+      <Router />
     </Global>
   );
 }

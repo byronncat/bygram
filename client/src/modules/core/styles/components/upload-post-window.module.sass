@@ -1,0 +1,64 @@
+@use '@sass/utils.sass' as utils
+
+$image-edge: 740
+$form-width: 400
+$header-height: 52
+$upload-post-width: $form-width + $image-edge
+$border-width: 2
+
+.frame
+  width: utils.pxToRem($upload-post-width + 2*$border-width)
+  height: utils.pxToRem($image-edge + $header-height + 2*$border-width)
+  max-height: 84vh
+  color: white
+  background: var(--color-black-pearl-07)
+  border: utils.pxToRem($border-width) solid white
+
+  .header
+    height: utils.pxToRem($header-height + $border-width)
+    line-height: utils.pxToRem($header-height)
+    border-bottom: utils.pxToRem($border-width) solid white
+
+  .form-wraper
+    height: utils.pxToRem($image-edge)
+    max-height: calc(100% - utils.pxToRem($header-height - 2*$border-width))
+
+    .content
+      width: 35%
+      border-left: utils.pxToRem($border-width) solid white
+      .submit
+        border: none
+        background: transparent
+        transition: all 0.5s
+        height: utils.pxToRem($header-height)
+        &:hover
+          @include utils.text-shadow-effect-2(#0908c8, 8)
+
+      .text-zone
+        resize: none
+        opacity: 0.5
+        @include utils.custom-bg-3(white, .21)
+        text-shadow: none
+        border-left: none
+        border-right: none
+        border-top: none
+        transition: all 0.5s
+        &:focus-visible
+          outline: none
+        &:hover
+          opacity: 0.7
+          border-bottom: utils.pxToRem($border-width) solid white
+        &:focus:placeholder-shown
+          outline: none
+          animation: flicker 1s 1 forwards
+        &:not(:placeholder-shown)
+          opacity: 1
+        &:focus
+          @include utils.box-shadow-effect-3(#0908c8)
+
+    .image-wrapper
+      width: 65%
+      max-width: utils.pxToRem($image-edge)
+      .help-text
+        color: inherit
+      .image

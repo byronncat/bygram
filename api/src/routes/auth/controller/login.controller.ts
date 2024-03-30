@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { IVerifyOptions } from 'passport-local';
 import { passport } from '@libs';
-import { Account, API, LoginAPI } from '@types';
+import { Account, LoginAPI } from '@types';
 
 function validateInformation(req: Request, res: Response) {
   passport.authenticate(
@@ -11,14 +11,14 @@ function validateInformation(req: Request, res: Response) {
         return res.status(500).json({
           success: false,
           message: error.message,
-        } as API);
+        } as LoginAPI);
       }
       if (!user) {
         let statusCode = info.message === 'No user found' ? 404 : 401;
         return res.status(statusCode).json({
           success: false,
           message: info.message,
-        } as API);
+        } as LoginAPI);
       }
       return res.status(200).json({
         success: true,

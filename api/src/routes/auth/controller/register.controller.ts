@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { passport } from '@libs';
 import { accountService } from '@services';
-import { API, Account, RegisterData, RegisterAPI } from '@types';
+import { Account, RegisterData, RegisterAPI } from '@types';
 import { IVerifyOptions } from 'passport-local';
 
 function saveFormRequest(req: Request, res: Response, next: NextFunction) {
@@ -18,7 +18,7 @@ async function validateInformation(req: Request, res: Response, next: NextFuncti
         return res.status(500).json({
           success: false,
           message: error.message,
-        } as API);
+        } as RegisterAPI);
       }
 
       if (user) {
@@ -27,7 +27,7 @@ async function validateInformation(req: Request, res: Response, next: NextFuncti
         return res.status(409).json({
           success: false,
           message: info.message,
-        } as API);
+        } as RegisterAPI);
       }
     }
   )(req, res, next);
@@ -48,7 +48,7 @@ async function addUser(req: Request, res: Response) {
       return res.status(500).json({
         success: false,
         message: error.message,
-      } as API);
+      } as RegisterAPI);
     });
 }
 
