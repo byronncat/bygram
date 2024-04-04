@@ -1,3 +1,3 @@
 export function getURLServer(path: string): string {
-  return `${process.env.BACKEND_API || 'http://192.168.1.4:5000'}${path}`;
+  return `${process.env.REACT_APP_API_URL || 'http://192.168.1.4:5000'}${path}`;
 }

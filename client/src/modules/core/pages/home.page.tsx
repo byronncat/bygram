@@ -5,14 +5,11 @@ import { UploadPostWindow, PostWindow } from '../components';
 import Menu from '../components/menu.component';
 import useFormat from '../hooks/useFormat';
 import { getHomePosts, likePost, sendComment } from '../services/post.service';
-import { AUTHOR_POST_MENU, FOLLOWP_POST_MENU } from '../constants';
+import { AUTHOR_POST_MENU, FOLLOWP_POST_MENU, DEFAULT_AVATAR } from '../constants';
 import { PostData } from '../types';
 import styles from '../styles/pages/home.module.sass';
 import postWindowStyles from '../styles/components/post-window.module.sass';
 import { useGlobalContext, useStorageContext, Loading, Overlay } from '@global';
-
-const defaultAvatar =
-  'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
@@ -125,17 +122,18 @@ function HomePage() {
                 <span
                   className={clsx(
                     styles.avatar,
-                    'd-block me-3 rounded-circle',
+                    'd-flex justify-content-center align-items-center',
+                    'me-3 rounded-circle',
                     'position-relative',
                     'overflow-hidden'
                   )}
                 >
                   <img
                     className={clsx(
-                      post.avatar?.sizeType === 'landscape' ? 'w-auto h-100' : 'w-100 h-auto'
+                      post.avatar?.sizeType === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'
                     )}
                     alt="profile"
-                    src={'avatar' in post ? post.avatar!.dataURL : defaultAvatar}
+                    src={'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR}
                   />
                 </span>
                 <div className="d-flex align-items-center">

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getURLServer } from '../../global/api';
 import { API } from '@global';
-import { Profile, UserToken, SearchAPI, AvatarAPI, ProfileAPI } from '../types';
+import { UserToken, SearchAPI, AvatarAPI, ProfileAPI } from '../types';
 
 export async function getProfile(uid: UserToken['id']): Promise<ProfileAPI> {
   return await axios

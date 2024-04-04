@@ -9,7 +9,6 @@ import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants';
 import { CommentData, File, PostData } from '../types';
 import homeStyles from '../styles/pages/home.module.sass';
 import styles from '../styles/components/post-window.module.sass';
-import { set } from 'react-hook-form';
 
 interface PostWindowProps extends ReactProps {
   post: PostData;
