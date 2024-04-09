@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import clsx from 'clsx';
 import { Arrow, useStorageContext, ReactProps, Direction } from '@global';
 import Auth from '../contexts/auth.context';
 import styles from '../styles/auth.module.sass';
 import effects from '@sass/effects.module.sass';
+import backgroundImageURL from '@assets/imgs/night-neon.avif';
 
 export default function AuthLayout() {
-  const backgroundImageURL = '/imgs/night-neon.jpg';
   const { authenticationStorage } = useStorageContext();
   const [title, setTitle] = useState('');
   const [side, setSide] = useState<Direction>('right');
@@ -16,6 +16,10 @@ export default function AuthLayout() {
     setSide(side === 'left' ? 'right' : 'left');
     event.preventDefault();
   }
+
+  const LazyComponents = {
+    Brand: lazy(() => import('../components/brand.component')),
+  };
 
   return authenticationStorage.isAuthenticated ? (
     <Navigate to="/" />
@@ -42,7 +46,9 @@ export default function AuthLayout() {
           <Title data={title} />
           {/* <SwitchSideButton onClick={toggleSideHandler} direction={side} /> */}
           <PanelBackground />
-          <Brand />
+          <Suspense fallback={null}>
+            <LazyComponents.Brand />
+          </Suspense>
           <Outlet context={{ setTitle }} />
         </div>
       </div>
@@ -91,24 +97,5 @@ function SwitchSideButton({ onClick, direction }: SwitchSideButtonProps) {
 function PanelBackground() {
   return (
     <span className={clsx(styles['panel-bg'], 'w-100 h-100', 'position-absolute start-0 top-0')} />
-  );
-}
-
-function Brand() {
-  const logoURL = '/imgs/logo.svg';
-  return (
-    <>
-      <img className={clsx(styles.logo)} src={`${logoURL}`} alt="logo" />
-      <h1
-        className={clsx(
-          styles['brand-name'],
-          effects['text-neon-glowing-1'],
-          'text-uppercase fs-2',
-          'mt-2 my-3'
-        )}
-      >
-        bygram
-      </h1>
-    </>
   );
 }

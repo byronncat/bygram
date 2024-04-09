@@ -8,6 +8,7 @@ import { SidebarLink } from '../types/layout.d';
 import styles from '../styles/components/sidebar.module.sass';
 import searchStyles from '../styles/components/search-side.module.sass';
 import effects from '@sass/effects.module.sass';
+import logoURL from '@assets/imgs/logo.svg';
 
 function Sidebar() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -33,12 +34,12 @@ function Sidebar() {
   const sidebarLinks = [
     {
       name: 'home',
-      icon: 'fa-solid fa-house',
+      icon: 'icon-home',
       path: '/',
     },
     {
       name: 'search',
-      icon: 'fa-solid fa-magnifying-glass',
+      icon: 'icon-search',
       path: '#',
       onClick: () => {
         searchExitHandler();
@@ -47,12 +48,12 @@ function Sidebar() {
     },
     {
       name: 'explore',
-      icon: 'fa-regular fa-compass',
+      icon: 'icon-compass',
       path: '/explore',
     },
     {
       name: 'create post',
-      icon: 'fa-regular fa-square-plus',
+      icon: 'icon-plus-squared-alt',
       path: '#',
       onClick: () => {
         createPostExitHandler();
@@ -64,12 +65,12 @@ function Sidebar() {
     },
     {
       name: 'profile',
-      icon: 'fa-solid fa-user',
+      icon: 'icon-user',
       path: `/profile/${user.id}`,
     },
     {
       name: 'logout',
-      icon: 'fa-solid fa-sign-out-alt',
+      icon: 'icon-logout',
       path: '/login',
       notActive: true,
       onClick: logoutHandler,
@@ -117,33 +118,33 @@ function Sidebar() {
           <ul className={clsx('d-flex flex-column align-items-center')}>
             {sidebarLinks.map((tag) => {
               return (
-                <Link
+                <li
                   key={tag.name}
-                  to={tag.path}
                   className={clsx(
                     styles[`sidebar-link`],
                     'mb-3 rounded-3',
                     activeLink === tag.name && `${styles.active} active`
                   )}
-                  onClick={(event) => {
-                    if (tag.onClick) {
-                      tag.onClick(event);
-                    }
-                    if (!tag.notActive) {
-                      if (activeLink === 'search') searchExitHandler();
-                      localStorage.setItem('activeLink', tag.name);
-                      activeLinkHandler(tag.name);
-                    }
-                  }}
+                  aria-current="page"
                 >
-                  <li
+                  <Link
+                    to={tag.path}
                     className={clsx(
                       styles['link'],
                       'w-100 h-100',
                       'd-flex align-items-center',
                       'text-capitalize'
                     )}
-                    aria-current="page"
+                    onClick={(event) => {
+                      if (tag.onClick) {
+                        tag.onClick(event);
+                      }
+                      if (!tag.notActive) {
+                        if (activeLink === 'search') searchExitHandler();
+                        localStorage.setItem('activeLink', tag.name);
+                        activeLinkHandler(tag.name);
+                      }
+                    }}
                   >
                     <i
                       className={clsx(
@@ -154,8 +155,8 @@ function Sidebar() {
                       )}
                     ></i>
                     <p className={clsx(styles['link-text'], 'ms-3', 'text-nowrap')}>{tag.name}</p>
-                  </li>
-                </Link>
+                  </Link>
+                </li>
               );
             })}
           </ul>
@@ -172,7 +173,7 @@ function Brand({ onClick }: ReactProps) {
       className={clsx(styles.brand, 'my-5', 'd-flex justify-content-center align-items-center')}
       onClick={onClick}
     >
-      <img src="/imgs/logo.svg" className={styles.logo} alt="logo" />
+      <img src={logoURL} className={styles.logo} width={40} height={40} alt="logo" />
       <span className={clsx(styles['brand-name'], 'ms-2', 'fs-2 fw-bold')}>Bygram</span>
     </Link>
   );

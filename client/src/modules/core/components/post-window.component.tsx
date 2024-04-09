@@ -129,7 +129,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                   setShowActionMenu(true);
                 }}
               >
-                <i className="fa-solid fa-ellipsis"></i>
+                <i className="icon-ellipsis"></i>
               </span>
             )}
 
@@ -180,7 +180,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                             setShowCommentMenu(true);
                           }}
                         >
-                          <i className="fa-solid fa-ellipsis"></i>
+                          <i className="icon-ellipsis"></i>
                         </span>
                       )}
                     </div>
@@ -209,9 +209,9 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                     }}
                     className={clsx(
                       homeStyles['likes-icon'],
-                      `fa-${
-                        likes?.includes(authenticationStorage.user?.id!) ? 'solid' : 'regular'
-                      } fa-heart`,
+                      `icon-heart${
+                        likes?.includes(authenticationStorage.user?.id!) ? '' : '-empty'
+                      }`,
                       'fs-4',
                       'me-3'
                     )}

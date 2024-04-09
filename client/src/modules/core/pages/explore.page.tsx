@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { PostWindow } from '../components';
-import { Loading } from '@global';
+import { Loading, formatImageCDN } from '@global';
 import { useGlobalContext, useStorageContext } from '@global';
 import { explorePost } from '../services/post.service';
 import { Post } from '../types';
 import clsx from 'clsx';
 import styles from '../styles/pages/explore.module.sass';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function ExplorePage() {
   const { displayToast } = useGlobalContext();
@@ -36,10 +37,10 @@ function ExplorePage() {
         <Masonry gutter="8px">
           {posts.map((post: any, index: number) => {
             return (
-              <img
+              <LazyLoadImage
                 className="img-fluid"
                 alt="profile"
-                src={post.file.dataURL}
+                src={formatImageCDN(post.file.dataURL, 'f_auto')}
                 key={index}
                 onClick={() => {
                   setPost(post);

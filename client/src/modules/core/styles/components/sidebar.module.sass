@@ -28,7 +28,6 @@ $link-height: 52
   $border-color: #f8b9b5
   width: utils.pxToRem($sidebar-width)
   color: white
-  font-family: 'Merienda', monospace
   background: $background-color
   border-right: utils.pxToRem($border-width) solid $border-color
   transition: all $transition-time
@@ -59,10 +58,6 @@ $link-height: 52
 
   & .link-text
     transition: opacity $transition-time ease-out
-
-.logo
-  $logo-size: utils.pxToRem(40)
-  width: $logo-size
 
 @mixin minimize
   width: utils.pxToRem($minimize-width + $border-width)

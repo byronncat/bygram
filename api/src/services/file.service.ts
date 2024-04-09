@@ -2,7 +2,6 @@ import { fileDB } from '@db';
 import { CloudinaryUploadResponse, CloudinaryDestroyResponse } from '@types';
 import { Account } from '@types';
 import { logger } from '@utils';
-import { url } from 'inspector';
 
 async function addImage(file: Express.Multer.File, uid: Account['id']) {
   const dataURL = getDataURL(file);

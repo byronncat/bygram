@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import clsx from 'clsx';
 import { UploadPostWindow, PostWindow } from '../components';
 import Menu from '../components/menu.component';
@@ -9,7 +10,7 @@ import { AUTHOR_POST_MENU, FOLLOWP_POST_MENU, DEFAULT_AVATAR } from '../constant
 import { PostData } from '../types';
 import styles from '../styles/pages/home.module.sass';
 import postWindowStyles from '../styles/components/post-window.module.sass';
-import { useGlobalContext, useStorageContext, Loading, Overlay } from '@global';
+import { useGlobalContext, useStorageContext, Loading, Overlay, formatImageCDN } from '@global';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
@@ -115,8 +116,9 @@ function HomePage() {
                   setShowActionMenu(true);
                   setCurrentPost(post);
                 }}
+                aria-label="post-menu"
               >
-                <i className="fa-solid fa-ellipsis"></i>
+                <i className="icon-ellipsis"></i>
               </span>
               <header className="d-flex">
                 <span
@@ -128,12 +130,15 @@ function HomePage() {
                     'overflow-hidden'
                   )}
                 >
-                  <img
+                  <LazyLoadImage
                     className={clsx(
                       post.avatar?.sizeType === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'
                     )}
                     alt="profile"
-                    src={'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR}
+                    src={formatImageCDN(
+                      'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR,
+                      'w_56,f_auto'
+                    )}
                   />
                 </span>
                 <div className="d-flex align-items-center">
@@ -162,11 +167,12 @@ function HomePage() {
                   setCurrentPost(post);
                   setShowCurrentPost(true);
                 }}
+                aria-label="post-details"
               >
-                <img
+                <LazyLoadImage
                   className={post.file.sizeType === 'landscape' ? 'img-fluid' : 'h-100 w-auto'}
                   alt="profile"
-                  src={post.file.dataURL}
+                  src={formatImageCDN(post.file.dataURL, 'h_584,f_auto')}
                 />
               </div>
               <main className={clsx('position-relative')}>
@@ -186,11 +192,9 @@ function HomePage() {
                       }}
                       className={clsx(
                         styles['likes-icon'],
-                        `fa-${
-                          post.likes?.includes(authenticationStorage.user?.id!)
-                            ? 'solid'
-                            : 'regular'
-                        } fa-heart`
+                        `icon-heart${
+                          post.likes?.includes(authenticationStorage.user?.id!) ? '' : '-empty'
+                        }`
                       )}
                     />
                   </span>
@@ -212,6 +216,7 @@ function HomePage() {
                       setCurrentPost(post);
                       setShowCurrentPost(true);
                     }}
+                    aria-label="view-comments"
                   >
                     View all {post.comments?.length} comments
                   </p>

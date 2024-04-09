@@ -1,11 +1,13 @@
 import { useState, useContext, createContext } from 'react';
 import { ToastContainer } from 'react-toastify';
 import Storage from './storage.context';
+import { initWebVitals } from '../libraries/web-vitals.library';
 import { displayToast, toastSettings } from '../services/toast.service';
 import { ReactProps, ToastTypeStrings, SidebarBtnStrings } from '../types';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/js/bootstrap.min';
 import '../styles/global.sass';
+import '@assets/icons/css/fontello.css';
 
 const GlobalContext = createContext(
   {} as {
@@ -20,7 +22,9 @@ const GlobalContext = createContext(
 );
 
 export default function Global({ children }: ReactProps) {
-  // Refresh
+  initWebVitals();
+
+  // Refresh page
   const [refresh, setRefresh] = useState(false);
 
   // Sidebar active link

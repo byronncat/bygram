@@ -45,16 +45,16 @@ $background-color: var(--color-black-pearl-07)
     opacity: 1
     outline: none
 .submit-btn
-  background: $glowing-color
+  background: rgba(#d81d84, 0.7)
   color: white
   border: none
   border-radius: utils.pxToRem(4)
   cursor: pointer
   transition: all 0.5s
   &:hover
-    background: white
-    color: $glowing-color
-    @include utils.text-shadow-effect-2($glowing-color, 8)
+    background: #d81d84
+    @include utils.box-shadow-effect-4(var(--main-color), 4)
+    animation: flicker-lite 1s 1 forwards
 
 .divider
   width: calc(100% + 2rem)
