@@ -4,7 +4,7 @@ import Sidebar from '../components/sidebar.component';
 import clsx from 'clsx';
 
 function RootLayout() {
-  // * /imgs/wallpaper.jpg different from imgs/wallpaper.jpg
+  // * /images/wallpaper.jpg different from images/wallpaper.jpg
   const { authenticationStorage } = useStorageContext();
   return authenticationStorage.isAuthenticated ? (
     <>

@@ -1,12 +1,13 @@
 import clsx from 'clsx';
-import styles from '../styles/auth.module.sass';
+
+import styles from '../../styles/layouts/auth.module.sass';
 import effects from '@sass/effects.module.sass';
-import logoURL from '@assets/imgs/logo.svg';
+import logoURL from '@assets/images/logo.svg';
 
 export default function Brand() {
   return (
     <>
-      <img className={clsx(styles.logo)} width={60} height={60} src={`${logoURL}`} alt="logo" />
+      <img className={clsx('d-block')} width={60} height={60} src={`${logoURL}`} alt="logo" />
       <h1
         className={clsx(
           styles['brand-name'],

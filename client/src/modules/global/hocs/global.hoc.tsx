@@ -1,7 +1,7 @@
 import { useState, useContext, createContext } from 'react';
 import { ToastContainer } from 'react-toastify';
-import Storage from './storage.context';
-import { initWebVitals } from '../libraries/web-vitals.library';
+
+import Storage from '../providers/storage.context';
 import { displayToast, toastSettings } from '../services/toast.service';
 import { ReactProps, ToastTypeStrings, SidebarBtnStrings } from '../types';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,21 +9,18 @@ import 'bootstrap/dist/js/bootstrap.min';
 import '../styles/global.sass';
 import '@assets/icons/css/fontello.css';
 
-const GlobalContext = createContext(
-  {} as {
-    displayToast: (message: string, type: ToastTypeStrings) => void;
-    refresh: boolean;
-    setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-    activeLink: SidebarBtnStrings;
-    setActiveLink: React.Dispatch<React.SetStateAction<SidebarBtnStrings>>;
-    getActiveLink: () => SidebarBtnStrings;
-    activeLinkHandler: (name: SidebarBtnStrings) => void;
-  }
-);
+interface GlobalContext {
+  displayToast: (message: string, type: ToastTypeStrings) => void;
+  refresh: boolean;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  activeLink: SidebarBtnStrings;
+  setActiveLink: React.Dispatch<React.SetStateAction<SidebarBtnStrings>>;
+  getActiveLink: () => SidebarBtnStrings;
+  activeLinkHandler: (name: SidebarBtnStrings) => void;
+}
+const GlobalContext = createContext({} as GlobalContext);
 
 export default function Global({ children }: ReactProps) {
-  initWebVitals();
-
   // Refresh page
   const [refresh, setRefresh] = useState(false);
 

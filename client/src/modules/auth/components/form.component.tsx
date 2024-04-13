@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { AuthenticationInformation, FormFieldProps } from '../types';
 import FormField from './form-field.component';
+import { ReactProps } from '@global';
 
 interface FormData {
   fieldList: FormFieldProps[];
@@ -13,7 +14,10 @@ interface FormData {
   submitClass?: any;
 }
 
+interface FormProps extends FormData, ReactProps {}
+
 export default function Form({
+  className,
   fieldList,
   defaultValues,
   submitHandler,
@@ -21,7 +25,7 @@ export default function Form({
   fieldClass,
   submitPlaceholder,
   submitClass,
-}: FormData) {
+}: FormProps) {
   const {
     register,
     handleSubmit,
@@ -32,7 +36,7 @@ export default function Form({
 
   return (
     <>
-      <form onSubmit={handleSubmit(submitHandler)}>
+      <form onSubmit={handleSubmit(submitHandler)} className={className}>
         {fieldList.map((field) => {
           return (
             <FormField

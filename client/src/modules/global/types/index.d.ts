@@ -18,8 +18,6 @@ export interface API {
   message: string;
 }
 
-export type Direction = 'left' | 'right' | 'up' | 'down';
-
 export type ToastTypeStrings = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
 export type SidebarBtnStrings =

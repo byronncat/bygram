@@ -10,7 +10,7 @@ function ErrorPage() {
         'bg-dark',
         'd-flex justify-content-center align-items-center flex-column'
       )}
-      style={{ background: 'url(/imgs/night-neon.avif) center center / cover' }}
+      style={{ background: 'url(/images/night-neon.avif) center center / cover' }}
     >
       {/* <div className="glitch-1-movement">
         <h2 className="glitch-1-content glitch-1-layers glitch-1-font" data-text="ERROR">

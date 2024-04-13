@@ -3,6 +3,7 @@ test/
 node_modules/
 build/
 dist/
+docs/
 test.*
 
 # dependencies

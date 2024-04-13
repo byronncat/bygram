@@ -8,11 +8,11 @@ import Form from '../components/form.component';
 import { loginAPI } from '../services/auth.service';
 import { LOGIN_FIELD } from '../constants';
 import { AuthenticationInformation } from '../types';
-import styles from '../styles/auth.module.sass';
+import styles from '../styles/layouts/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
-  email: '',
-  password: '',
+  email: 'user01@bygram.test.com',
+  password: '111111',
 };
 
 function LoginPage() {
@@ -40,6 +40,7 @@ function LoginPage() {
   return (
     <>
       <Form
+        className={className.form}
         fieldList={LOGIN_FIELD}
         defaultValues={defaultValues}
         submitHandler={submitHandler}

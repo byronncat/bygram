@@ -17,6 +17,7 @@ import { DEFAULT_AVATAR } from '../constants';
 import { PostData, ProfileData } from '../types';
 import { MenuItem } from '../types/layout.d';
 import styles from '../styles/pages/profile.module.sass';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function ProfilePage() {
   const [ready, setReady] = useState(false);
@@ -184,7 +185,7 @@ function ProfilePage() {
           <Masonry gutter="8px">
             {profile.posts?.map((post: any, index: number) => {
               return (
-                <img
+                <LazyLoadImage
                   role="button"
                   className="img-fluid"
                   alt="profile"

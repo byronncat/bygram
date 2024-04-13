@@ -8,7 +8,7 @@ import Form from '../components/form.component';
 import { registerAPI } from '../services/auth.service';
 import { REGISTER_FIELD } from '../constants';
 import { AuthenticationInformation } from '../types';
-import styles from '../styles/auth.module.sass';
+import styles from '../styles/layouts/auth.module.sass';
 
 const defaultValues: AuthenticationInformation = {
   email: '',

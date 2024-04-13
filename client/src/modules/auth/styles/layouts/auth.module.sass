@@ -3,12 +3,13 @@
 @import "~bootstrap/scss/variables"
 @import "~bootstrap/scss/mixins"
 
-$transition-time: 0.3s
+$form-background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+
+$transition-time: 0.4s
 $hover-color: #d81d84
 
 .panel-bg
-  z-index: -1
-  background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+  background: $form-background
 
 .brand-name
   font-family: 'Monoton', sans-serif
@@ -22,15 +23,11 @@ $hover-color: #d81d84
 
 .form-side
   $slide-time: 0.8s
-  left: 0
-  transition: all $slide-time ease-in-out
-  color: white
+  transition: all $slide-time cubic-bezier(0.68, 0.43, 0.19, 1)
 
   & form
     padding: utils.pxToRem(52) utils.pxToRem(36)
     width: utils.pxToRem(400)
-    max-width: 100%
-    border-radius: 0.5rem
     @include utils.custom-bg-1(#2a2b38b3)
     @include utils.box-shadow-effect-1(rgba(0, 0, 0, 0.6))
 
@@ -83,8 +80,5 @@ $hover-color: #d81d84
 
 // Responsive design
 @include media-breakpoint-up(lg)
-  .move-to-right
-    left: 50%
-@include media-breakpoint-down(lg)
-  .responsive-arrow
-    display: none
+  .form-side
+    width: 50vw !important

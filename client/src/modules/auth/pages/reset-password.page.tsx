@@ -3,7 +3,7 @@ import { SubmitHandler } from 'react-hook-form';
 import clsx from 'clsx';
 import { useAuthLayoutContext } from '../contexts/auth.context';
 import Form from '../components/form.component';
-import styles from '../styles/auth.module.sass';
+import styles from '../styles/layouts/auth.module.sass';
 import { AuthenticationInformation, FormFieldProps } from '../types';
 import { useLayoutEffect } from 'react';
 

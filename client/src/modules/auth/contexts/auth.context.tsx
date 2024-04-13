@@ -1,10 +1,11 @@
 import { createContext, useContext } from 'react';
 import clsx from 'clsx';
 import { ReactProps } from '@global';
-import styles from '../styles/auth.module.sass';
+import styles from '../styles/layouts/auth.module.sass';
 import effects from '@sass/effects.module.sass';
 
 const className = {
+  form: 'mw-100 rounded',
   formField: clsx(styles['form-field'], 'form-field form-floating'),
   formInput: clsx(styles['form-input'], 'form-control'),
   formLabel: clsx(styles['form-label']),

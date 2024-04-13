@@ -8,7 +8,7 @@ import { SidebarLink } from '../types/layout.d';
 import styles from '../styles/components/sidebar.module.sass';
 import searchStyles from '../styles/components/search-side.module.sass';
 import effects from '@sass/effects.module.sass';
-import logoURL from '@assets/imgs/logo.svg';
+import logoURL from '@assets/images/logo.svg';
 
 function Sidebar() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
