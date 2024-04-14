@@ -1,5 +1,5 @@
-import { ToastContainerProps, toast } from 'react-toastify';
-import { ToastTypeStrings } from '../types';
+import { toast, ToastContainerProps } from 'react-toastify'
+import { ToastTypeStrings } from '../types'
 
 export const toastSettings = {
   position: 'top-right',
@@ -13,9 +13,9 @@ export const toastSettings = {
   draggable: true,
   pauseOnHover: true,
   theme: 'colored',
-} as ToastContainerProps;
+} as ToastContainerProps
 
 export function displayToast(message: string, type: ToastTypeStrings) {
-  toast.dismiss();
-  toast[type](message);
+  toast.dismiss()
+  toast[type](message)
 }

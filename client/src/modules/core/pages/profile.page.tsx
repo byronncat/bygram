@@ -26,31 +26,31 @@ function ProfilePage() {
   const [currentPost, setCurrentPost] = useState({} as PostData);
   const [showCurrentPost, setShowCurrentPost] = useState(false);
   const { authenticationStorage } = useStorageContext();
-  const { displayToast, refresh, setRefresh } = useGlobalContext();
+  const { displayToast, refreshPage } = useGlobalContext();
   const { register, handleSubmit } = useForm<{ file: FileList }>();
 
   const changeAvatarHandler: SubmitHandler<{ file: FileList }> = async (data) => {
     const response = await changeAvatar(authenticationStorage.user!.id, data.file[0]);
-    if (response.success) setRefresh(!refresh);
+    if (response.success) refreshPage();
     displayToast(response.message, response.success ? 'success' : 'error');
   };
 
   const removeAvatarHandler = async () => {
     setShowAvatarMenu(false);
     const response = await removeAvatar(authenticationStorage.user!.id);
-    if (response.success) setRefresh(!refresh);
+    if (response.success) refreshPage();
     displayToast(response.message, response.success ? 'success' : 'error');
   };
 
   async function followHandler() {
     const response = await follow(authenticationStorage.user!.id, profile.uid);
-    if (response.success) setRefresh(!refresh);
+    if (response.success) refreshPage();
     displayToast(response.message, response.success ? 'success' : 'error');
   }
 
   async function unfollowHandler() {
     const response = await unfollow(authenticationStorage.user!.id, profile.uid);
-    if (response.success) setRefresh(!refresh);
+    if (response.success) refreshPage();
     displayToast(response.message, response.success ? 'success' : 'error');
   }
 
@@ -63,7 +63,7 @@ function ProfilePage() {
         setProfile(response.data);
       } else displayToast(response.message, 'error');
     })();
-  }, [refresh, uid, displayToast]);
+  }, [refreshPage, uid, displayToast]);
 
   const inpurRef = useRef<HTMLInputElement | null>(null);
   const { ref, ...rest } = register('file', {

@@ -1,20 +1,16 @@
-import { ReactNode } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { AuthenticationInformation, FormFieldProps } from '../types';
-import FormField from './form-field.component';
-import { ReactProps } from '@global';
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { AuthenticationInformation, FormFieldProps } from '../types'
+import FormField from './form-field.component'
+import { ReactProps } from '@global'
 
-interface FormData {
-  fieldList: FormFieldProps[];
-  defaultValues: AuthenticationInformation;
-  submitHandler: SubmitHandler<AuthenticationInformation>;
-  children?: ReactNode;
-  fieldClass?: any;
-  submitPlaceholder?: string;
-  submitClass?: any;
+interface FormProps extends ReactProps {
+  fieldList: FormFieldProps[]
+  defaultValues: AuthenticationInformation
+  submitHandler: SubmitHandler<AuthenticationInformation>
+  fieldClass?: any
+  submitPlaceholder?: string
+  submitClass?: any
 }
-
-interface FormProps extends FormData, ReactProps {}
 
 export default function Form({
   className,
@@ -32,7 +28,7 @@ export default function Form({
     formState: { errors },
   } = useForm<AuthenticationInformation>({
     defaultValues,
-  });
+  })
 
   return (
     <>
@@ -49,11 +45,15 @@ export default function Form({
               validation={field.validation}
               errors={errors[field.name]}
             />
-          );
+          )
         })}
-        <input type="submit" value={submitPlaceholder} className={submitClass} />
+        <input
+          type="submit"
+          value={submitPlaceholder}
+          className={submitClass}
+        />
         {children}
       </form>
     </>
-  );
+  )
 }

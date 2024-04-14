@@ -1,5 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AuthLayout, LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from '@auth';
+import {
+  AuthLayout,
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+} from '@authentication';
 import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
 import { ErrorPage } from '@global';
 

@@ -17,7 +17,7 @@ interface PostWindowProps extends ReactProps {
 export default function PostWindow({ post, onExit }: PostWindowProps) {
   const [comment, setComment] = useState({} as CommentData);
   const [comments, setComments] = useState([] as CommentData[]);
-  const { displayToast, setRefresh, refresh } = useGlobalContext();
+  const { displayToast, refreshPage } = useGlobalContext();
   const { authenticationStorage } = useStorageContext();
   const { activeLinkHandler } = useGlobalContext();
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -31,7 +31,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
       if (response.success && response.data) setComments(response.data);
       else displayToast(response.message, 'error');
     })();
-  }, [displayToast, post, refresh]);
+  }, [displayToast, post, refreshPage]);
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
@@ -41,7 +41,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           onExit();
           const response = await item.function!(post.id);
           displayToast(response.message, response.success && 'error');
-          setRefresh(!refresh);
+          refreshPage();
         };
         break;
       }
@@ -70,7 +70,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     const response = await sendComment(authenticationStorage.user!.id, post.id, commentValue);
     if (response.success) {
       form.reset();
-      setRefresh(!refresh);
+      refreshPage();
       displayToast(response.message, 'success');
     }
   };
@@ -81,7 +81,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
       functionHandler: async () => {
         setShowCommentMenu(false);
         const response = await deleteComment(post.id, comment.id);
-        if (response.success) setRefresh(!refresh);
+        if (response.success) refreshPage();
         displayToast(response.message, response.success ? 'success' : 'error');
       },
     },
@@ -204,7 +204,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                         if (!likes?.includes(authenticationStorage.user?.id!)) {
                           setLikes([...likes!, authenticationStorage.user?.id!]);
                         }
-                        setRefresh(!refresh);
+                        refreshPage();
                       }
                     }}
                     className={clsx(

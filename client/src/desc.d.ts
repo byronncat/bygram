@@ -1,4 +1,5 @@
-declare module 'App';
-declare module '*.svg';
 declare module '*.sass';
+
+// Assets
+declare module '*.svg';
 declare module '*.avif';

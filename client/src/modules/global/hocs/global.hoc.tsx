@@ -1,54 +1,62 @@
-import { useState, useContext, createContext } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { useState, useContext, createContext } from 'react'
+import { ToastContainer } from 'react-toastify'
 
-import Storage from '../providers/storage.context';
-import { displayToast, toastSettings } from '../services/toast.service';
-import { ReactProps, ToastTypeStrings, SidebarBtnStrings } from '../types';
-import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/js/bootstrap.min';
-import '../styles/global.sass';
-import '@assets/icons/css/fontello.css';
+import { StorageProvider } from '../providers'
+import { displayToast, toastSettings } from '../services'
+import { ReactProps, SidebarOptionStrings } from '../types'
 
-interface GlobalContext {
-  displayToast: (message: string, type: ToastTypeStrings) => void;
-  refresh: boolean;
-  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-  activeLink: SidebarBtnStrings;
-  setActiveLink: React.Dispatch<React.SetStateAction<SidebarBtnStrings>>;
-  getActiveLink: () => SidebarBtnStrings;
-  activeLinkHandler: (name: SidebarBtnStrings) => void;
+import 'react-toastify/dist/ReactToastify.css'
+import 'bootstrap/dist/js/bootstrap.min'
+import '../styles/hocs/global.sass'
+import '@assets/icons/css/fontello.css'
+
+type GlobalContext = {
+  displayToast: Function
+  refreshPage: () => void
+  activeLink: SidebarOptionStrings
+  setActiveLink: React.Dispatch<React.SetStateAction<SidebarOptionStrings>>
+  getActiveLink: () => SidebarOptionStrings
+  activeLinkHandler: (name: SidebarOptionStrings) => void
 }
-const GlobalContext = createContext({} as GlobalContext);
+const GLOBAL_CONTEXT = createContext({} as GlobalContext)
 
-export default function Global({ children }: ReactProps) {
+/**
+ * @description Global context provider
+ *
+ * @param children ReactNode
+ * @returns
+ */
+export function Global({ children }: ReactProps) {
   // Refresh page
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false)
+  const refreshPage = () => setRefresh(!refresh)
 
   // Sidebar active link
-  const [activeLink, setActiveLink] = useState<SidebarBtnStrings>(getActiveLink());
+  const [activeLink, setActiveLink] = useState<SidebarOptionStrings>(
+    getActiveLink()
+  )
   function getActiveLink() {
-    let activeLink;
+    let activeLink
     if (localStorage.getItem('activeLink'))
-      activeLink = localStorage.getItem('activeLink') as SidebarBtnStrings;
-    else return 'home';
-    const notActive = ['create post', 'logout', 'search'];
+      activeLink = localStorage.getItem('activeLink') as SidebarOptionStrings
+    else return 'home'
+    const notActive = ['create post', 'logout', 'search']
     if (notActive.includes(activeLink))
-      activeLink = localStorage.getItem('previousLink') as SidebarBtnStrings;
-    return activeLink;
+      activeLink = localStorage.getItem('previousLink') as SidebarOptionStrings
+    return activeLink
   }
 
-  const activeLinkHandler = (name: SidebarBtnStrings) => {
-    const notActive = ['create post', 'logout', 'search'];
-    if (!notActive.includes(name)) localStorage.setItem('previousLink', name);
-    setActiveLink(name);
-  };
+  const activeLinkHandler = (name: SidebarOptionStrings) => {
+    const notActive = ['create post', 'logout', 'search']
+    if (!notActive.includes(name)) localStorage.setItem('previousLink', name)
+    setActiveLink(name)
+  }
 
   return (
-    <Storage>
-      <GlobalContext.Provider
+    <StorageProvider>
+      <GLOBAL_CONTEXT.Provider
         value={{
-          refresh,
-          setRefresh,
+          refreshPage,
           displayToast,
           activeLink,
           setActiveLink,
@@ -58,11 +66,11 @@ export default function Global({ children }: ReactProps) {
       >
         <ToastContainer {...toastSettings} />
         {children}
-      </GlobalContext.Provider>
-    </Storage>
-  );
+      </GLOBAL_CONTEXT.Provider>
+    </StorageProvider>
+  )
 }
 
 export function useGlobalContext() {
-  return useContext(GlobalContext);
+  return useContext(GLOBAL_CONTEXT)
 }

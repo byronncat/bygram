@@ -1,0 +1,5 @@
+tabWidth: 2
+semi: false
+formatOnSave: true
+singleQuote: true
+trailingComma: 'es5'

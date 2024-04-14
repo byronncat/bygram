@@ -32,7 +32,7 @@ export default function UploadPostWindow({
     imgURL: null,
     sizeType: 'portrait',
   });
-  const { displayToast, refresh, setRefresh } = useGlobalContext();
+  const { displayToast, refreshPage } = useGlobalContext();
   const { authenticationStorage } = useStorageContext();
   const {
     register,
@@ -55,7 +55,7 @@ export default function UploadPostWindow({
             file: data.file[0] as File,
           };
     const response = await uploadPost(postData, method);
-    setRefresh(!refresh);
+    refreshPage();
     displayToast(response.message, response.success ? 'success' : 'error');
   };
 
