@@ -1,62 +1,79 @@
 @use '@sass/utils' as utils
+@import "~bootstrap/scss/functions"
+@import "~bootstrap/scss/variables"
+@import "~bootstrap/scss/mixins"
 
-.error
-  $shiny-color: red
-  // width: utils.pxToRem(360)
+$color-1: #C2146D
+$color-2: #760D50
+$color-3: #4D0E45
+$color-4: #320C3B
+$color-5: #280C3D
+$color-6: #1E0D37
+
+.wrapper
+  background: $color-6
+  color: white
+
+.square404
   position: relative
-  background-color: transparent
-  text-align: center
-  font-size: 4rem
-  font-family: 'Monoton', cursive
-  letter-spacing: 0.5rem
-  animation: flicker 5s infinite alternate
-  @keyframes flicker
-    0%, 18%, 22%, 25%, 53%, 57%, 100%
-      opacity: 1
-    20%, 24%, 55%
-      opacity: 0.3
-  .red-text
-    color: red
-    text-shadow: 0 0 80px red,0 0 30px #b22222,0 0 6px #8b0000
-  .white-text
-    color: white
-    text-shadow: 0 0 80px #ffffff,0 0 30px #008000,0 0 6px #0000ff
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 50%
 
-.pendulum
+.square
+  $edge: 320px
+  width: $edge
+  height: $edge
   position: absolute
-  top: 28%
-  left: 33%
-  transform-origin: bottom
-  animation-name: pendulum
-  animation-duration: 1s
-  animation-iteration-count: infinite
-  animation-direction: alternate
-  animation-timing-function: ease-in-out
-  @keyframes pendulum
-    0%
-      transform: rotateZ(190deg)
-    100%
-      transform: rotateZ(165deg)
+  border-radius: 1.2rem
+  background: $color-1
+  box-shadow: $color-2 0 0 5px 30px, $color-3 0 0 10px 60px,$color-4 0 0 15px 90px, $color-5 0 0 20px 120px, $color-6 0 0 25px 150px
+  transform: rotateZ(-21deg)
+  display: flex
+  justify-content: center
+  align-items: center
+  z-index: 1
+
+  & p
+    font-size: 8vw
+    font-weight: 700
+    color: $color-6
+    transform: translateZ(90px)
+    text-shadow: 0 0 2px rgba(0, 0, 0, .6)
+    user-select: none
+
+.texts
+  z-index: 5
+  padding: 0 4rem
+  width: 50%
 
 .button
-  $color: #d81d84
-  color: white
-  text-shadow: 0 0 0 transparent,0 0 20px $color,0 0 50px rgba($color,.5),0 0 200px rgba($color, .5),0 0 250px rgba($color, 1),0 0 300px rgba($color, 1),-250px -100px 100px rgba($color, 1)
-  transform: skew(0, -12deg) rotateZ(5deg)
-  transition: 0.5s all ease
-  animation: neon-blink 5s infinite alternate
-  @keyframes neon-blink
-    44%
-      opacity: 1
-    45%
-      opacity: .7
-    46%
-      opacity: 1
-    98%
-      opacity: 1
-    99%
-      opacity: .5
-    100%
-      opacity: 1
+  display: inline-block
+  width: utils.pxToRem(200)
+  padding: 0.8rem 0
+  color: var(--color-light-text)
+  text-align: center
+  font-weight: 700
+  vertical-align: middle
+  border: var(--color-light-text) 1px solid
+  border-radius: .25rem
+  cursor: pointer
+  user-select: none
+  transition: all .4s ease-in-out
   &:hover
-    @include utils.btn-neon-effect(white, $color)
+    background: var(--color-light-text)
+    color: var(--color-dark-theme)
+
+@include media-breakpoint-down(md)
+  .wrapper
+    flex-direction: column
+  .square404
+    width: 100%
+    height: 50%
+    .square
+      width: 120px
+      height: 120px
+
+  .texts
+    width: 100%

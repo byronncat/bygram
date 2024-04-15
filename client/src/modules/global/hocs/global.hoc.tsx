@@ -20,12 +20,6 @@ type GlobalContext = {
 }
 const GLOBAL_CONTEXT = createContext({} as GlobalContext)
 
-/**
- * @description Global context provider
- *
- * @param children ReactNode
- * @returns
- */
 export function Global({ children }: ReactProps) {
   // Refresh page
   const [refresh, setRefresh] = useState(false)

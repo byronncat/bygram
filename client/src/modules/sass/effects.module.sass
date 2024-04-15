@@ -27,6 +27,22 @@
   opacity: 0.5
   animation: flicker 1.5s 1 forwards
 
+.flicker-1
+  animation: neon-blink 5s infinite alternate
+  @keyframes neon-blink
+    44%
+      opacity: 1
+    45%
+      opacity: .7
+    46%
+      opacity: 1
+    98%
+      opacity: 1
+    99%
+      opacity: .5
+    100%
+      opacity: 1
+
 // I C O N S
 .clicking-icon
   &:hover

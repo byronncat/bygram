@@ -1,34 +1,31 @@
-import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-import styles from '../styles/pages/error.module.sass';
+import { Link } from 'react-router-dom'
+import styles from '../styles/pages/error.module.sass'
+import effects from '../../sass/effects.module.sass'
+import clsx from 'clsx'
 
-function ErrorPage() {
+export function ErrorPage() {
   return (
-    <div
-      className={clsx(
-        'w-100 h-100',
-        'bg-dark',
-        'd-flex justify-content-center align-items-center flex-column'
-      )}
-      style={{ background: 'url(/images/night-neon.avif) center center / cover' }}
-    >
-      {/* <div className="glitch-1-movement">
-        <h2 className="glitch-1-content glitch-1-layers glitch-1-font" data-text="ERROR">
-          <span>ERROR</span>
-        </h2>
-      </div> */}
-
-      <div className={clsx(styles.error, 'mb-5')}>
-        <span className={styles['red-text']}>404</span>
-        <br />
-        <span className={styles['white-text']}>Error</span>
+    <div className={clsx(styles.wrapper, 'w-100 h-100', 'd-flex')}>
+      <div className={styles.square404} id="Square">
+        <span className={clsx(styles.square, effects['flicker-1'])}>
+          <p>404</p>
+        </span>
       </div>
 
-      <Link to="/" className={clsx(styles.button, 'fs-1', 'px-3')}>
-        CLICK HERE TO HOME!
-      </Link>
+      <div
+        className={clsx(
+          styles.texts,
+          'd-flex flex-column justify-content-center'
+        )}
+      >
+        <h4 className="fs-4">Oops! Page not found.</h4>
+        <p className="pt-3 pb-5">
+          The page you are looking for does not exist. Go back to the main page.
+        </p>
+        <Link to="/" className={clsx(styles.button, 'align-self-center')}>
+          Back to Home
+        </Link>
+      </div>
     </div>
-  );
+  )
 }
-
-export default ErrorPage;

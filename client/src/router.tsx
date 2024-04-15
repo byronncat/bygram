@@ -1,15 +1,15 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import {
   AuthLayout,
   LoginPage,
   RegisterPage,
   ForgotPasswordPage,
   ResetPasswordPage,
-} from '@authentication';
-import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
-import { ErrorPage } from '@global';
+} from '@authentication'
+import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core'
+import { ErrorPage } from '@global'
 
-function Router() {
+export default function Router() {
   const router = createBrowserRouter([
     {
       element: <RootLayout />,
@@ -22,6 +22,7 @@ function Router() {
     },
     {
       element: <AuthLayout />,
+      errorElement: <ErrorPage />,
       children: [
         { path: 'login', element: <LoginPage /> },
         { path: 'register', element: <RegisterPage /> },
@@ -29,9 +30,7 @@ function Router() {
         { path: 'reset-password', element: <ResetPasswordPage /> },
       ],
     },
-  ]);
+  ])
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />
 }
-
-export default Router;
