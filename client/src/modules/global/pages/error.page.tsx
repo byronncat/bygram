@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import styles from '../styles/pages/error.module.sass'
-import effects from '../../sass/effects.module.sass'
 import clsx from 'clsx'
+
+import styles from '../styles/pages/error.module.sass'
+import effects from '@sass/effects.module.sass'
 
 export function ErrorPage() {
   return (
@@ -22,7 +23,7 @@ export function ErrorPage() {
         <p className="pt-3 pb-5">
           The page you are looking for does not exist. Go back to the main page.
         </p>
-        <Link to="/" className={clsx(styles.button, 'align-self-center')}>
+        <Link to="/" className={clsx(styles.button)}>
           Back to Home
         </Link>
       </div>

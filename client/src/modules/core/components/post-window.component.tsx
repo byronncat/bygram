@@ -1,97 +1,111 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-import { useGlobalContext, useStorageContext, Overlay, ReactProps } from '@global';
-import Menu from './menu.component';
-import { UploadPostWindow } from '../components';
-import { getComments, sendComment, likePost, deleteComment } from '../services/post.service';
-import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants';
-import { CommentData, File, PostData } from '../types';
-import homeStyles from '../styles/pages/home.module.sass';
-import styles from '../styles/components/post-window.module.sass';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import clsx from 'clsx'
+import {
+  useGlobalContext,
+  useStorageContext,
+  Overlay,
+  ReactProps,
+} from '@global'
+import Menu from './menu.component'
+import { UploadPostWindow } from '../components'
+import {
+  getComments,
+  sendComment,
+  likePost,
+  deleteComment,
+} from '../services/post.service'
+import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants'
+import { CommentData, File, PostData } from '../types'
+import homeStyles from '../styles/pages/home.module.sass'
+import styles from '../styles/components/post-window.module.sass'
 
 interface PostWindowProps extends ReactProps {
-  post: PostData;
-  onExit: () => void;
+  post: PostData
+  onExit: () => void
 }
 export default function PostWindow({ post, onExit }: PostWindowProps) {
-  const [comment, setComment] = useState({} as CommentData);
-  const [comments, setComments] = useState([] as CommentData[]);
-  const { displayToast, refreshPage } = useGlobalContext();
-  const { authenticationStorage } = useStorageContext();
-  const { activeLinkHandler } = useGlobalContext();
-  const [showActionMenu, setShowActionMenu] = useState(false);
-  const [showCreatePost, setShowCreatePost] = useState(false);
-  const [showCommentMenu, setShowCommentMenu] = useState(false);
-  const [likes, setLikes] = useState(post.likes);
+  const [comment, setComment] = useState({} as CommentData)
+  const [comments, setComments] = useState([] as CommentData[])
+  const { displayToast, refreshPage } = useGlobalContext()
+  const { authenticationStorage } = useStorageContext()
+  const { activeLinkHandler } = useGlobalContext()
+  const [showActionMenu, setShowActionMenu] = useState(false)
+  const [showCreatePost, setShowCreatePost] = useState(false)
+  const [showCommentMenu, setShowCommentMenu] = useState(false)
+  const [likes, setLikes] = useState(post.likes)
 
   useEffect(() => {
-    (async () => {
-      const response = await getComments(post.id);
-      if (response.success && response.data) setComments(response.data);
-      else displayToast(response.message, 'error');
-    })();
-  }, [displayToast, post, refreshPage]);
+    ;(async () => {
+      const response = await getComments(post.id)
+      if (response.success && response.data) setComments(response.data)
+      else displayToast(response.message, 'error')
+    })()
+  }, [displayToast, post, refreshPage])
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
       case 'Delete post': {
         item.functionHandler = async () => {
-          setShowActionMenu(false);
-          onExit();
-          const response = await item.function!(post.id);
-          displayToast(response.message, response.success && 'error');
-          refreshPage();
-        };
-        break;
+          setShowActionMenu(false)
+          onExit()
+          const response = await item.function!(post.id)
+          displayToast(response.message, response.success && 'error')
+          refreshPage()
+        }
+        break
       }
       case 'Edit': {
         item.functionHandler = () => {
-          setShowActionMenu(false);
-          setShowCreatePost(true);
-        };
-        break;
+          setShowActionMenu(false)
+          setShowCreatePost(true)
+        }
+        break
       }
     }
-    return item;
-  });
+    return item
+  })
   authorMenu.push({
     name: 'Cancel',
     functionHandler: () => {
-      setShowActionMenu(false);
+      setShowActionMenu(false)
     },
-  });
+  })
 
   const onComment = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const commentValue = (event.target as HTMLFormElement).comment.value;
-    if (!commentValue) return displayToast('Comment cannot be empty', 'error');
-    const response = await sendComment(authenticationStorage.user!.id, post.id, commentValue);
+    event.preventDefault()
+    const form = event.currentTarget
+    const commentValue = (event.target as HTMLFormElement).comment.value
+    if (!commentValue) return displayToast('Comment cannot be empty', 'error')
+    const response = await sendComment(
+      authenticationStorage.user!.id,
+      post.id,
+      commentValue
+    )
     if (response.success) {
-      form.reset();
-      refreshPage();
-      displayToast(response.message, 'success');
+      form.reset()
+      refreshPage()
+      displayToast(response.message, 'success')
     }
-  };
+  }
 
   const commentMenu = [
     {
       name: 'Delete comment',
       functionHandler: async () => {
-        setShowCommentMenu(false);
-        const response = await deleteComment(post.id, comment.id);
-        if (response.success) refreshPage();
-        displayToast(response.message, response.success ? 'success' : 'error');
+        setShowCommentMenu(false)
+        const response = await deleteComment(post.id, comment.id)
+        if (response.success) refreshPage()
+        displayToast(response.message, response.success ? 'success' : 'error')
       },
     },
     {
       name: 'Cancel',
       functionHandler: () => {
-        setShowCommentMenu(false);
+        setShowCommentMenu(false)
       },
     },
-  ];
+  ]
 
   return (
     <>
@@ -100,18 +114,18 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           defaultPost={post}
           zIndex={3}
           onExit={() => {
-            setShowCreatePost(false);
-            onExit();
+            setShowCreatePost(false)
+            onExit()
           }}
           method="put"
         />
       )}
       {showActionMenu && authenticationStorage.user!.id === post.uid && (
-        <Overlay zIndex={2} onExit={() => setShowActionMenu(false)}>
+        <Overlay zIndex={2} exitHandler={() => setShowActionMenu(false)}>
           <Menu list={authorMenu} />
         </Overlay>
       )}
-      <Overlay onExit={() => onExit()}>
+      <Overlay exitHandler={() => onExit()}>
         <div className={clsx(styles['wrapper'], 'mw-100', 'd-flex')}>
           <ImageContent file={post.file} />
           <div
@@ -123,10 +137,15 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           >
             {authenticationStorage.user?.id === post.uid && (
               <span
-                className={clsx('position-absolute top-0 end-0', 'p-3', 'fs-3', 'pe-auto')}
+                className={clsx(
+                  'position-absolute top-0 end-0',
+                  'p-3',
+                  'fs-3',
+                  'pe-auto'
+                )}
                 role="button"
                 onClick={() => {
-                  setShowActionMenu(true);
+                  setShowActionMenu(true)
                 }}
               >
                 <i className="icon-ellipsis"></i>
@@ -163,7 +182,11 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                         <span>
                           <Link
                             to={`/profile/${comment.uid}`}
-                            className={clsx(styles.link, 'd-inline-block me-2', 'fw-bold')}
+                            className={clsx(
+                              styles.link,
+                              'd-inline-block me-2',
+                              'fw-bold'
+                            )}
                             onClick={() => activeLinkHandler('profile')}
                           >
                             {comment.username}
@@ -173,11 +196,15 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                       </p>
                       {authenticationStorage.user?.id === post.uid && (
                         <span
-                          className={clsx('ms-auto px-3', 'fs-5', 'cursor-pointer opacity-50')}
+                          className={clsx(
+                            'ms-auto px-3',
+                            'fs-5',
+                            'cursor-pointer opacity-50'
+                          )}
                           role="button"
                           onClick={() => {
-                            setComment(comment);
-                            setShowCommentMenu(true);
+                            setComment(comment)
+                            setShowCommentMenu(true)
                           }}
                         >
                           <i className="icon-ellipsis"></i>
@@ -193,24 +220,38 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
 
             <div className={clsx(styles.footer, 'd-flex flex-column')}>
               <div className="d-flex align-items-center">
-                <span className={clsx(homeStyles.icons, 'd-flex align-items-center')}>
+                <span
+                  className={clsx(
+                    homeStyles.icons,
+                    'd-flex align-items-center'
+                  )}
+                >
                   <i
                     onClick={async () => {
-                      const response = await likePost(authenticationStorage.user!.id, post.id);
+                      const response = await likePost(
+                        authenticationStorage.user!.id,
+                        post.id
+                      )
                       if (response.success) {
                         if (likes?.includes(authenticationStorage.user?.id!)) {
-                          setLikes(likes?.filter((id) => id !== authenticationStorage.user?.id));
+                          setLikes(
+                            likes?.filter(
+                              (id) => id !== authenticationStorage.user?.id
+                            )
+                          )
                         }
                         if (!likes?.includes(authenticationStorage.user?.id!)) {
-                          setLikes([...likes!, authenticationStorage.user?.id!]);
+                          setLikes([...likes!, authenticationStorage.user?.id!])
                         }
-                        refreshPage();
+                        refreshPage()
                       }
                     }}
                     className={clsx(
                       homeStyles['likes-icon'],
                       `icon-heart${
-                        likes?.includes(authenticationStorage.user?.id!) ? '' : '-empty'
+                        likes?.includes(authenticationStorage.user?.id!)
+                          ? ''
+                          : '-empty'
                       }`,
                       'fs-4',
                       'me-3'
@@ -232,7 +273,10 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                   rows={1}
                   spellCheck={false}
                 />
-                <button type="submit" className={clsx(styles['submit-btn'], 'ms-3 px-2 py-1')}>
+                <button
+                  type="submit"
+                  className={clsx(styles['submit-btn'], 'ms-3 px-2 py-1')}
+                >
                   Post
                 </button>
               </form>
@@ -241,12 +285,12 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
         </div>
       </Overlay>
       {showCommentMenu && authenticationStorage.user!.id === comment.uid && (
-        <Overlay zIndex={2} onExit={() => setShowCommentMenu(false)}>
+        <Overlay zIndex={2} exitHandler={() => setShowCommentMenu(false)}>
           <Menu list={commentMenu} />
         </Overlay>
       )}
     </>
-  );
+  )
 }
 
 function ImageContent({ file }: { file: File }) {
@@ -267,7 +311,7 @@ function ImageContent({ file }: { file: File }) {
         )}
       />
     </div>
-  );
+  )
 }
 
 function Avatar({ file }: { file: File | undefined }) {
@@ -281,10 +325,12 @@ function Avatar({ file }: { file: File | undefined }) {
       )}
     >
       <img
-        className={file?.sizeType === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'}
+        className={
+          file?.sizeType === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'
+        }
         src={file?.dataURL || DEFAULT_AVATAR}
         alt="profile"
       />
     </span>
-  );
+  )
 }

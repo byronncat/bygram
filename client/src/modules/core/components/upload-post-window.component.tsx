@@ -1,19 +1,24 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import clsx from 'clsx';
-import { useGlobalContext, useStorageContext, Overlay, ReactProps } from '@global';
-import { uploadPost } from '../services/post.service';
-import { PostData } from '../types';
-import styles from '../styles/components/upload-post-window.module.sass';
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import clsx from 'clsx'
+import {
+  useGlobalContext,
+  useStorageContext,
+  Overlay,
+  ReactProps,
+} from '@global'
+import { uploadPost } from '../services/post.service'
+import { PostData } from '../types'
+import styles from '../styles/components/upload-post-window.module.sass'
 
 interface PostSubmitData {
-  file: FileList;
-  content: string;
+  file: FileList
+  content: string
 }
 
 interface UploadPostWindowProps extends ReactProps {
-  method: 'post' | 'put';
-  defaultPost?: PostData;
+  method: 'post' | 'put'
+  defaultPost?: PostData
 }
 export default function UploadPostWindow({
   onExit,
@@ -23,25 +28,25 @@ export default function UploadPostWindow({
 }: UploadPostWindowProps) {
   const defaultValues = {
     content: defaultPost?.content || '',
-  } as PostSubmitData;
+  } as PostSubmitData
   type Image = {
-    imgURL: string | ArrayBuffer | null;
-    sizeType: 'landscape' | 'portrait';
-  };
+    imgURL: string | ArrayBuffer | null
+    sizeType: 'landscape' | 'portrait'
+  }
   const [selectedImage, setSelectedImage] = useState<Image>({
     imgURL: null,
     sizeType: 'portrait',
-  });
-  const { displayToast, refreshPage } = useGlobalContext();
-  const { authenticationStorage } = useStorageContext();
+  })
+  const { displayToast, refreshPage } = useGlobalContext()
+  const { authenticationStorage } = useStorageContext()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({ defaultValues })
 
   const submitForm: SubmitHandler<PostSubmitData> = async (data) => {
-    if (onExit) onExit();
+    if (onExit) onExit()
     let postData =
       method === 'post'
         ? {
@@ -53,24 +58,27 @@ export default function UploadPostWindow({
             id: defaultPost!.id,
             content: data.content,
             file: data.file[0] as File,
-          };
-    const response = await uploadPost(postData, method);
-    refreshPage();
-    displayToast(response.message, response.success ? 'success' : 'error');
-  };
+          }
+    const response = await uploadPost(postData, method)
+    refreshPage()
+    displayToast(response.message, response.success ? 'success' : 'error')
+  }
 
   useLayoutEffect(() => {
     if (defaultPost) {
-      setSelectedImage({ imgURL: defaultPost.file.dataURL, sizeType: defaultPost.file.sizeType });
+      setSelectedImage({
+        imgURL: defaultPost.file.dataURL,
+        sizeType: defaultPost.file.sizeType,
+      })
     }
-  }, [defaultPost]);
+  }, [defaultPost])
 
   useEffect(() => {
-    if (errors.file) displayToast('Please select an image', 'error');
-  }, [errors.file, displayToast]);
+    if (errors.file) displayToast('Please select an image', 'error')
+  }, [errors.file, displayToast])
 
   return (
-    <Overlay onExit={onExit} zIndex={zIndex}>
+    <Overlay exitHandler={() => onExit} zIndex={zIndex}>
       <div
         className={clsx(
           styles.frame,
@@ -80,14 +88,21 @@ export default function UploadPostWindow({
           'position-relative'
         )}
       >
-        <h3 className={clsx(styles.header, 'm-0', 'text-center text-capitalize')}>
+        <h3
+          className={clsx(styles.header, 'm-0', 'text-center text-capitalize')}
+        >
           create new post
         </h3>
         <form
           className={clsx(styles['form-wraper'], 'flex-fill', 'w-100')}
           onSubmit={handleSubmit(submitForm)}
         >
-          <div className={clsx(styles['image-wrapper'], 'float-start position-relative h-100')}>
+          <div
+            className={clsx(
+              styles['image-wrapper'],
+              'float-start position-relative h-100'
+            )}
+          >
             <span
               className={clsx(
                 styles.image,
@@ -102,31 +117,40 @@ export default function UploadPostWindow({
                   src={selectedImage.imgURL as string}
                   className={clsx(
                     'd-block',
-                    selectedImage.sizeType === 'landscape' ? 'w-100 h-auto' : 'w-auto h-100'
+                    selectedImage.sizeType === 'landscape'
+                      ? 'w-100 h-auto'
+                      : 'w-auto h-100'
                   )}
                   alt="preview"
                 />
               ) : (
-                <p className={clsx(styles['help-text'])}>Drag file or Click to upload image</p>
+                <p className={clsx(styles['help-text'])}>
+                  Drag file or Click to upload image
+                </p>
               )}
             </span>
             <input
               type="file"
-              className={clsx('w-100 h-100', 'position-absolute top-0 start-0', 'opacity-0')}
+              className={clsx(
+                'w-100 h-100',
+                'position-absolute top-0 start-0',
+                'opacity-0'
+              )}
               {...register('file', {
                 onChange: (e) => {
                   if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
+                    const file = e.target.files[0]
+                    const reader = new FileReader()
                     reader.onload = (event) => {
-                      const img = new Image();
-                      img.src = event.target!.result as string;
+                      const img = new Image()
+                      img.src = event.target!.result as string
                       img.onload = () => {
-                        const sizeType = img.width > img.height ? 'landscape' : 'portrait';
-                        setSelectedImage({ imgURL: img.src, sizeType });
-                      };
-                    };
-                    reader.readAsDataURL(file);
+                        const sizeType =
+                          img.width > img.height ? 'landscape' : 'portrait'
+                        setSelectedImage({ imgURL: img.src, sizeType })
+                      }
+                    }
+                    reader.readAsDataURL(file)
                   }
                 },
                 required: method === 'post',
@@ -142,7 +166,12 @@ export default function UploadPostWindow({
             ></textarea>
             <button
               type="submit"
-              className={clsx(styles.submit, 'position-absolute top-0 end-0', 'pe-3', 'fs-5')}
+              className={clsx(
+                styles.submit,
+                'position-absolute top-0 end-0',
+                'pe-3',
+                'fs-5'
+              )}
             >
               Share
             </button>
@@ -150,5 +179,5 @@ export default function UploadPostWindow({
         </form>
       </div>
     </Overlay>
-  );
+  )
 }

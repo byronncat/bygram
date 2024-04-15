@@ -1,28 +1,39 @@
-import clsx from 'clsx';
-import { ReactProps } from '@global';
-import styles from '../styles/components/overlay.module.sass';
+import { MouseEventHandler } from 'react'
+import clsx from 'clsx'
 
-function Overlay({ children, onExit, zIndex = 1 }: ReactProps) {
+import { ReactProps } from '../types'
+import styles from '../styles/components/overlay.module.sass'
+
+interface OverlayProps extends ReactProps {
+  readonly exitHandler: MouseEventHandler
+}
+export default function Overlay({
+  children,
+  exitHandler,
+  zIndex = 1,
+}: OverlayProps) {
   return (
     <div
-      data-bs-theme="dark"
       className={clsx(
-        styles.wrapper,
         `position-absolute top-0 start-0 z-${zIndex}`,
         'w-100 h-100',
         'd-flex justify-content-center align-items-center'
       )}
     >
-      <span className={styles.overlay} onClick={onExit} />
+      <span className={clsx(styles.overlay, 'z-n1')} onClick={exitHandler} />
       <button
         type="button"
-        className={clsx('shadow-none', 'btn-close', 'position-absolute top-0 end-0', 'p-4')}
-        aria-label="Close"
-        onClick={onExit}
-      ></button>
+        className={clsx(
+          styles.button,
+          'shadow-none',
+          'btn-close btn-close-white',
+          'position-absolute top-0 end-0',
+          'p-3'
+        )}
+        aria-label="close"
+        onClick={exitHandler}
+      />
       {children}
     </div>
-  );
+  )
 }
-
-export default Overlay;

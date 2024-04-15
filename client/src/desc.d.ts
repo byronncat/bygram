@@ -1,5 +1,5 @@
-declare module '*.sass';
+declare module '*.sass'
 
 // Assets
-declare module '*.svg';
-declare module '*.avif';
+declare module '*.svg'
+declare module '*.avif'

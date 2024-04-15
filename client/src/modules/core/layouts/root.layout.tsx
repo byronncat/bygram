@@ -1,14 +1,17 @@
-import { Outlet, Navigate } from 'react-router-dom';
-import { useStorageContext } from '@global';
-import Sidebar from '../components/sidebar.component';
-import clsx from 'clsx';
+import { Outlet, Navigate } from 'react-router-dom'
+import { useStorageContext } from '@global'
+import Sidebar from '../components/sidebar.component'
+import clsx from 'clsx'
 
 function RootLayout() {
   // * /images/wallpaper.jpg different from images/wallpaper.jpg
-  const { authenticationStorage } = useStorageContext();
+  const { authenticationStorage } = useStorageContext()
   return authenticationStorage.isAuthenticated ? (
     <>
-      <main style={{ background: '#0f172a' }} className={clsx('w-100 h-100', 'position-relative')}>
+      <main
+        style={{ background: '#1E0D37' }}
+        className={clsx('w-100 h-100', 'position-relative')}
+      >
         <Sidebar />
         <section
           className={clsx(
@@ -23,7 +26,7 @@ function RootLayout() {
     </>
   ) : (
     <Navigate to="/login" />
-  );
+  )
 }
 
-export default RootLayout;
+export default RootLayout

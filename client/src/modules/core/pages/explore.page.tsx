@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { PostWindow } from '../components'
-import { Loading, transformImageCDN } from '@global'
+import { api, Loader } from '@global'
 import { useGlobalContext, useStorageContext } from '@global'
 import { explorePost } from '../services/post.service'
 import { Post } from '../types'
@@ -26,7 +26,7 @@ function ExplorePage() {
       } else displayToast(response.message, 'error')
     })()
   }, [ready, authenticationStorage, displayToast])
-  if (!ready) return <Loading />
+  if (!ready) return <Loader />
   return (
     <>
       {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}
@@ -40,7 +40,7 @@ function ExplorePage() {
               <LazyLoadImage
                 className="img-fluid"
                 alt="profile"
-                src={transformImageCDN(post.file.dataURL, 'f_auto')}
+                src={api.transformImageCDN(post.file.dataURL, 'f_auto')}
                 key={index}
                 onClick={() => {
                   setPost(post)

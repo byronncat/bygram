@@ -1,15 +1,15 @@
 import { useState, useContext, createContext } from 'react'
-import { AuthenticationStorage, ReactProps } from '../types'
+import { AuthenticationToken, ReactProps } from '../types'
 
 type StorageContext = {
-  authenticationStorage: AuthenticationStorage
-  setAuthenticationStorage: (data: AuthenticationStorage) => void
+  authenticationStorage: AuthenticationToken
+  setAuthenticationStorage: (data: AuthenticationToken) => void
 }
 const STORAGE_CONTEXT = createContext({} as StorageContext)
 
 export function StorageProvider({ children }: ReactProps) {
   const [authenticationStorage, setAuthenticationState] =
-    useState<AuthenticationStorage>({
+    useState<AuthenticationToken>({
       user: localStorage.getItem('user')
         ? JSON.parse(localStorage.getItem('user') as string)
         : null,
@@ -20,7 +20,7 @@ export function StorageProvider({ children }: ReactProps) {
   function setAuthenticationStorage({
     user,
     isAuthenticated,
-  }: AuthenticationStorage) {
+  }: AuthenticationToken) {
     setAuthenticationState({
       user,
       isAuthenticated,

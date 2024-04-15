@@ -15,11 +15,11 @@ import { PostData } from '../types'
 import styles from '../styles/pages/home.module.sass'
 import postWindowStyles from '../styles/components/post-window.module.sass'
 import {
+  api,
   useGlobalContext,
   useStorageContext,
-  Loading,
+  Loader,
   Overlay,
-  transformImageCDN,
 } from '@global'
 
 function HomePage() {
@@ -89,11 +89,11 @@ function HomePage() {
     })()
   }, [authenticationStorage, displayToast, refreshPage])
 
-  if (!ready) return <Loading />
+  if (!ready) return <Loader />
   return (
     <>
       {showActionMenu && (
-        <Overlay onExit={() => setShowActionMenu(false)}>
+        <Overlay exitHandler={() => setShowActionMenu(false)}>
           <Menu
             list={
               (authenticationStorage.user!.id === currentPost.uid &&
@@ -159,7 +159,7 @@ function HomePage() {
                         : 'w-auto h-100'
                     )}
                     alt="profile"
-                    src={transformImageCDN(
+                    src={api.transformImageCDN(
                       'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR,
                       'w_56,f_auto'
                     )}
@@ -200,7 +200,7 @@ function HomePage() {
                       : 'h-100 w-auto'
                   }
                   alt="profile"
-                  src={transformImageCDN(post.file.dataURL, 'h_584,f_auto')}
+                  src={api.transformImageCDN(post.file.dataURL, 'h_584,f_auto')}
                 />
               </div>
               <main className={clsx('position-relative')}>
