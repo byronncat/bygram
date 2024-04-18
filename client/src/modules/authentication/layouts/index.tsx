@@ -1,29 +1,35 @@
-import { useState, lazy, Suspense } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import clsx from 'clsx';
+import { useState, lazy, Suspense } from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
+import clsx from 'clsx'
 
-import { useStorageContext } from '@global';
-import Auth from '../contexts/auth.context';
+import { useStorageContext } from '@global'
+import { ClassNameProvider } from '../providers'
 
-import styles from '../styles/layouts/auth.module.sass';
-import effects from '@sass/effects.module.sass';
-import backgroundImageURL from '@assets/images/night-neon.avif';
+import styles from '../styles/layouts/auth.module.sass'
+import effects from '@sass/effects.module.sass'
+import backgroundImageURL from '@assets/images/night-neon.avif'
 
-export default function AuthLayout() {
-  const { authenticationStorage } = useStorageContext();
-  const [title, setTitle] = useState('');
+export default function AuthenticationLayout() {
+  const { authenticationToken } = useStorageContext()
+  const [title, setTitle] = useState('')
 
   const LazyComponents = {
-    Brand: lazy(() => import('../components/lazy/brand.component')),
-  };
+    Brand: lazy(() => import('./lazy-component/brand.component')),
+  }
 
-  if (authenticationStorage.isAuthenticated) {
-    return <Navigate to="/" />;
+  if (authenticationToken.isAuthenticated) {
+    return <Navigate to="/" />
   }
 
   return (
-    <Auth>
-      <div className={clsx('w-100 h-100', 'overflow-hidden user-select-none', 'position-relative')}>
+    <ClassNameProvider>
+      <div
+        className={clsx(
+          'w-100 h-100',
+          'overflow-hidden user-select-none',
+          'position-relative'
+        )}
+      >
         <span
           className={clsx('w-100 h-100', 'd-block position-absolute z-n1')}
           style={{
@@ -49,8 +55,8 @@ export default function AuthLayout() {
           <Outlet context={{ setTitle }} />
         </div>
       </div>
-    </Auth>
-  );
+    </ClassNameProvider>
+  )
 }
 
 function Title({ data }: { data: string }) {
@@ -66,9 +72,17 @@ function Title({ data }: { data: string }) {
     >
       {data}
     </span>
-  );
+  )
 }
 
 function PanelBackground() {
-  return <span className={clsx(styles['panel-bg'], 'w-100 h-100', 'position-absolute z-n1')} />;
+  return (
+    <span
+      className={clsx(
+        styles['panel-bg'],
+        'w-100 h-100',
+        'position-absolute z-n1'
+      )}
+    />
+  )
 }

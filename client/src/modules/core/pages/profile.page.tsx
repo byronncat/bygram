@@ -5,7 +5,13 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import clsx from 'clsx'
 import { PostWindow } from '../components'
 import Menu from '../components/menu.component'
-import { useGlobalContext, useStorageContext, Loader, Overlay } from '@global'
+import {
+  useGlobalContext,
+  useStorageContext,
+  toast,
+  Loader,
+  Overlay,
+} from '@global'
 import {
   changeAvatar,
   follow,
@@ -25,38 +31,44 @@ function ProfilePage() {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false)
   const [currentPost, setCurrentPost] = useState({} as PostData)
   const [showCurrentPost, setShowCurrentPost] = useState(false)
-  const { authenticationStorage } = useStorageContext()
-  const { displayToast, refreshPage } = useGlobalContext()
+  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { refreshPage } = useGlobalContext()
   const { register, handleSubmit } = useForm<{ file: FileList }>()
 
   const changeAvatarHandler: SubmitHandler<{ file: FileList }> = async (
     data
   ) => {
     const response = await changeAvatar(
-      authenticationStorage.user!.id,
+      authenticationStorage.identity!.id,
       data.file[0]
     )
     if (response.success) refreshPage()
-    displayToast(response.message, response.success ? 'success' : 'error')
+    toast.display(response.message, response.success ? 'success' : 'error')
   }
 
   const removeAvatarHandler = async () => {
     setShowAvatarMenu(false)
-    const response = await removeAvatar(authenticationStorage.user!.id)
+    const response = await removeAvatar(authenticationStorage.identity!.id)
     if (response.success) refreshPage()
-    displayToast(response.message, response.success ? 'success' : 'error')
+    toast.display(response.message, response.success ? 'success' : 'error')
   }
 
   async function followHandler() {
-    const response = await follow(authenticationStorage.user!.id, profile.uid)
+    const response = await follow(
+      authenticationStorage.identity!.id,
+      profile.uid
+    )
     if (response.success) refreshPage()
-    displayToast(response.message, response.success ? 'success' : 'error')
+    toast.display(response.message, response.success ? 'success' : 'error')
   }
 
   async function unfollowHandler() {
-    const response = await unfollow(authenticationStorage.user!.id, profile.uid)
+    const response = await unfollow(
+      authenticationStorage.identity!.id,
+      profile.uid
+    )
     if (response.success) refreshPage()
-    displayToast(response.message, response.success ? 'success' : 'error')
+    toast.display(response.message, response.success ? 'success' : 'error')
   }
 
   const { uid } = useParams()
@@ -66,9 +78,9 @@ function ProfilePage() {
       if (response.success && response.data) {
         setReady(true)
         setProfile(response.data)
-      } else displayToast(response.message, 'error')
+      } else toast.display(response.message, 'error')
     })()
-  }, [refreshPage, uid, displayToast])
+  }, [refreshPage, uid, toast.display])
 
   const inpurRef = useRef<HTMLInputElement | null>(null)
   const { ref, ...rest } = register('file', {
@@ -135,12 +147,12 @@ function ProfilePage() {
               }
               alt="profile"
               onClick={
-                profile.uid === authenticationStorage.user?.id
+                profile.uid === authenticationStorage.identity?.id
                   ? () => setShowAvatarMenu(true)
                   : () => {}
               }
             />
-            {authenticationStorage.user?.id === profile.uid && (
+            {authenticationStorage.identity?.id === profile.uid && (
               <input
                 type="file"
                 className={clsx(
@@ -163,8 +175,10 @@ function ProfilePage() {
               <h2 className={clsx('m-0 me-5', 'fs-3 lh-1')}>
                 {profile.username}
               </h2>
-              {profile.uid !== authenticationStorage.user?.id &&
-                (profile.followers?.includes(authenticationStorage.user!.id) ? (
+              {profile.uid !== authenticationStorage.identity?.id &&
+                (profile.followers?.includes(
+                  authenticationStorage.identity!.id
+                ) ? (
                   <button
                     className={clsx(
                       styles['following-button'],

@@ -3,13 +3,19 @@
 @import "~bootstrap/scss/variables"
 @import "~bootstrap/scss/mixins"
 
-$form-background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
-
-$transition-time: 0.4s
-$hover-color: #d81d84
+$background: linear-gradient(45deg, rgba(4, 2, 96, 0.7), rgba(180, 49, 183, 0.9)), linear-gradient(90deg, rgba(51, 136, 140, 0.3), rgba(87, 240, 240, 0.1))
+$color-1: #C2146D
+$color-2: #760D50
+$color-3: #4D0E45
+$color-4: #320C3B
+$color-5: #280C3D
+$color-6: #1E0D37
+$color-7: #1F2125
+$color-8: #2a2b38
+$transition-time: 0.34s
 
 .panel-bg
-  background: $form-background
+  background: $background
 
 .brand-name
   font-family: 'Monoton', sans-serif
@@ -28,19 +34,19 @@ $hover-color: #d81d84
   & form
     padding: utils.pxToRem(52) utils.pxToRem(36)
     width: utils.pxToRem(400)
-    @include utils.custom-bg-1(#2a2b38b3)
+    @include utils.custom-bg-1($color-8)
     @include utils.box-shadow-effect-1(rgba(0, 0, 0, 0.6))
 
     & a
       cursor: pointer
       transition: all $transition-time
       &:hover
-        @include utils.text-shadow-effect-2($hover-color)
+        @include utils.text-shadow-effect-2($color-3)
 
     & .form-input
-      color: rgba(255, 255, 255, 0.7)
+      color: rgba(255, 255, 255, 0.6)
       caret-color: white
-      background: var(--color-charade)
+      background: $color-7
       border-color: transparent
       box-shadow: none
       transition: all $transition-time
@@ -65,18 +71,34 @@ $hover-color: #d81d84
 
 .submit-btn
   color: white
-  background: $hover-color
+  background: $color-1
   border: none
   transition: all $transition-time
   &:hover
-    background: $hover-color
-    @include utils.box-shadow-effect-4($hover-color, 4)
+    background: $color-1
+    @include utils.box-shadow-effect-4($color-1, 4)
   &:active
     color: white !important
-    background: $hover-color !important
+    background: $color-1 !important
 
 .error-message
   color: #ff0000
+
+.icon-eye
+  display: flex
+  justify-content: center
+  align-items: center
+  position: absolute
+  top: 0
+  right: 0
+  height: 100%
+  width: utils.pxToRem(40)
+  font-size: 1.2rem
+  cursor: pointer
+  transition: all $transition-time
+  opacity: 0.7
+  &:hover
+    opacity: 1
 
 // Responsive design
 @include media-breakpoint-up(lg)

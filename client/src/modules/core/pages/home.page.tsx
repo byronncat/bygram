@@ -16,6 +16,7 @@ import styles from '../styles/pages/home.module.sass'
 import postWindowStyles from '../styles/components/post-window.module.sass'
 import {
   api,
+  toast,
   useGlobalContext,
   useStorageContext,
   Loader,
@@ -29,9 +30,9 @@ function HomePage() {
   const [showCurrentPost, setShowCurrentPost] = useState(false)
   const [showCreatePost, setShowCreatePost] = useState(false)
   const [showActionMenu, setShowActionMenu] = useState(false)
-  const { displayToast, refreshPage } = useGlobalContext()
-  const { authenticationStorage } = useStorageContext()
-  const { activeLinkHandler } = useGlobalContext()
+  const { refreshPage } = useGlobalContext()
+  const { authenticationToken: authenticationStorage, activeLinkHandler } =
+    useStorageContext()
   const { formatTime } = useFormat()
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
@@ -41,7 +42,10 @@ function HomePage() {
           setShowActionMenu(false)
           const response = await item.function!(currentPost.id)
           refreshPage()
-          displayToast(response.message, response.success ? 'success' : 'error')
+          toast.display(
+            response.message,
+            response.success ? 'success' : 'error'
+          )
         }
         break
       }
@@ -66,28 +70,28 @@ function HomePage() {
     event.preventDefault()
     const form = event.currentTarget
     const commentValue = (event.target as HTMLFormElement).comment.value
-    if (!commentValue) return displayToast('Comment cannot be empty', 'error')
+    if (!commentValue) return toast.display('Comment cannot be empty', 'error')
     const response = await sendComment(
-      authenticationStorage.user!.id,
+      authenticationStorage.identity!.id,
       currentPost.id,
       commentValue
     )
     if (response.success) {
       form.reset()
       refreshPage()
-      displayToast(response.message, 'success')
+      toast.display(response.message, 'success')
     }
   }
 
   useEffect(() => {
     ;(async function fetchPosts() {
-      const response = await getHomePosts(authenticationStorage.user?.id!)
+      const response = await getHomePosts(authenticationStorage.identity?.id!)
       if (response.success && response.data) {
         setPosts(response.data)
         setReady(true)
-      } else displayToast(response.message, 'error')
+      } else toast.display(response.message, 'error')
     })()
-  }, [authenticationStorage, displayToast, refreshPage])
+  }, [authenticationStorage, toast.display, refreshPage])
 
   if (!ready) return <Loader />
   return (
@@ -96,7 +100,7 @@ function HomePage() {
         <Overlay exitHandler={() => setShowActionMenu(false)}>
           <Menu
             list={
-              (authenticationStorage.user!.id === currentPost.uid &&
+              (authenticationStorage.identity!.id === currentPost.uid &&
                 authorMenu) ||
               FOLLOWP_POST_MENU
             }
@@ -226,7 +230,7 @@ function HomePage() {
                     <i
                       onClick={async () => {
                         const response = await likePost(
-                          authenticationStorage.user!.id,
+                          authenticationStorage.identity!.id,
                           post.id
                         )
                         if (response.success) refreshPage()
@@ -234,7 +238,9 @@ function HomePage() {
                       className={clsx(
                         styles['likes-icon'],
                         `icon-heart${
-                          post.likes?.includes(authenticationStorage.user?.id!)
+                          post.likes?.includes(
+                            authenticationStorage.identity?.id!
+                          )
                             ? ''
                             : '-empty'
                         }`

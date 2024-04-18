@@ -1,0 +1,15 @@
+@use '@sass/utils.sass' as utils
+
+// How to override style: https://fkhadra.github.io/react-toastify/how-to-style/
+
+#root .Toastify__toast
+  font-weight: 600
+
+  &--success
+    $color-green-neon: #00ff00
+    background-color: $color-green-neon
+    box-shadow: 0 0 5px $color-green-neon, 0 0 25px $color-green-neon, 0 0 50px $color-green-neon, 0 0 200px $color-green-neon
+  &--error
+    $color-red-neon: #fe0d2d
+    background-color: $color-red-neon
+    box-shadow: 0 0 5px $color-red-neon, 0 0 25px $color-red-neon, 0 0 50px $color-red-neon, 0 0 200px $color-red-neon

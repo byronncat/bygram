@@ -1,7 +1,8 @@
 export * as api from './api'
 export * from './components'
 export * from './hocs/global.hoc'
-export * as hook from './hooks'
+export * from './hooks'
+export * from './libraries'
 export * from './pages/error.page'
 export * from './providers'
 

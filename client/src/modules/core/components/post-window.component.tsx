@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import {
   useGlobalContext,
   useStorageContext,
+  toast,
   Overlay,
   ReactProps,
 } from '@global'
@@ -27,9 +28,9 @@ interface PostWindowProps extends ReactProps {
 export default function PostWindow({ post, onExit }: PostWindowProps) {
   const [comment, setComment] = useState({} as CommentData)
   const [comments, setComments] = useState([] as CommentData[])
-  const { displayToast, refreshPage } = useGlobalContext()
-  const { authenticationStorage } = useStorageContext()
-  const { activeLinkHandler } = useGlobalContext()
+  const { refreshPage } = useGlobalContext()
+  const { authenticationToken: authenticationStorage, activeLinkHandler } =
+    useStorageContext()
   const [showActionMenu, setShowActionMenu] = useState(false)
   const [showCreatePost, setShowCreatePost] = useState(false)
   const [showCommentMenu, setShowCommentMenu] = useState(false)
@@ -39,9 +40,9 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     ;(async () => {
       const response = await getComments(post.id)
       if (response.success && response.data) setComments(response.data)
-      else displayToast(response.message, 'error')
+      else toast.display(response.message, 'error')
     })()
-  }, [displayToast, post, refreshPage])
+  }, [toast.display, post, refreshPage])
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
@@ -50,7 +51,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           setShowActionMenu(false)
           onExit()
           const response = await item.function!(post.id)
-          displayToast(response.message, response.success && 'error')
+          toast.display(response.message, response.success && 'error')
           refreshPage()
         }
         break
@@ -76,16 +77,16 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     event.preventDefault()
     const form = event.currentTarget
     const commentValue = (event.target as HTMLFormElement).comment.value
-    if (!commentValue) return displayToast('Comment cannot be empty', 'error')
+    if (!commentValue) return toast.display('Comment cannot be empty', 'error')
     const response = await sendComment(
-      authenticationStorage.user!.id,
+      authenticationStorage.identity!.id,
       post.id,
       commentValue
     )
     if (response.success) {
       form.reset()
       refreshPage()
-      displayToast(response.message, 'success')
+      toast.display(response.message, 'success')
     }
   }
 
@@ -96,7 +97,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
         setShowCommentMenu(false)
         const response = await deleteComment(post.id, comment.id)
         if (response.success) refreshPage()
-        displayToast(response.message, response.success ? 'success' : 'error')
+        toast.display(response.message, response.success ? 'success' : 'error')
       },
     },
     {
@@ -120,7 +121,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           method="put"
         />
       )}
-      {showActionMenu && authenticationStorage.user!.id === post.uid && (
+      {showActionMenu && authenticationStorage.identity!.id === post.uid && (
         <Overlay zIndex={2} exitHandler={() => setShowActionMenu(false)}>
           <Menu list={authorMenu} />
         </Overlay>
@@ -135,7 +136,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
               'position-relative'
             )}
           >
-            {authenticationStorage.user?.id === post.uid && (
+            {authenticationStorage.identity?.id === post.uid && (
               <span
                 className={clsx(
                   'position-absolute top-0 end-0',
@@ -194,7 +195,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                           {comment.content}
                         </span>
                       </p>
-                      {authenticationStorage.user?.id === post.uid && (
+                      {authenticationStorage.identity?.id === post.uid && (
                         <span
                           className={clsx(
                             'ms-auto px-3',
@@ -229,19 +230,26 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                   <i
                     onClick={async () => {
                       const response = await likePost(
-                        authenticationStorage.user!.id,
+                        authenticationStorage.identity!.id,
                         post.id
                       )
                       if (response.success) {
-                        if (likes?.includes(authenticationStorage.user?.id!)) {
+                        if (
+                          likes?.includes(authenticationStorage.identity?.id!)
+                        ) {
                           setLikes(
                             likes?.filter(
-                              (id) => id !== authenticationStorage.user?.id
+                              (id) => id !== authenticationStorage.identity?.id
                             )
                           )
                         }
-                        if (!likes?.includes(authenticationStorage.user?.id!)) {
-                          setLikes([...likes!, authenticationStorage.user?.id!])
+                        if (
+                          !likes?.includes(authenticationStorage.identity?.id!)
+                        ) {
+                          setLikes([
+                            ...likes!,
+                            authenticationStorage.identity?.id!,
+                          ])
                         }
                         refreshPage()
                       }
@@ -249,7 +257,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                     className={clsx(
                       homeStyles['likes-icon'],
                       `icon-heart${
-                        likes?.includes(authenticationStorage.user?.id!)
+                        likes?.includes(authenticationStorage.identity?.id!)
                           ? ''
                           : '-empty'
                       }`,
@@ -284,11 +292,12 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           </div>
         </div>
       </Overlay>
-      {showCommentMenu && authenticationStorage.user!.id === comment.uid && (
-        <Overlay zIndex={2} exitHandler={() => setShowCommentMenu(false)}>
-          <Menu list={commentMenu} />
-        </Overlay>
-      )}
+      {showCommentMenu &&
+        authenticationStorage.identity!.id === comment.uid && (
+          <Overlay zIndex={2} exitHandler={() => setShowCommentMenu(false)}>
+            <Menu list={commentMenu} />
+          </Overlay>
+        )}
     </>
   )
 }

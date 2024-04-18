@@ -1,7 +1,7 @@
 import { toast, ToastContainerProps } from 'react-toastify'
 import { ToastTypeStrings } from '../types'
 
-export const toastSettings = {
+export const settings = {
   position: 'top-right',
   autoClose: 3000,
   limit: 4,
@@ -9,13 +9,13 @@ export const toastSettings = {
   newestOnTop: false,
   closeOnClick: true,
   rtl: false,
-  pauseOnFocusLoss: true,
   draggable: true,
   pauseOnHover: true,
+  closeButton: false,
   theme: 'colored',
 } as ToastContainerProps
 
-export function displayToast(message: string, type: ToastTypeStrings) {
+export function display(message: string, type: ToastTypeStrings) {
   toast.dismiss()
   toast[type](message)
 }

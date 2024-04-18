@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import {
-  AuthLayout,
+  AuthenticationLayout,
   LoginPage,
   RegisterPage,
   ForgotPasswordPage,
@@ -21,7 +21,7 @@ export default function Router() {
       ],
     },
     {
-      element: <AuthLayout />,
+      element: <AuthenticationLayout />,
       errorElement: <ErrorPage />,
       children: [
         { path: 'login', element: <LoginPage /> },

@@ -5,7 +5,7 @@ import clsx from 'clsx'
 
 function RootLayout() {
   // * /images/wallpaper.jpg different from images/wallpaper.jpg
-  const { authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } = useStorageContext()
   return authenticationStorage.isAuthenticated ? (
     <>
       <main

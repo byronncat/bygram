@@ -1,3 +1,5 @@
+import React, { HTMLProps } from 'react'
+
 export interface ReactProps {
   readonly children?: React.ReactNode
   readonly className?: HTMLProps<HTMLElement>['className'] | string
@@ -6,17 +8,21 @@ export interface ReactProps {
   readonly onExit?: () => void
 }
 
-export type ToastTypeStrings =
-  | 'success'
-  | 'error'
-  | 'info'
-  | 'warning'
-  | 'loading'
+export enum ToastType {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INFO = 'info',
+  WARNING = 'warning',
+  LOADING = 'loading',
+}
+export type ToastTypeStrings = `${ToastType}`
 
-export type SidebarOptionStrings =
-  | 'home'
-  | 'search'
-  | 'explore'
-  | 'create post'
-  | 'profile'
-  | 'logout'
+export enum SidebarOption {
+  HOME = 'home',
+  SEARCH = 'search',
+  EXPLORE = 'explore',
+  CREATE_POST = 'create post',
+  PROFILE = 'profile',
+  LOGOUT = 'logout',
+}
+export type SidebarOptionStrings = `${SidebarOption}`

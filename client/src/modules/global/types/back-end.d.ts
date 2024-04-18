@@ -1,11 +1,17 @@
 export type IdentityStrings = 'Authorized' | 'Unauthorized' | 'Unknown'
 
-export type AuthenticationToken = {
-  isAuthenticated: boolean
-  user: UserToken | null
+export type UserData = {
+  id: number
+  username: string
+  email: string
 }
 
-export interface API {
+export type AuthenticationToken = {
+  isAuthenticated: boolean
+  identity: UserData | null
+}
+
+export type API = {
   readonly success: boolean
   readonly message: string
 }

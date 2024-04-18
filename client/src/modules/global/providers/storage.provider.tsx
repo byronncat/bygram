@@ -1,46 +1,78 @@
 import { useState, useContext, createContext } from 'react'
-import { AuthenticationToken, ReactProps } from '../types'
+import { AuthenticationToken, ReactProps, SidebarOptionStrings } from '../types'
 
-type StorageContext = {
-  authenticationStorage: AuthenticationToken
-  setAuthenticationStorage: (data: AuthenticationToken) => void
-}
-const STORAGE_CONTEXT = createContext({} as StorageContext)
+const StorageContext = createContext(
+  {} as {
+    authenticationToken: AuthenticationToken
+    handleChangeAuthentication: (data: AuthenticationToken) => void
+
+    activeLink: SidebarOptionStrings
+    setActiveLink: React.Dispatch<React.SetStateAction<SidebarOptionStrings>>
+    getActiveLink: () => SidebarOptionStrings
+    activeLinkHandler: (name: SidebarOptionStrings) => void
+  }
+)
 
 export function StorageProvider({ children }: ReactProps) {
-  const [authenticationStorage, setAuthenticationState] =
+  const [authenticationToken, setAuthenticationToken] =
     useState<AuthenticationToken>({
-      user: localStorage.getItem('user')
+      identity: localStorage.getItem('user')
         ? JSON.parse(localStorage.getItem('user') as string)
         : null,
       isAuthenticated:
         localStorage.getItem('isAuthenticated') === 'true' ? true : false,
     })
 
-  function setAuthenticationStorage({
-    user,
+  function handleChangeAuthentication({
+    identity,
     isAuthenticated,
   }: AuthenticationToken) {
-    setAuthenticationState({
-      user,
+    setAuthenticationToken({
+      identity,
       isAuthenticated,
     })
-    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('user', JSON.stringify(identity))
     localStorage.setItem('isAuthenticated', isAuthenticated.toString())
   }
 
+  // Sidebar active link
+  const [activeLink, setActiveLink] = useState<SidebarOptionStrings>(
+    getActiveLink()
+  )
+  function getActiveLink() {
+    let activeLink: SidebarOptionStrings
+    if (localStorage.getItem('activeLink'))
+      activeLink = localStorage.getItem('activeLink') as SidebarOptionStrings
+    else return 'home'
+    const notActive = ['create post', 'logout', 'search']
+    if (notActive.includes(activeLink))
+      activeLink = localStorage.getItem('previousLink') as SidebarOptionStrings
+    return activeLink
+  }
+
+  const activeLinkHandler = (name: SidebarOptionStrings) => {
+    const notActive = ['create post', 'logout', 'search']
+    if (!notActive.includes(name)) localStorage.setItem('previousLink', name)
+    setActiveLink(name)
+  }
+
   return (
-    <STORAGE_CONTEXT.Provider
+    <StorageContext.Provider
       value={{
-        authenticationStorage,
-        setAuthenticationStorage,
+        authenticationToken,
+        handleChangeAuthentication,
+
+        activeLink,
+        setActiveLink,
+        getActiveLink,
+        activeLinkHandler,
       }}
     >
       {children}
-    </STORAGE_CONTEXT.Provider>
+    </StorageContext.Provider>
   )
 }
 
 export function useStorageContext() {
-  return useContext(STORAGE_CONTEXT)
+  return useContext(StorageContext)
 }

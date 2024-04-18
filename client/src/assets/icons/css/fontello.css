@@ -62,6 +62,9 @@
 .icon-heart-empty:before {
   content: '\e801';
 } /* '' */
+.icon-eye:before {
+  content: '\e802';
+} /* '' */
 .icon-compass:before {
   content: '\e803';
 } /* '' */
@@ -77,6 +80,9 @@
 .icon-search:before {
   content: '\e807';
 } /* '' */
+.icon-eye-off:before {
+  content: '\e808';
+} /* '' */
 .icon-ellipsis:before {
   content: '\f141';
 } /* '' */

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import clsx from 'clsx'
 import {
+  toast,
   useGlobalContext,
   useStorageContext,
   Overlay,
@@ -37,8 +38,8 @@ export default function UploadPostWindow({
     imgURL: null,
     sizeType: 'portrait',
   })
-  const { displayToast, refreshPage } = useGlobalContext()
-  const { authenticationStorage } = useStorageContext()
+  const { refreshPage } = useGlobalContext()
+  const { authenticationToken: authenticationStorage } = useStorageContext()
   const {
     register,
     handleSubmit,
@@ -50,7 +51,7 @@ export default function UploadPostWindow({
     let postData =
       method === 'post'
         ? {
-            uid: authenticationStorage.user!.id,
+            uid: authenticationStorage.identity!.id,
             content: data.content,
             file: data.file[0] as File,
           }
@@ -61,7 +62,7 @@ export default function UploadPostWindow({
           }
     const response = await uploadPost(postData, method)
     refreshPage()
-    displayToast(response.message, response.success ? 'success' : 'error')
+    toast.display(response.message, response.success ? 'success' : 'error')
   }
 
   useLayoutEffect(() => {
@@ -74,8 +75,8 @@ export default function UploadPostWindow({
   }, [defaultPost])
 
   useEffect(() => {
-    if (errors.file) displayToast('Please select an image', 'error')
-  }, [errors.file, displayToast])
+    if (errors.file) toast.display('Please select an image', 'error')
+  }, [errors.file, toast.display])
 
   return (
     <Overlay exitHandler={() => onExit} zIndex={zIndex}>

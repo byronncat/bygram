@@ -1,5 +1,7 @@
-import { FormFieldProps } from '../types/form';
-import clsx from 'clsx';
+import { FormFieldProps } from '../types'
+import { useState } from 'react'
+import clsx from 'clsx'
+import styles from '../styles/layouts/auth.module.sass'
 
 function FormField({
   type,
@@ -10,11 +12,20 @@ function FormField({
   validation,
   className,
 }: FormFieldProps) {
+  const [inputType, setInputType] = useState(type)
+  function togglePasswordVisibilityHandler() {
+    if (inputType === 'password') {
+      setInputType('text')
+    } else {
+      setInputType('password')
+    }
+  }
+
   return (
     <div className={className?.formField}>
       <input
         key={name}
-        type={type}
+        type={inputType}
         className={className?.formInput}
         id={name}
         placeholder={placeholder}
@@ -23,6 +34,14 @@ function FormField({
       <label className={className?.formLabel} htmlFor={name}>
         {placeholder}
       </label>
+      {type === 'password' && (
+        <span
+          className={styles['icon-eye']}
+          onClick={togglePasswordVisibilityHandler}
+        >
+          <i className={`icon-eye${inputType !== 'password' ? '-off' : ''}`} />
+        </span>
+      )}
       <p
         className={clsx(
           className?.formErrorMessage,
@@ -32,7 +51,7 @@ function FormField({
         {errors?.message}
       </p>
     </div>
-  );
+  )
 }
 
-export default FormField;
+export default FormField

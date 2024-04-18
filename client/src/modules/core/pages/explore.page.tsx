@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { PostWindow } from '../components'
-import { api, Loader } from '@global'
-import { useGlobalContext, useStorageContext } from '@global'
+import { api, toast, useStorageContext, Loader } from '@global'
 import { explorePost } from '../services/post.service'
 import { Post } from '../types'
 import clsx from 'clsx'
@@ -10,8 +9,7 @@ import styles from '../styles/pages/explore.module.sass'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 function ExplorePage() {
-  const { displayToast } = useGlobalContext()
-  const { authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } = useStorageContext()
   const [ready, setReady] = useState(false)
   const [post, setPost] = useState({} as any)
   const [showPost, setShowPost] = useState(false)
@@ -19,13 +17,13 @@ function ExplorePage() {
 
   useEffect(() => {
     ;(async function FetchData() {
-      const response = await explorePost(authenticationStorage.user!.id)
+      const response = await explorePost(authenticationStorage.identity!.id)
       if (response.success && response.data) {
         setPosts(response.data)
         setReady(true)
-      } else displayToast(response.message, 'error')
+      } else toast.display(response.message, 'error')
     })()
-  }, [ready, authenticationStorage, displayToast])
+  }, [ready, authenticationStorage, toast.display])
   if (!ready) return <Loader />
   return (
     <>

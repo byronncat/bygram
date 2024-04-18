@@ -1,31 +1,7 @@
-import { FormFieldProps } from '../types';
+import { FormFieldProps } from '../types'
 
-export const LOGIN_FIELD = [
-  {
-    name: 'email',
-    type: 'email',
-    placeholder: 'Email',
-    validation: {
-      required: 'Email is required',
-      pattern: {
-        value: /\S+@\S+\.\S+/,
-        message: 'Wrong email format',
-      },
-    },
-  },
-  {
-    name: 'password',
-    type: 'password',
-    placeholder: 'Password',
-    validation: {
-      required: 'Password is required',
-      minLength: {
-        value: 6,
-        message: 'Password must be at least 6 characters',
-      },
-    },
-  },
-] as FormFieldProps[];
+export * as DEFAULT_VALUES from './default.constant'
+export * as FIELD from './field.constant'
 
 export const REGISTER_FIELD = [
   {
@@ -64,7 +40,7 @@ export const REGISTER_FIELD = [
       },
     },
   },
-] as FormFieldProps[];
+] as FormFieldProps[]
 
 export const SEND_EMAIL_FIELD = [
   {
@@ -79,4 +55,4 @@ export const SEND_EMAIL_FIELD = [
       },
     },
   },
-] as FormFieldProps[];
+] as FormFieldProps[]

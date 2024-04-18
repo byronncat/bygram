@@ -1,48 +1,48 @@
-import { useLayoutEffect } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
-import { SubmitHandler } from 'react-hook-form';
-import clsx from 'clsx';
-import { useGlobalContext, useStorageContext } from '@global';
-import { useAuthLayoutContext } from '../contexts/auth.context';
-import Form from '../components/form.component';
-import { loginAPI } from '../services/auth.service';
-import { LOGIN_FIELD } from '../constants';
-import { AuthenticationInformation } from '../types';
-import styles from '../styles/layouts/auth.module.sass';
+import { useLayoutEffect } from 'react'
+import { useNavigate, useOutletContext, Link } from 'react-router-dom'
+import { SubmitHandler } from 'react-hook-form'
+import clsx from 'clsx'
 
-const defaultValues: AuthenticationInformation = {
-  email: 'user01@bygram.test.com',
-  password: '111111',
-};
+import { toast, useStorageContext } from '@global'
+import { DEFAULT_VALUES, FIELD } from '../constants'
+import { useClassNameContext } from '../providers'
+
+import { Form } from '../components'
+import { loginAPI } from '../services/auth.service'
+import { AuthenticationInformation, OutletContextProps } from '../types'
+import styles from '../styles/layouts/auth.module.sass'
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const { className } = useAuthLayoutContext();
-  const { displayToast } = useGlobalContext();
-  const { setAuthenticationStorage } = useStorageContext();
+  const navigate = useNavigate()
+  const { className } = useClassNameContext()
+  const { handleChangeAuthentication } = useStorageContext()
 
-  const { setTitle }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext();
+  const { setTitle }: OutletContextProps = useOutletContext()
   useLayoutEffect(() => {
-    setTitle('sign in');
-  }, [setTitle]);
+    setTitle('sign in')
+  }, [setTitle])
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = async (data) => {
-    displayToast("Waiting for server's response", 'loading');
-    const response = await loginAPI(data);
+  const submitHandler: SubmitHandler<AuthenticationInformation> = async (
+    data
+  ) => {
+    toast.display("Waiting for server's response", 'loading')
+    const response = await loginAPI(data)
     if (response.success && response.data) {
-      setAuthenticationStorage({ user: response.data, isAuthenticated: true });
-      navigate('/');
+      handleChangeAuthentication({
+        identity: response.data,
+        isAuthenticated: true,
+      })
+      navigate('/')
     }
-    displayToast(response.message, response.success ? 'success' : 'error');
-  };
+    toast.display(response.message, response.success ? 'success' : 'error')
+  }
 
   return (
     <>
       <Form
         className={className.form}
-        fieldList={LOGIN_FIELD}
-        defaultValues={defaultValues}
+        fieldList={FIELD.LOGIN}
+        defaultValues={DEFAULT_VALUES.LOGIN}
         submitHandler={submitHandler}
         fieldClass={className}
         submitPlaceholder="Login"
@@ -50,7 +50,10 @@ function LoginPage() {
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
         {/* <span className={clsx('d-flex justify-content-between', 'mt-4')}> */}
-        <Link to="/register" className={clsx('link d-block', 'text-center fs-6')}>
+        <Link
+          to="/register"
+          className={clsx('link d-block', 'text-center fs-6')}
+        >
           Sign up
         </Link>
         {/* <Link to="/forgot-password" className={clsx('d-block link', 'text-center fs-6')}>
@@ -59,7 +62,7 @@ function LoginPage() {
         </span> */}
       </Form>
     </>
-  );
+  )
 }
 
-export default LoginPage;
+export default LoginPage

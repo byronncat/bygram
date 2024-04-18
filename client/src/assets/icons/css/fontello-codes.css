@@ -1,10 +1,12 @@
 
 .icon-heart:before { content: '\e800'; } /* '' */
 .icon-heart-empty:before { content: '\e801'; } /* '' */
+.icon-eye:before { content: '\e802'; } /* '' */
 .icon-compass:before { content: '\e803'; } /* '' */
 .icon-logout:before { content: '\e804'; } /* '' */
 .icon-home:before { content: '\e805'; } /* '' */
 .icon-user:before { content: '\e806'; } /* '' */
 .icon-search:before { content: '\e807'; } /* '' */
+.icon-eye-off:before { content: '\e808'; } /* '' */
 .icon-ellipsis:before { content: '\f141'; } /* '' */
 .icon-plus-squared-alt:before { content: '\f196'; } /* '' */
