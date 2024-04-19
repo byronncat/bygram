@@ -7,7 +7,7 @@ import effects from '@sass/effects.module.sass'
 
 const className = {
   form: 'mw-100 rounded',
-  formField: clsx(styles['form-field'], 'form-field form-floating'),
+  formField: clsx('form-field form-floating'),
   formInput: clsx(styles['form-input'], 'form-control'),
   formLabel: clsx(styles['form-label']),
   formErrorMessage: clsx(styles['error-message'], 'mt-1 mb-2', 'fw-bolder'),

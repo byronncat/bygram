@@ -5,7 +5,7 @@ import { StorageProvider } from '../providers'
 import { toast } from '../libraries'
 import { ReactProps } from '../types'
 
-import 'react-toastify/dist/ReactToastify.css'
+// import 'react-toastify/dist/ReactToastify.css'
 import 'bootstrap/dist/js/bootstrap.min'
 import '../styles/hocs/global.sass'
 import '@assets/icons/css/fontello.css'

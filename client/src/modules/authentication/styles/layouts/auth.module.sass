@@ -64,6 +64,11 @@ $transition-time: 0.34s
       &:focus + label
         color: white !important
 
+      &:placeholder-shown ~ .icon-eye
+        opacity: 0
+        cursor: default
+        pointer-events: none
+
     & .form-label
       color: rgba(255, 255, 255, 0.7) !important
       &::after
@@ -96,7 +101,7 @@ $transition-time: 0.34s
   font-size: 1.2rem
   cursor: pointer
   transition: all $transition-time
-  opacity: 0.7
+  opacity: 0.6
   &:hover
     opacity: 1
 
