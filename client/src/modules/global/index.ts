@@ -1,4 +1,4 @@
-export * as api from './api'
+export * from './api'
 export * from './components'
 export * from './hocs/global.hoc'
 export * from './hooks'

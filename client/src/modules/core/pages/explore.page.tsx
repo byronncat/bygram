@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { PostWindow } from '../components'
-import { api, toast, useStorageContext, Loader } from '@global'
+import { uri, toast, useStorageContext, Loader } from '@global'
 import { explorePost } from '../services/post.service'
 import { Post } from '../types'
 import clsx from 'clsx'
@@ -23,7 +23,7 @@ function ExplorePage() {
         setReady(true)
       } else toast.display(response.message, 'error')
     })()
-  }, [ready, authenticationStorage, toast.display])
+  }, [ready, authenticationStorage])
   if (!ready) return <Loader />
   return (
     <>
@@ -38,7 +38,7 @@ function ExplorePage() {
               <LazyLoadImage
                 className="img-fluid"
                 alt="profile"
-                src={api.transformImageCDN(post.file.dataURL, 'f_auto')}
+                src={uri.transformImageCDN(post.file.dataURL, 'f_auto')}
                 key={index}
                 onClick={() => {
                   setPost(post)

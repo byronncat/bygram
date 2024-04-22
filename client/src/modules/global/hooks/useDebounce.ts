@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 export function useDebounce<T>(
   initialValue: T,
   time: number
-): [T, T, React.Dispatch<T>] {
+): [T, React.Dispatch<T>, T] {
   const [value, setValue] = useState<T>(initialValue)
   const [debouncedValue, setDebouncedValue] = useState<T>(initialValue)
   useEffect(() => {
@@ -14,5 +14,5 @@ export function useDebounce<T>(
       clearTimeout(debounce)
     }
   }, [value, time])
-  return [debouncedValue, value, setValue]
+  return [debouncedValue, setValue, value]
 }

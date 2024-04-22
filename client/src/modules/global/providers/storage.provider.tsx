@@ -13,6 +13,7 @@ const StorageContext = createContext(
   }
 )
 
+// TODO: Add classes and divide the context into two separate contexts
 export function StorageProvider({ children }: ReactProps) {
   const [authenticationToken, setAuthenticationToken] =
     useState<AuthenticationToken>({

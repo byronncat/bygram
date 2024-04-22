@@ -80,7 +80,7 @@ function ProfilePage() {
         setProfile(response.data)
       } else toast.display(response.message, 'error')
     })()
-  }, [refreshPage, uid, toast.display])
+  }, [refreshPage, uid])
 
   const inpurRef = useRef<HTMLInputElement | null>(null)
   const { ref, ...rest } = register('file', {

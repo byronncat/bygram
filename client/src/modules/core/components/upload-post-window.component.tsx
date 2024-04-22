@@ -76,7 +76,7 @@ export default function UploadPostWindow({
 
   useEffect(() => {
     if (errors.file) toast.display('Please select an image', 'error')
-  }, [errors.file, toast.display])
+  }, [errors.file])
 
   return (
     <Overlay exitHandler={() => onExit} zIndex={zIndex}>

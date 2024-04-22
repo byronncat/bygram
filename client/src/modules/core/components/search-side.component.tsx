@@ -10,8 +10,7 @@ import styles from '../styles/components/search-side.module.sass'
 const defaultAvatar =
   'https://res.cloudinary.com/dq02xgn2g/image/upload/v1709561410/social-media-app/v60ffmwxuqgnku4uvtja.png'
 function SearchSide({ className, onExit }: ReactProps) {
-  const [debouncedSearchInput, searchInput, setSearchInput] =
-    useDebounce<string>('', 3000)
+  const [debouncedSearchInput, setSearchInput] = useDebounce<string>('', 3000)
   const [searchResult, setSearchResult] = useState([] as Profile[])
   const { register } = useForm()
   const { authenticationToken: authenticationStorage } = useStorageContext()
@@ -30,7 +29,7 @@ function SearchSide({ className, onExit }: ReactProps) {
         else toast.display(response.message, 'error')
       })()
     }
-  }, [debouncedSearchInput, toast.display])
+  }, [debouncedSearchInput])
 
   return (
     <>

@@ -15,7 +15,7 @@ import { PostData } from '../types'
 import styles from '../styles/pages/home.module.sass'
 import postWindowStyles from '../styles/components/post-window.module.sass'
 import {
-  api,
+  uri,
   toast,
   useGlobalContext,
   useStorageContext,
@@ -91,7 +91,7 @@ function HomePage() {
         setReady(true)
       } else toast.display(response.message, 'error')
     })()
-  }, [authenticationStorage, toast.display, refreshPage])
+  }, [authenticationStorage])
 
   if (!ready) return <Loader />
   return (
@@ -163,7 +163,7 @@ function HomePage() {
                         : 'w-auto h-100'
                     )}
                     alt="profile"
-                    src={api.transformImageCDN(
+                    src={uri.transformImageCDN(
                       'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR,
                       'w_56,f_auto'
                     )}
@@ -204,7 +204,7 @@ function HomePage() {
                       : 'h-100 w-auto'
                   }
                   alt="profile"
-                  src={api.transformImageCDN(post.file.dataURL, 'h_584,f_auto')}
+                  src={uri.transformImageCDN(post.file.dataURL, 'h_584,f_auto')}
                 />
               </div>
               <main className={clsx('position-relative')}>

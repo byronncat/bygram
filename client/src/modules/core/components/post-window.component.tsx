@@ -42,7 +42,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
       if (response.success && response.data) setComments(response.data)
       else toast.display(response.message, 'error')
     })()
-  }, [toast.display, post, refreshPage])
+  }, [post, refreshPage])
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {

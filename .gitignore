@@ -1,9 +1,7 @@
 .env
-test/
 node_modules/
 build/
 dist/
-test.*
 
 # dependencies
 /node_modules
