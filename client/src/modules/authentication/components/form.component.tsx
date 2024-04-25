@@ -1,7 +1,11 @@
 import { useForm, SubmitHandler } from 'react-hook-form'
+import clsx from 'clsx'
+
 import { ReactProps } from '@global'
+import FormField from '../libraries/react-hook-form.library'
 import { AuthenticationInformation, FormFieldProps } from '../types'
-import FormField from './form-field.component'
+
+import styles from '../styles/layouts/auth.module.sass'
 
 interface FormProps extends ReactProps {
   fieldList: FormFieldProps[]
@@ -9,7 +13,6 @@ interface FormProps extends ReactProps {
   submitHandler: SubmitHandler<AuthenticationInformation>
   fieldClass?: any
   submitPlaceholder?: string
-  submitClass?: any
 }
 
 export default function Form({
@@ -20,7 +23,6 @@ export default function Form({
   children,
   fieldClass,
   submitPlaceholder,
-  submitClass,
 }: FormProps) {
   const {
     register,
@@ -50,7 +52,7 @@ export default function Form({
         <input
           type="submit"
           value={submitPlaceholder}
-          className={submitClass}
+          className={clsx(styles['submit-btn'], 'w-100 pt-2 my-2', 'btn')}
         />
         {children}
       </form>

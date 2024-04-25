@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
+import { windowUtility } from '../utilities'
 
 export function useWindowDimensions() {
-  const hasWindow = typeof window !== 'undefined'
+  const hasWindow = windowUtility.isWindowDefined()
 
   const getWindowDimensions = useCallback(() => {
     const width = hasWindow ? window.innerWidth : 0

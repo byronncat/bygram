@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hocs Global should render the global hoc correctly 1`] = `
+Array [
+  "Test",
+  <div
+    className="Toastify"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+  />,
+]
+`;

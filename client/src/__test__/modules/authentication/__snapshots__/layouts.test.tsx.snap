@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthenticationLayout should render correctly when not authenticated 1`] = `
+<div
+  className="w-100 h-100 overflow-hidden user-select-none position-relative"
+>
+  <span
+    className="w-100 h-100 d-block position-absolute z-n1"
+    style={
+      Object {
+        "backgroundImage": "url(night-neon.avif)",
+        "backgroundPosition": "center center",
+        "backgroundSize": "cover",
+      }
+    }
+  />
+  <div
+    className="form-side text-white position-relative float-end h-100 d-flex flex-column justify-content-center align-items-center"
+  >
+    <img
+      alt="logo"
+      className="d-block"
+      height={60}
+      src="logo.svg"
+      width={60}
+    />
+    <h1
+      className="brand-name text-neon-glowing-1 text-uppercase fs-2 mt-2 my-3"
+    >
+      bygram
+    </h1>
+    <span
+      className="panel-bg w-100 h-100 position-absolute z-n1"
+    />
+    <span
+      className="title text-neon-glowing-2 m-2 text-capitalize position-absolute start-0 top-0"
+    >
+      login
+    </span>
+  </div>
+</div>
+`;

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import clsx from 'clsx'
-import { toast, useDebounce, useStorageContext, ReactProps } from '@global'
+import { toast, useDebounce, ReactProps } from '@global'
+import { useAuthenticationContext } from '@authentication'
 import { searchProfile } from '../services/profile.service'
 import { Profile } from '../types'
 import styles from '../styles/components/search-side.module.sass'
@@ -13,7 +14,8 @@ function SearchSide({ className, onExit }: ReactProps) {
   const [debouncedSearchInput, setSearchInput] = useDebounce<string>('', 3000)
   const [searchResult, setSearchResult] = useState([] as Profile[])
   const { register } = useForm()
-  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
 
   function inputHandler(event: any) {
     var lowerCase = event.target.value.toLowerCase()

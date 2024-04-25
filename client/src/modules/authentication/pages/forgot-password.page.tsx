@@ -6,9 +6,8 @@ import { toast, API } from '@global'
 import Form from '../components/form.component'
 import { useClassNameContext } from '../providers'
 import { sendResetEmailAPI } from '../services/auth.service'
-import { SEND_EMAIL_FIELD } from '../constants'
+import { FIELD } from '../constants'
 import { AuthenticationInformation } from '../types'
-import styles from '../styles/layouts/auth.module.sass'
 
 const defaultValues: AuthenticationInformation = {
   email: '',
@@ -34,12 +33,11 @@ function ForgotPasswordPage() {
   return (
     <>
       <Form
-        fieldList={SEND_EMAIL_FIELD}
+        fieldList={FIELD.SEND_EMAIL}
         defaultValues={defaultValues}
         submitHandler={submitHandler}
         fieldClass={className}
         submitPlaceholder="Send Email"
-        submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
         <Link to="/login" className={clsx('link d-block', ' text-center fs-6')}>

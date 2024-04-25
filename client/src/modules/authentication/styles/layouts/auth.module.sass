@@ -29,6 +29,7 @@ $transition-time: 0.34s
 
 .form-side
   $slide-time: 0.8s
+  width: 100%
   transition: all $slide-time cubic-bezier(0.68, 0.43, 0.19, 1)
 
   & form
@@ -70,21 +71,18 @@ $transition-time: 0.34s
         pointer-events: none
 
     & .form-label
+      --bs-body-bg: none
       color: rgba(255, 255, 255, 0.7) !important
-      &::after
-        background: none !important
 
 .submit-btn
+  --bs-btn-active-bg: #C2146D
+  --bs-btn-hover-bg: #C2146D
   color: white
   background: $color-1
   border: none
   transition: all $transition-time
   &:hover
-    background: $color-1
     @include utils.box-shadow-effect-4($color-1, 4)
-  &:active
-    color: white !important
-    background: $color-1 !important
 
 .error-message
   color: #ff0000
@@ -108,4 +106,4 @@ $transition-time: 0.34s
 // Responsive design
 @include media-breakpoint-up(lg)
   .form-side
-    width: 50vw !important
+    width: 50%

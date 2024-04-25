@@ -3,7 +3,7 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import styles from '../styles/layouts/auth.module.sass'
 
-function FormField({
+export default function FormField({
   type,
   placeholder,
   name,
@@ -53,5 +53,3 @@ function FormField({
     </div>
   )
 }
-
-export default FormField

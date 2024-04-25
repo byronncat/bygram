@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Providers ClassName should return className object 1`] = `
+Object {
+  "form": "mw-100 rounded",
+  "formErrorMessage": "error-message mt-1 mb-2 fw-bolder",
+  "formErrorMessageAnimation": "flicker-one",
+  "formField": "form-field form-floating",
+  "formInput": "form-input form-control",
+  "formLabel": "form-label",
+}
+`;

@@ -1,7 +1,7 @@
 import { API } from '@global'
 export * from './authentication.d'
+export * from './provider.d'
 export * from './react-hook-form.d'
-export * from './layout.d'
 
 export interface LoginAPI extends API {
   data?: UserToken

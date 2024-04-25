@@ -5,13 +5,8 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import clsx from 'clsx'
 import { PostWindow } from '../components'
 import Menu from '../components/menu.component'
-import {
-  useGlobalContext,
-  useStorageContext,
-  toast,
-  Loader,
-  Overlay,
-} from '@global'
+import { useGlobalContext, toast, Loader, Overlay } from '@global'
+import { useAuthenticationContext } from '@authentication'
 import {
   changeAvatar,
   follow,
@@ -31,7 +26,8 @@ function ProfilePage() {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false)
   const [currentPost, setCurrentPost] = useState({} as PostData)
   const [showCurrentPost, setShowCurrentPost] = useState(false)
-  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
   const { refreshPage } = useGlobalContext()
   const { register, handleSubmit } = useForm<{ file: FileList }>()
 

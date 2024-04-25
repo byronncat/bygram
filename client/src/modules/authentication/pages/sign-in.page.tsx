@@ -3,19 +3,19 @@ import { useNavigate, useOutletContext, Link } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
 import clsx from 'clsx'
 
-import { toast, useStorageContext } from '@global'
+import { toast } from '@global'
+import { useAuthenticationContext } from '../providers'
 import { DEFAULT_VALUES, FIELD } from '../constants'
 import { useClassNameContext } from '../providers'
 
 import { Form } from '../components'
 import { loginAPI } from '../services/auth.service'
 import { AuthenticationInformation, OutletContextProps } from '../types'
-import styles from '../styles/layouts/auth.module.sass'
 
 function LoginPage() {
   const navigate = useNavigate()
   const { className } = useClassNameContext()
-  const { handleChangeAuthentication } = useStorageContext()
+  const { handleChangeAuthentication } = useAuthenticationContext()
 
   const { setTitle }: OutletContextProps = useOutletContext()
   useLayoutEffect(() => {
@@ -46,7 +46,6 @@ function LoginPage() {
         submitHandler={submitHandler}
         fieldClass={className}
         submitPlaceholder="Login"
-        submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
         {/* <span className={clsx('d-flex justify-content-between', 'mt-4')}> */}

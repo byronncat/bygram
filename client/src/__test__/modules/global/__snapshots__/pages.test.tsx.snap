@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pages should render the 404 page correctly 1`] = `
+<div
+  className="wrapper w-100 h-100 d-flex"
+>
+  <div
+    className="square404"
+    id="Square"
+  >
+    <span
+      className="square flicker-1"
+    >
+      <p>
+        404
+      </p>
+    </span>
+  </div>
+  <div
+    className="texts d-flex flex-column justify-content-center"
+  >
+    <h4
+      className="fs-4"
+    >
+      Oops! Page not found.
+    </h4>
+    <p
+      className="pt-3 pb-5"
+    >
+      The page you are looking for does not exist. Go back to the main page.
+    </p>
+    <a
+      className="button"
+      href="/"
+      onClick={[Function]}
+    >
+      Back to Home
+    </a>
+  </div>
+</div>
+`;

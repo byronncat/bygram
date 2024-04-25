@@ -2,7 +2,9 @@ import { useLayoutEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import clsx from 'clsx'
 
-import { useStorageContext, ReactProps } from '@global'
+import { ReactProps } from '@global'
+import { useAuthenticationContext } from '@authentication'
+import { useSidebarOptionsContext } from '../providers'
 import UploadPostWindow from './upload-post-window.component'
 import SearchSide from './search-side.component'
 import { SidebarLink } from '../types/layout.d'
@@ -18,9 +20,9 @@ function Sidebar() {
   const [showSearch, setShowSearch] = useState(false)
   const [showCreatePost, setShowCreatePost] = useState(false)
   const { handleChangeAuthentication: setAuthenticationStorage } =
-    useStorageContext()
+    useAuthenticationContext()
   const { activeLink, setActiveLink, getActiveLink, activeLinkHandler } =
-    useStorageContext()
+    useSidebarOptionsContext()
 
   function logoutHandler(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault()

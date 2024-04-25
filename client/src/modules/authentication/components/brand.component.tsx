@@ -1,6 +1,5 @@
 import clsx from 'clsx'
-
-import styles from '../../styles/layouts/auth.module.sass'
+import styles from '../styles/layouts/auth.module.sass'
 import effects from '@sass/effects.module.sass'
 import logoURL from '@assets/images/logo.svg'
 

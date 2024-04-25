@@ -1,11 +1,12 @@
 import { Outlet, Navigate } from 'react-router-dom'
-import { useStorageContext } from '@global'
+import { useAuthenticationContext } from '@authentication'
 import Sidebar from '../components/sidebar.component'
 import clsx from 'clsx'
 
 function RootLayout() {
   // * /images/wallpaper.jpg different from images/wallpaper.jpg
-  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
   return authenticationStorage.isAuthenticated ? (
     <>
       <main

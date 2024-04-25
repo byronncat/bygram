@@ -1,13 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import clsx from 'clsx'
-import {
-  toast,
-  useGlobalContext,
-  useStorageContext,
-  Overlay,
-  ReactProps,
-} from '@global'
+import { toast, useGlobalContext, Overlay, ReactProps } from '@global'
+import { useAuthenticationContext } from '@authentication'
 import { uploadPost } from '../services/post.service'
 import { PostData } from '../types'
 import styles from '../styles/components/upload-post-window.module.sass'
@@ -39,7 +34,8 @@ export default function UploadPostWindow({
     sizeType: 'portrait',
   })
   const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
   const {
     register,
     handleSubmit,

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { PostWindow } from '../components'
-import { uri, toast, useStorageContext, Loader } from '@global'
+import { uri, toast, Loader } from '@global'
+import { useAuthenticationContext } from '@authentication'
 import { explorePost } from '../services/post.service'
 import { Post } from '../types'
 import clsx from 'clsx'
@@ -9,7 +10,8 @@ import styles from '../styles/pages/explore.module.sass'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 function ExplorePage() {
-  const { authenticationToken: authenticationStorage } = useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
   const [ready, setReady] = useState(false)
   const [post, setPost] = useState({} as any)
   const [showPost, setShowPost] = useState(false)

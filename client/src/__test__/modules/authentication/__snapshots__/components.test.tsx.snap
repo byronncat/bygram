@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components should render the Brand component correctly 1`] = `
+Array [
+  <img
+    alt="logo"
+    className="d-block"
+    height={60}
+    src="logo.svg"
+    width={60}
+  />,
+  <h1
+    className="brand-name text-neon-glowing-1 text-uppercase fs-2 mt-2 my-3"
+  >
+    bygram
+  </h1>,
+]
+`;
+
+exports[`components should render the Form component correctly 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <div>
+    <input
+      id="email"
+      name="email"
+      onBlur={[Function]}
+      onChange={[Function]}
+      placeholder="Email"
+      type="email"
+    />
+    <label
+      htmlFor="email"
+    >
+      Email
+    </label>
+    <p
+      className=""
+    />
+  </div>
+  <div>
+    <input
+      id="password"
+      name="password"
+      onBlur={[Function]}
+      onChange={[Function]}
+      placeholder="Password"
+      type="password"
+    />
+    <label
+      htmlFor="password"
+    >
+      Password
+    </label>
+    <span
+      className="icon-eye"
+      onClick={[Function]}
+    >
+      <i
+        className="icon-eye"
+      />
+    </span>
+    <p
+      className=""
+    />
+  </div>
+  <input
+    className="submit-btn w-100 pt-2 my-2 btn"
+    type="submit"
+    value="Login"
+  />
+</form>
+`;

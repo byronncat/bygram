@@ -14,14 +14,10 @@ import {
 import { PostData } from '../types'
 import styles from '../styles/pages/home.module.sass'
 import postWindowStyles from '../styles/components/post-window.module.sass'
-import {
-  uri,
-  toast,
-  useGlobalContext,
-  useStorageContext,
-  Loader,
-  Overlay,
-} from '@global'
+import { uri, toast, useGlobalContext, Loader, Overlay } from '@global'
+import { useSidebarOptionsContext } from '../providers'
+
+import { useAuthenticationContext } from '@authentication'
 
 function HomePage() {
   const [ready, setReady] = useState(false)
@@ -31,8 +27,9 @@ function HomePage() {
   const [showCreatePost, setShowCreatePost] = useState(false)
   const [showActionMenu, setShowActionMenu] = useState(false)
   const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage, activeLinkHandler } =
-    useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
+  const { activeLinkHandler } = useSidebarOptionsContext()
   const { formatTime } = useFormat()
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {

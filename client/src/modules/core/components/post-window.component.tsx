@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
-import {
-  useGlobalContext,
-  useStorageContext,
-  toast,
-  Overlay,
-  ReactProps,
-} from '@global'
+import { useGlobalContext, toast, Overlay, ReactProps } from '@global'
+import { useAuthenticationContext } from '@authentication'
+import { useSidebarOptionsContext } from '../providers'
+
 import Menu from './menu.component'
 import { UploadPostWindow } from '../components'
 import {
@@ -29,8 +26,9 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
   const [comment, setComment] = useState({} as CommentData)
   const [comments, setComments] = useState([] as CommentData[])
   const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage, activeLinkHandler } =
-    useStorageContext()
+  const { authenticationToken: authenticationStorage } =
+    useAuthenticationContext()
+  const { activeLinkHandler } = useSidebarOptionsContext()
   const [showActionMenu, setShowActionMenu] = useState(false)
   const [showCreatePost, setShowCreatePost] = useState(false)
   const [showCommentMenu, setShowCommentMenu] = useState(false)

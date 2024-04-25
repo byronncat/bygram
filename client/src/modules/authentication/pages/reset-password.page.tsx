@@ -1,9 +1,7 @@
 import { useOutletContext } from 'react-router-dom'
 import { SubmitHandler } from 'react-hook-form'
-import clsx from 'clsx'
 import { useClassNameContext } from '../providers'
 import Form from '../components/form.component'
-import styles from '../styles/layouts/auth.module.sass'
 import { AuthenticationInformation, FormFieldProps } from '../types'
 import { useLayoutEffect } from 'react'
 
@@ -46,7 +44,6 @@ function ResetPasswordPage() {
         submitHandler={submitHandler}
         fieldClass={className.formField}
         submitPlaceholder="Confirm"
-        submitClass={clsx(styles['submit-btn'], 'btn', 'w-100 pt-2 my-2')}
       />
     </>
   )
