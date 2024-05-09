@@ -1,12 +1,12 @@
-import { fileDB } from '@db';
+import { fileDatabase } from '@database';
 import { CloudinaryUploadResponse, CloudinaryDestroyResponse } from '@types';
 import { Account } from '@types';
-import { logger } from '@utils';
+import { logger } from '@utilities';
 
 async function addImage(file: Express.Multer.File, uid: Account['id']) {
   const dataURL = getDataURL(file);
   const path = `social-media-app/${uid}`;
-  const image = await fileDB
+  const image = await fileDatabase
     .upload(dataURL, { folder: path })
     .then((result: CloudinaryUploadResponse) => {
       return {
@@ -23,7 +23,7 @@ async function addImage(file: Express.Multer.File, uid: Account['id']) {
 
 async function deleteImage(imgURL: string) {
   const publicId = getPublicId(imgURL);
-  return await fileDB
+  return await fileDatabase
     .destroy(publicId)
     .then((result: CloudinaryDestroyResponse) => {
       logger.warn(`${result.result}`, 'Cloudinary');
@@ -36,7 +36,7 @@ async function deleteImage(imgURL: string) {
 async function replaceImage(file: Express.Multer.File, deleteURL: string) {
   if (!deleteURL) return Promise.reject('No image to replace');
   const urlParts = deleteURL.split('/');
-  const uid: number = +urlParts[urlParts.length - 2];
+  const uid = urlParts[urlParts.length - 2];
   const image = await addImage(file, uid);
   await deleteImage(deleteURL);
   return image;

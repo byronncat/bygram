@@ -1,56 +1,60 @@
-import { useState, useContext, createContext } from 'react'
-import { AuthenticationToken, ReactProps } from '@global/types'
+import { useState, useEffect, useContext, createContext } from 'react';
+import axios from 'axios';
+
+import { ReactProps } from '@global';
+import { SessionId } from '../types';
 
 const AuthenticationContext = createContext(
   {} as {
-    authenticationToken: AuthenticationToken
-    handleChangeAuthentication: (data: AuthenticationToken) => void
-  }
-)
+    session: {
+      get: () => SessionId | null;
+      set: (token: SessionId) => void;
+    };
+  },
+);
 
 // TODO: Add classes and divide the context into two separate contexts
 interface AuthenticationContextProps extends ReactProps {
-  initToken?: AuthenticationToken
+  initSession?: SessionId;
 }
 export default function AuthenticationProvider({
   children,
-  initToken,
+  initSession,
 }: AuthenticationContextProps) {
-  const [authenticationToken, setAuthenticationToken] =
-    useState<AuthenticationToken>(
-      initToken || {
-        identity: localStorage.getItem('user')
-          ? JSON.parse(localStorage.getItem('user') as string)
-          : null,
-        isAuthenticated:
-          localStorage.getItem('isAuthenticated') === 'true' ? true : false,
-      }
-    )
+  const [sessionToken, _setToken] = useState(
+    localStorage.getItem('session_id'),
+  );
 
-  function handleChangeAuthentication({
-    identity,
-    isAuthenticated,
-  }: AuthenticationToken) {
-    setAuthenticationToken({
-      identity,
-      isAuthenticated,
-    })
-    localStorage.setItem('user', JSON.stringify(identity))
-    localStorage.setItem('isAuthenticated', isAuthenticated.toString())
-  }
+  const session = {
+    get: () => sessionToken,
+    set: (token: SessionId) => {
+      _setToken(token);
+      localStorage.setItem('session_id', token);
+    },
+    session: sessionToken,
+  };
+
+  // useEffect(() => {
+  //   if (token) {
+  //     // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  //     // localStorage.setItem('token', token)
+  //   } else {
+  //     // delete axios.defaults.headers.common['Authorization']
+  //     // localStorage.removeItem('token')
+  //   }
+  // }, [token])
 
   return (
     <AuthenticationContext.Provider
       value={{
-        authenticationToken,
-        handleChangeAuthentication,
+        session,
       }}
     >
       {children}
     </AuthenticationContext.Provider>
-  )
+  );
 }
 
 export function useAuthenticationContext() {
-  return useContext(AuthenticationContext)
+  return useContext(AuthenticationContext);
 }

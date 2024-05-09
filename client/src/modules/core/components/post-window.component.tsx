@@ -1,110 +1,115 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import clsx from 'clsx'
-import { useGlobalContext, toast, Overlay, ReactProps } from '@global'
-import { useAuthenticationContext } from '@authentication'
-import { useSidebarOptionsContext } from '../providers'
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import clsx from 'clsx';
+import { useGlobalContext, toast, Overlay, ReactProps } from '@global';
+import { useAuthenticationContext } from '@authentication';
+import { useSidebarOptionsContext } from '../providers';
 
-import Menu from './menu.component'
-import { UploadPostWindow } from '../components'
+import Menu from './menu.component';
+import { UploadPostWindow } from '../components';
 import {
   getComments,
   sendComment,
   likePost,
   deleteComment,
-} from '../services/post.service'
-import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants'
-import { CommentData, File, PostData } from '../types'
-import homeStyles from '../styles/pages/home.module.sass'
-import styles from '../styles/components/post-window.module.sass'
+} from '../services/post.service';
+import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants';
+import { CommentData, File, PostData } from '../types';
+import homeStyles from '../styles/pages/home.module.sass';
+import styles from '../styles/components/post-window.module.sass';
 
 interface PostWindowProps extends ReactProps {
-  post: PostData
-  onExit: () => void
+  post: PostData;
+  onExit: () => void;
 }
 export default function PostWindow({ post, onExit }: PostWindowProps) {
-  const [comment, setComment] = useState({} as CommentData)
-  const [comments, setComments] = useState([] as CommentData[])
-  const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage } =
-    useAuthenticationContext()
-  const { activeLinkHandler } = useSidebarOptionsContext()
-  const [showActionMenu, setShowActionMenu] = useState(false)
-  const [showCreatePost, setShowCreatePost] = useState(false)
-  const [showCommentMenu, setShowCommentMenu] = useState(false)
-  const [likes, setLikes] = useState(post.likes)
+  const [comment, setComment] = useState({} as CommentData);
+  const [comments, setComments] = useState([] as CommentData[]);
+  const { refreshPage } = useGlobalContext();
+  const { activeLinkHandler } = useSidebarOptionsContext();
+  const [showActionMenu, setShowActionMenu] = useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  const [showCommentMenu, setShowCommentMenu] = useState(false);
+  const [likes, setLikes] = useState(post.likes);
 
   useEffect(() => {
-    ;(async () => {
-      const response = await getComments(post.id)
-      if (response.success && response.data) setComments(response.data)
-      else toast.display(response.message, 'error')
-    })()
-  }, [post, refreshPage])
+    (async () => {
+      const response = await getComments(post.id);
+      if (response.success && response.data) setComments(response.data);
+      else toast.display(response.message, 'error');
+    })();
+  }, [post, refreshPage]);
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
       case 'Delete post': {
         item.functionHandler = async () => {
-          setShowActionMenu(false)
-          onExit()
-          const response = await item.function!(post.id)
-          toast.display(response.message, response.success && 'error')
-          refreshPage()
-        }
-        break
+          setShowActionMenu(false);
+          onExit();
+          const response = await item.function!(post.id);
+          toast.display(response.message, response.success && 'error');
+          refreshPage();
+        };
+        break;
       }
       case 'Edit': {
         item.functionHandler = () => {
-          setShowActionMenu(false)
-          setShowCreatePost(true)
-        }
-        break
+          setShowActionMenu(false);
+          setShowCreatePost(true);
+        };
+        break;
       }
     }
-    return item
-  })
+    return item;
+  });
   authorMenu.push({
     name: 'Cancel',
     functionHandler: () => {
-      setShowActionMenu(false)
+      setShowActionMenu(false);
     },
-  })
+  });
+
+  // temp
+  const authenticationStorage = {
+    identity: {
+      id: 32,
+    },
+  };
 
   const onComment = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const commentValue = (event.target as HTMLFormElement).comment.value
-    if (!commentValue) return toast.display('Comment cannot be empty', 'error')
+    event.preventDefault();
+    const form = event.currentTarget;
+    const commentValue = (event.target as HTMLFormElement).comment.value;
+    if (!commentValue) return toast.display('Comment cannot be empty', 'error');
     const response = await sendComment(
       authenticationStorage.identity!.id,
       post.id,
-      commentValue
-    )
+      commentValue,
+    );
     if (response.success) {
-      form.reset()
-      refreshPage()
-      toast.display(response.message, 'success')
+      form.reset();
+      refreshPage();
+      toast.display(response.message, 'success');
     }
-  }
+  };
 
   const commentMenu = [
     {
       name: 'Delete comment',
       functionHandler: async () => {
-        setShowCommentMenu(false)
-        const response = await deleteComment(post.id, comment.id)
-        if (response.success) refreshPage()
-        toast.display(response.message, response.success ? 'success' : 'error')
+        setShowCommentMenu(false);
+        const response = await deleteComment(post.id, comment.id);
+        if (response.success) refreshPage();
+        toast.display(response.message, response.success ? 'success' : 'error');
       },
     },
     {
       name: 'Cancel',
       functionHandler: () => {
-        setShowCommentMenu(false)
+        setShowCommentMenu(false);
       },
     },
-  ]
+  ];
 
   return (
     <>
@@ -113,8 +118,8 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           defaultPost={post}
           zIndex={3}
           onExit={() => {
-            setShowCreatePost(false)
-            onExit()
+            setShowCreatePost(false);
+            onExit();
           }}
           method="put"
         />
@@ -131,7 +136,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
             className={clsx(
               styles['post-content-wrapper'],
               'd-flex flex-column p-3',
-              'position-relative'
+              'position-relative',
             )}
           >
             {authenticationStorage.identity?.id === post.uid && (
@@ -140,11 +145,11 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                   'position-absolute top-0 end-0',
                   'p-3',
                   'fs-3',
-                  'pe-auto'
+                  'pe-auto',
                 )}
                 role="button"
                 onClick={() => {
-                  setShowActionMenu(true)
+                  setShowActionMenu(true);
                 }}
               >
                 <i className="icon-ellipsis"></i>
@@ -166,7 +171,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
               className={clsx(
                 styles['comments-zone'],
                 'flex-fill p-3 pt-0',
-                'overflow-y-scroll overflow-x-hidden'
+                'overflow-y-scroll overflow-x-hidden',
               )}
             >
               <div className={clsx('w-100')}>
@@ -184,7 +189,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                             className={clsx(
                               styles.link,
                               'd-inline-block me-2',
-                              'fw-bold'
+                              'fw-bold',
                             )}
                             onClick={() => activeLinkHandler('profile')}
                           >
@@ -198,12 +203,12 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                           className={clsx(
                             'ms-auto px-3',
                             'fs-5',
-                            'cursor-pointer opacity-50'
+                            'cursor-pointer opacity-50',
                           )}
                           role="button"
                           onClick={() => {
-                            setComment(comment)
-                            setShowCommentMenu(true)
+                            setComment(comment);
+                            setShowCommentMenu(true);
                           }}
                         >
                           <i className="icon-ellipsis"></i>
@@ -222,24 +227,24 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                 <span
                   className={clsx(
                     homeStyles.icons,
-                    'd-flex align-items-center'
+                    'd-flex align-items-center',
                   )}
                 >
                   <i
                     onClick={async () => {
                       const response = await likePost(
                         authenticationStorage.identity!.id,
-                        post.id
-                      )
+                        post.id,
+                      );
                       if (response.success) {
                         if (
                           likes?.includes(authenticationStorage.identity?.id!)
                         ) {
                           setLikes(
                             likes?.filter(
-                              (id) => id !== authenticationStorage.identity?.id
-                            )
-                          )
+                              (id) => id !== authenticationStorage.identity?.id,
+                            ),
+                          );
                         }
                         if (
                           !likes?.includes(authenticationStorage.identity?.id!)
@@ -247,9 +252,9 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                           setLikes([
                             ...likes!,
                             authenticationStorage.identity?.id!,
-                          ])
+                          ]);
                         }
-                        refreshPage()
+                        refreshPage();
                       }
                     }}
                     className={clsx(
@@ -260,7 +265,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                           : '-empty'
                       }`,
                       'fs-4',
-                      'me-3'
+                      'me-3',
                     )}
                   />
                 </span>
@@ -297,7 +302,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           </Overlay>
         )}
     </>
-  )
+  );
 }
 
 function ImageContent({ file }: { file: File }) {
@@ -306,7 +311,7 @@ function ImageContent({ file }: { file: File }) {
       className={clsx(
         styles['post-image'],
         'h-100 mw-50',
-        'd-flex justify-content-center align-items-center'
+        'd-flex justify-content-center align-items-center',
       )}
     >
       <img
@@ -314,11 +319,11 @@ function ImageContent({ file }: { file: File }) {
         alt="post"
         className={clsx(
           file?.sizeType === 'landscape' ? 'w-100 h-auto' : 'w-auto h-100',
-          'mw-100 mh-100'
+          'mw-100 mh-100',
         )}
       />
     </div>
-  )
+  );
 }
 
 function Avatar({ file }: { file: File | undefined }) {
@@ -328,7 +333,7 @@ function Avatar({ file }: { file: File | undefined }) {
         styles.avatar,
         'd-flex justify-content-center align-items-center align-self-start',
         'p-0 me-3 rounded-circle',
-        'position-relative overflow-hidden'
+        'position-relative overflow-hidden',
       )}
     >
       <img
@@ -339,5 +344,5 @@ function Avatar({ file }: { file: File | undefined }) {
         alt="profile"
       />
     </span>
-  )
+  );
 }

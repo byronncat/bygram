@@ -22,7 +22,6 @@ export default function Overlay({
     >
       <span className={clsx(styles.overlay, 'z-n1')} onClick={exitHandler} />
       <button
-        type="button"
         className={clsx(
           styles.button,
           'shadow-none',

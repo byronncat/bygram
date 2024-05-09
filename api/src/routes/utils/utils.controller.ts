@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { nodemailer } from '@libs';
+import { nodemailer } from '@libraries';
 import { API, Account } from '@types';
 
 async function sendEmail(req: Request, res: Response, next: NextFunction) {

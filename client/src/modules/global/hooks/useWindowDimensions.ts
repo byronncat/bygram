@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { windowUtility } from '../utilities'
 
-export function useWindowDimensions() {
+export default function useWindowDimensions() {
   const hasWindow = windowUtility.isWindowDefined()
 
   const getWindowDimensions = useCallback(() => {

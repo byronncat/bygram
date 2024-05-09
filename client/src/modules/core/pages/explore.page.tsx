@@ -1,32 +1,37 @@
-import { useEffect, useState } from 'react'
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import { PostWindow } from '../components'
-import { uri, toast, Loader } from '@global'
-import { useAuthenticationContext } from '@authentication'
-import { explorePost } from '../services/post.service'
-import { Post } from '../types'
-import clsx from 'clsx'
-import styles from '../styles/pages/explore.module.sass'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
+import { useEffect, useState } from 'react';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import { PostWindow } from '../components';
+import { uri, toast, Loader } from '@global';
+import { useAuthenticationContext } from '@authentication';
+import { explorePost } from '../services/post.service';
+import { Post } from '../types';
+import clsx from 'clsx';
+import styles from '../styles/pages/explore.module.sass';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function ExplorePage() {
-  const { authenticationToken: authenticationStorage } =
-    useAuthenticationContext()
-  const [ready, setReady] = useState(false)
-  const [post, setPost] = useState({} as any)
-  const [showPost, setShowPost] = useState(false)
-  const [posts, setPosts] = useState([] as Post[])
+  // temp
+  const authenticationStorage = {
+    identity: {
+      id: 32,
+    },
+  };
+
+  const [ready, setReady] = useState(false);
+  const [post, setPost] = useState({} as any);
+  const [showPost, setShowPost] = useState(false);
+  const [posts, setPosts] = useState([] as Post[]);
 
   useEffect(() => {
-    ;(async function FetchData() {
-      const response = await explorePost(authenticationStorage.identity!.id)
+    (async function FetchData() {
+      const response = await explorePost(authenticationStorage.identity!.id);
       if (response.success && response.data) {
-        setPosts(response.data)
-        setReady(true)
-      } else toast.display(response.message, 'error')
-    })()
-  }, [ready, authenticationStorage])
-  if (!ready) return <Loader />
+        setPosts(response.data);
+        setReady(true);
+      } else toast.display(response.message, 'error');
+    })();
+  }, [ready, authenticationStorage]);
+  if (!ready) return <Loader />;
   return (
     <>
       {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}
@@ -43,16 +48,16 @@ function ExplorePage() {
                 src={uri.transformImageCDN(post.file.dataURL, 'f_auto')}
                 key={index}
                 onClick={() => {
-                  setPost(post)
-                  setShowPost(true)
+                  setPost(post);
+                  setShowPost(true);
                 }}
               />
-            )
+            );
           })}
         </Masonry>
       </ResponsiveMasonry>
     </>
-  )
+  );
 }
 
-export default ExplorePage
+export default ExplorePage;

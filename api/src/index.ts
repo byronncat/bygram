@@ -1,30 +1,25 @@
-const settings = require('./settings');
-const debug = require('debug')('api:server');
+import app from './app';
+import debug from 'debug';
+debug('ts-express:server');
 
 // Set port
 type Port = string | number | false;
 const port: Port = normalizePort(process.env.PORT || '3000');
-settings.set('port', port);
+app.set('port', port);
 
 function normalizePort(val: string): Port {
   const radix = 10;
   const port = parseInt(val, radix);
 
-  if (isNaN(port)) {
-    return val;
-  }
-
-  if (port >= 0) {
-    return port;
-  }
-
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
   return false;
 }
 
-import { logger } from '@utils';
+import { logger } from '@utilities';
 // Create server
 import http = require('http');
-const server = http.createServer(settings);
+const server = http.createServer(app);
 server.listen(port, () => {
   logger.info(`Server is running on port ${port}`, 'Server');
 });
@@ -32,22 +27,17 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 function onError(error: any) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+  if (error.syscall !== 'listen') throw error;
 
   const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
-
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
       process.exit(1);
-      break;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
       process.exit(1);
-      break;
     default:
       throw error;
   }

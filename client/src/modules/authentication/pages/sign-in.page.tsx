@@ -1,41 +1,38 @@
-import { useLayoutEffect } from 'react'
-import { useNavigate, useOutletContext, Link } from 'react-router-dom'
-import { SubmitHandler } from 'react-hook-form'
-import clsx from 'clsx'
+import { useLayoutEffect } from 'react';
+import { useNavigate, useOutletContext, Link } from 'react-router-dom';
+import { SubmitHandler } from 'react-hook-form';
+import clsx from 'clsx';
 
-import { toast } from '@global'
-import { useAuthenticationContext } from '../providers'
-import { DEFAULT_VALUES, FIELD } from '../constants'
-import { useClassNameContext } from '../providers'
+import { toast } from '@global';
+import { useAuthenticationContext } from '../providers';
+import { DEFAULT_VALUES, FIELD } from '../constants';
+import { useClassNameContext } from '../providers';
 
-import { Form } from '../components'
-import { loginAPI } from '../services/auth.service'
-import { AuthenticationInformation, OutletContextProps } from '../types'
+import { Form } from '../components';
+import { loginAPI } from '../services/auth.service';
+import { AuthenticationInformation, OutletContextProps } from '../types';
 
 function LoginPage() {
-  const navigate = useNavigate()
-  const { className } = useClassNameContext()
-  const { handleChangeAuthentication } = useAuthenticationContext()
+  const navigate = useNavigate();
+  const { className } = useClassNameContext();
+  const { session } = useAuthenticationContext();
 
-  const { setTitle }: OutletContextProps = useOutletContext()
+  const { setTitle }: OutletContextProps = useOutletContext();
   useLayoutEffect(() => {
-    setTitle('sign in')
-  }, [setTitle])
+    setTitle('sign in');
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (
-    data
+    data,
   ) => {
-    toast.display("Waiting for server's response", 'loading')
-    const response = await loginAPI(data)
+    toast.display("Waiting for server's response", 'loading');
+    const response = await loginAPI(data);
     if (response.success && response.data) {
-      handleChangeAuthentication({
-        identity: response.data,
-        isAuthenticated: true,
-      })
-      navigate('/')
+      session.set(response.data.sessionId);
+      navigate('/');
     }
-    toast.display(response.message, response.success ? 'success' : 'error')
-  }
+    toast.display(response.message, response.success ? 'success' : 'error');
+  };
 
   return (
     <>
@@ -61,7 +58,7 @@ function LoginPage() {
         </span> */}
       </Form>
     </>
-  )
+  );
 }
 
-export default LoginPage
+export default LoginPage;

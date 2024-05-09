@@ -1,40 +1,38 @@
-import { useLayoutEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import clsx from 'clsx'
+import { useLayoutEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import clsx from 'clsx';
 
-import { ReactProps } from '@global'
-import { useAuthenticationContext } from '@authentication'
-import { useSidebarOptionsContext } from '../providers'
-import UploadPostWindow from './upload-post-window.component'
-import SearchSide from './search-side.component'
-import { SidebarLink } from '../types/layout.d'
-import styles from '../styles/components/sidebar.module.sass'
-import searchStyles from '../styles/components/search-side.module.sass'
-import effects from '@sass/effects.module.sass'
-import logoURL from '@assets/images/logo.svg'
+import { ReactProps } from '@global';
+import { useAuthenticationContext } from '@authentication';
+import { useSidebarOptionsContext } from '../providers';
+import UploadPostWindow from './upload-post-window.component';
+import SearchSide from './search-side.component';
+import { SidebarLink } from '../types/layout.d';
+import styles from '../styles/components/sidebar.module.sass';
+import searchStyles from '../styles/components/search-side.module.sass';
+import effects from '@sass/effects.module.sass';
+import logoURL from '@assets/images/logo.svg';
 
 function Sidebar() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-  const navigate = useNavigate()
-  const [minimize, setMinimize] = useState(false)
-  const [showSearch, setShowSearch] = useState(false)
-  const [showCreatePost, setShowCreatePost] = useState(false)
-  const { handleChangeAuthentication: setAuthenticationStorage } =
-    useAuthenticationContext()
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const navigate = useNavigate();
+  const [minimize, setMinimize] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
   const { activeLink, setActiveLink, getActiveLink, activeLinkHandler } =
-    useSidebarOptionsContext()
+    useSidebarOptionsContext();
 
   function logoutHandler(event: React.MouseEvent<HTMLAnchorElement>) {
-    event.preventDefault()
-    setAuthenticationStorage({ identity: null, isAuthenticated: false })
-    localStorage.removeItem('activeLink')
-    setActiveLink('home')
-    navigate('/login')
+    event.preventDefault();
+    localStorage.removeItem('session_id');
+    localStorage.removeItem('activeLink');
+    setActiveLink('home');
+    navigate('/login');
   }
 
   useLayoutEffect(() => {
-    setActiveLink(activeLink)
-  }, [activeLink, setActiveLink])
+    setActiveLink(activeLink);
+  }, [activeLink, setActiveLink]);
 
   const sidebarLinks = [
     {
@@ -47,8 +45,8 @@ function Sidebar() {
       icon: 'icon-search',
       path: '#',
       onClick: () => {
-        searchExitHandler()
-        if (activeLink === 'create post') setShowCreatePost(!showCreatePost)
+        searchExitHandler();
+        if (activeLink === 'create post') setShowCreatePost(!showCreatePost);
       },
     },
     {
@@ -61,10 +59,10 @@ function Sidebar() {
       icon: 'icon-plus-squared-alt',
       path: '#',
       onClick: () => {
-        createPostExitHandler()
+        createPostExitHandler();
         if (activeLink === 'search') {
-          setMinimize(!minimize)
-          setShowSearch(!showSearch)
+          setMinimize(!minimize);
+          setShowSearch(!showSearch);
         }
       },
     },
@@ -80,14 +78,14 @@ function Sidebar() {
       notActive: true,
       onClick: logoutHandler,
     },
-  ] as SidebarLink[]
+  ] as SidebarLink[];
 
   function searchExitHandler() {
-    setMinimize(!minimize)
-    setShowSearch(!showSearch)
+    setMinimize(!minimize);
+    setShowSearch(!showSearch);
   }
   function createPostExitHandler() {
-    setShowCreatePost(!showCreatePost)
+    setShowCreatePost(!showCreatePost);
   }
 
   return (
@@ -95,8 +93,8 @@ function Sidebar() {
       {showCreatePost && (
         <UploadPostWindow
           onExit={() => {
-            createPostExitHandler()
-            activeLinkHandler(getActiveLink())
+            createPostExitHandler();
+            activeLinkHandler(getActiveLink());
           }}
           method="post"
         />
@@ -105,8 +103,8 @@ function Sidebar() {
         <SearchSide
           className={clsx(showSearch && searchStyles['slide-to-right'])}
           onExit={() => {
-            searchExitHandler()
-            activeLinkHandler('profile')
+            searchExitHandler();
+            activeLinkHandler('profile');
           }}
         />
         <nav
@@ -116,7 +114,7 @@ function Sidebar() {
             'h-100',
             'd-flex flex-column',
             activeLink === 'search' && 'z-3',
-            minimize && styles.minimize
+            minimize && styles.minimize,
           )}
         >
           <Brand onClick={() => setActiveLink('home')} />
@@ -128,7 +126,7 @@ function Sidebar() {
                   className={clsx(
                     styles[`sidebar-link`],
                     'mb-3 rounded-3',
-                    activeLink === tag.name && `${styles.active} active`
+                    activeLink === tag.name && `${styles.active} active`,
                   )}
                   aria-current="page"
                 >
@@ -138,16 +136,16 @@ function Sidebar() {
                       styles['link'],
                       'w-100 h-100',
                       'd-flex align-items-center',
-                      'text-capitalize'
+                      'text-capitalize',
                     )}
                     onClick={(event) => {
                       if (tag.onClick) {
-                        tag.onClick(event)
+                        tag.onClick(event);
                       }
                       if (!tag.notActive) {
-                        if (activeLink === 'search') searchExitHandler()
-                        localStorage.setItem('activeLink', tag.name)
-                        activeLinkHandler(tag.name)
+                        if (activeLink === 'search') searchExitHandler();
+                        localStorage.setItem('activeLink', tag.name);
+                        activeLinkHandler(tag.name);
                       }
                     }}
                   >
@@ -156,27 +154,27 @@ function Sidebar() {
                         styles['link-icon'],
                         `${tag.icon}`,
                         'h-100',
-                        'fs-5 position-relative'
+                        'fs-5 position-relative',
                       )}
                     ></i>
                     <p
                       className={clsx(
                         styles['link-text'],
                         'ms-3',
-                        'text-nowrap'
+                        'text-nowrap',
                       )}
                     >
                       {tag.name}
                     </p>
                   </Link>
                 </li>
-              )
+              );
             })}
           </ul>
         </nav>
       </div>
     </>
-  )
+  );
 }
 
 function Brand({ onClick }: ReactProps) {
@@ -186,7 +184,7 @@ function Brand({ onClick }: ReactProps) {
       className={clsx(
         styles.brand,
         'my-5',
-        'd-flex justify-content-center align-items-center'
+        'd-flex justify-content-center align-items-center',
       )}
       onClick={onClick}
     >
@@ -201,7 +199,7 @@ function Brand({ onClick }: ReactProps) {
         Bygram
       </span>
     </Link>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

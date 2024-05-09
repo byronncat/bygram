@@ -10,11 +10,15 @@ export interface RegisterData extends Account {
   username: string;
 }
 
-export interface PostData extends Pick<Profile, 'username' | 'avatar'>, Omit<Post, 'comments'> {
+export interface PostData
+  extends Pick<Profile, 'username' | 'avatar'>,
+    Omit<Post, 'comments'> {
   id?: string;
 }
 
-export interface CommentData extends Pick<Profile, 'username' | 'avatar'>, Comment {
+export interface CommentData
+  extends Pick<Profile, 'username' | 'avatar'>,
+    Comment {
   id: string;
 }
 
@@ -25,11 +29,6 @@ export interface ProfileData extends Profile {
 export interface API {
   success: boolean;
   message: string;
-  data?: any;
-}
-
-export interface LoginAPI extends API {
-  data: UserToken;
 }
 
 export interface RegisterAPI extends API {

@@ -1,96 +1,102 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
-import clsx from 'clsx'
-import { UploadPostWindow, PostWindow } from '../components'
-import Menu from '../components/menu.component'
-import useFormat from '../hooks/useFormat'
-import { getHomePosts, likePost, sendComment } from '../services/post.service'
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import clsx from 'clsx';
+import { UploadPostWindow, PostWindow } from '../components';
+import Menu from '../components/menu.component';
+import useFormat from '../hooks/useFormat';
+import { getHomePosts, likePost, sendComment } from '../services/post.service';
 import {
   AUTHOR_POST_MENU,
   FOLLOWP_POST_MENU,
   DEFAULT_AVATAR,
-} from '../constants'
-import { PostData } from '../types'
-import styles from '../styles/pages/home.module.sass'
-import postWindowStyles from '../styles/components/post-window.module.sass'
-import { uri, toast, useGlobalContext, Loader, Overlay } from '@global'
-import { useSidebarOptionsContext } from '../providers'
+} from '../constants';
+import { PostData } from '../types';
+import styles from '../styles/pages/home.module.sass';
+import postWindowStyles from '../styles/components/post-window.module.sass';
+import { uri, toast, useGlobalContext, Loader, Overlay } from '@global';
+import { useSidebarOptionsContext } from '../providers';
 
-import { useAuthenticationContext } from '@authentication'
+import { useAuthenticationContext } from '@authentication';
 
 function HomePage() {
-  const [ready, setReady] = useState(false)
-  const [posts, setPosts] = useState([] as PostData[])
-  const [currentPost, setCurrentPost] = useState({} as PostData)
-  const [showCurrentPost, setShowCurrentPost] = useState(false)
-  const [showCreatePost, setShowCreatePost] = useState(false)
-  const [showActionMenu, setShowActionMenu] = useState(false)
-  const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage } =
-    useAuthenticationContext()
-  const { activeLinkHandler } = useSidebarOptionsContext()
-  const { formatTime } = useFormat()
+  const [ready, setReady] = useState(false);
+  const [posts, setPosts] = useState([] as PostData[]);
+  const [currentPost, setCurrentPost] = useState({} as PostData);
+  const [showCurrentPost, setShowCurrentPost] = useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  const [showActionMenu, setShowActionMenu] = useState(false);
+  const { refreshPage } = useGlobalContext();
+
+  // temp
+  const authenticationStorage = {
+    identity: {
+      id: 32,
+    },
+  };
+
+  const { activeLinkHandler } = useSidebarOptionsContext();
+  const { formatTime } = useFormat();
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
       case 'Delete post': {
         item.functionHandler = async () => {
-          setShowActionMenu(false)
-          const response = await item.function!(currentPost.id)
-          refreshPage()
+          setShowActionMenu(false);
+          const response = await item.function!(currentPost.id);
+          refreshPage();
           toast.display(
             response.message,
-            response.success ? 'success' : 'error'
-          )
-        }
-        break
+            response.success ? 'success' : 'error',
+          );
+        };
+        break;
       }
       case 'Edit': {
         item.functionHandler = () => {
-          setShowActionMenu(false)
-          setShowCreatePost(true)
-        }
-        break
+          setShowActionMenu(false);
+          setShowCreatePost(true);
+        };
+        break;
       }
     }
-    return item
-  })
+    return item;
+  });
   authorMenu.push({
     name: 'Cancel',
     functionHandler: () => {
-      setShowActionMenu(false)
+      setShowActionMenu(false);
     },
-  })
+  });
 
   const onComment = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const commentValue = (event.target as HTMLFormElement).comment.value
-    if (!commentValue) return toast.display('Comment cannot be empty', 'error')
+    event.preventDefault();
+    const form = event.currentTarget;
+    const commentValue = (event.target as HTMLFormElement).comment.value;
+    if (!commentValue) return toast.display('Comment cannot be empty', 'error');
     const response = await sendComment(
       authenticationStorage.identity!.id,
       currentPost.id,
-      commentValue
-    )
+      commentValue,
+    );
     if (response.success) {
-      form.reset()
-      refreshPage()
-      toast.display(response.message, 'success')
+      form.reset();
+      refreshPage();
+      toast.display(response.message, 'success');
     }
-  }
+  };
 
   useEffect(() => {
-    ;(async function fetchPosts() {
-      const response = await getHomePosts(authenticationStorage.identity?.id!)
+    (async function fetchPosts() {
+      const response = await getHomePosts(authenticationStorage.identity?.id!);
       if (response.success && response.data) {
-        setPosts(response.data)
-        setReady(true)
-      } else toast.display(response.message, 'error')
-    })()
-  }, [authenticationStorage])
+        setPosts(response.data);
+        setReady(true);
+      } else toast.display(response.message, 'error');
+    })();
+  }, []);
 
-  if (!ready) return <Loader />
+  if (!ready) return <Loader />;
   return (
     <>
       {showActionMenu && (
@@ -108,8 +114,8 @@ function HomePage() {
         <UploadPostWindow
           defaultPost={currentPost}
           onExit={() => {
-            setShowCreatePost(false)
-            setShowActionMenu(false)
+            setShowCreatePost(false);
+            setShowActionMenu(false);
           }}
           method="put"
         />
@@ -132,12 +138,12 @@ function HomePage() {
                   'position-absolute top-0 end-0',
                   'p-3',
                   'fs-3',
-                  'pe-auto'
+                  'pe-auto',
                 )}
                 role="button"
                 onClick={() => {
-                  setShowActionMenu(true)
-                  setCurrentPost(post)
+                  setShowActionMenu(true);
+                  setCurrentPost(post);
                 }}
                 aria-label="post-menu"
               >
@@ -150,19 +156,19 @@ function HomePage() {
                     'd-flex justify-content-center align-items-center',
                     'me-3 rounded-circle',
                     'position-relative',
-                    'overflow-hidden'
+                    'overflow-hidden',
                   )}
                 >
                   <LazyLoadImage
                     className={clsx(
                       post.avatar?.sizeType === 'portrait'
                         ? 'w-100 h-auto'
-                        : 'w-auto h-100'
+                        : 'w-auto h-100',
                     )}
                     alt="profile"
                     src={uri.transformImageCDN(
                       'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR,
-                      'w_56,f_auto'
+                      'w_56,f_auto',
                     )}
                   />
                 </span>
@@ -186,11 +192,11 @@ function HomePage() {
                   post.file.sizeType === 'portrait' && styles['post-image'],
                   styles['negative-margin'],
                   'my-3',
-                  'd-flex justify-content-center align-items-center'
+                  'd-flex justify-content-center align-items-center',
                 )}
                 onClick={() => {
-                  setCurrentPost(post)
-                  setShowCurrentPost(true)
+                  setCurrentPost(post);
+                  setShowCurrentPost(true);
                 }}
                 aria-label="post-details"
               >
@@ -209,7 +215,7 @@ function HomePage() {
                   className={clsx(
                     styles['content-username'],
                     'd-inline-block p-2 mb-3',
-                    'fw-bold'
+                    'fw-bold',
                   )}
                   to={`/profile/${post.uid}`}
                   onClick={() => activeLinkHandler('profile')}
@@ -221,26 +227,26 @@ function HomePage() {
                     className={clsx(
                       styles.icons,
                       'd-flex align-items-center',
-                      'fs-4'
+                      'fs-4',
                     )}
                   >
                     <i
                       onClick={async () => {
                         const response = await likePost(
                           authenticationStorage.identity!.id,
-                          post.id
-                        )
-                        if (response.success) refreshPage()
+                          post.id,
+                        );
+                        if (response.success) refreshPage();
                       }}
                       className={clsx(
                         styles['likes-icon'],
                         `icon-heart${
                           post.likes?.includes(
-                            authenticationStorage.identity?.id!
+                            authenticationStorage.identity?.id!,
                           )
                             ? ''
                             : '-empty'
-                        }`
+                        }`,
                       )}
                     />
                   </span>
@@ -261,8 +267,8 @@ function HomePage() {
                     role="button"
                     className={clsx(styles['comment-link'], 'd-block p-0 pb-2')}
                     onClick={() => {
-                      setCurrentPost(post)
-                      setShowCurrentPost(true)
+                      setCurrentPost(post);
+                      setShowCurrentPost(true);
                     }}
                     aria-label="view-comments"
                   >
@@ -277,7 +283,7 @@ function HomePage() {
                     name="comment"
                     className={clsx(
                       postWindowStyles['comment-box'],
-                      'flex-fill'
+                      'flex-fill',
                     )}
                     placeholder="Add a comment..."
                     rows={1}
@@ -288,7 +294,7 @@ function HomePage() {
                     onClick={() => setCurrentPost(post)}
                     className={clsx(
                       postWindowStyles['submit-btn'],
-                      'ms-3 px-2 py-1'
+                      'ms-3 px-2 py-1',
                     )}
                   >
                     Post
@@ -296,11 +302,11 @@ function HomePage() {
                 </form>
               </footer>
             </div>
-          )
+          );
         })}
       </section>
     </>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

@@ -17,14 +17,17 @@ describe('api', () => {
       const { REACT_APP_API_URL, ...rest } = process.env
       process.env = { ...rest }
 
-      const path = uri.getHostingServer('/api/test')
-      expect(path).toBe('/api/test')
+      const pathMock_1 = uri.getHostingServer('test')
+      const pathMock_2 = uri.getHostingServer('/test')
+
+      expect(pathMock_1).toBe('/api/test')
+      expect(pathMock_2).toBe('/api/test')
     })
 
     it('should return hosting server uri', () => {
       process.env.REACT_APP_API_URL = 'https://example.com'
 
-      const path = uri.getHostingServer('/api/test')
+      const path = uri.getHostingServer('test')
       expect(path).toBe('https://example.com/api/test')
     })
   })

@@ -1,20 +1,20 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import clsx from 'clsx'
-import { toast, useGlobalContext, Overlay, ReactProps } from '@global'
-import { useAuthenticationContext } from '@authentication'
-import { uploadPost } from '../services/post.service'
-import { PostData } from '../types'
-import styles from '../styles/components/upload-post-window.module.sass'
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import clsx from 'clsx';
+import { toast, useGlobalContext, Overlay, ReactProps } from '@global';
+import { useAuthenticationContext } from '@authentication';
+import { uploadPost } from '../services/post.service';
+import { PostData } from '../types';
+import styles from '../styles/components/upload-post-window.module.sass';
 
 interface PostSubmitData {
-  file: FileList
-  content: string
+  file: FileList;
+  content: string;
 }
 
 interface UploadPostWindowProps extends ReactProps {
-  method: 'post' | 'put'
-  defaultPost?: PostData
+  method: 'post' | 'put';
+  defaultPost?: PostData;
 }
 export default function UploadPostWindow({
   onExit,
@@ -24,26 +24,32 @@ export default function UploadPostWindow({
 }: UploadPostWindowProps) {
   const defaultValues = {
     content: defaultPost?.content || '',
-  } as PostSubmitData
+  } as PostSubmitData;
   type Image = {
-    imgURL: string | ArrayBuffer | null
-    sizeType: 'landscape' | 'portrait'
-  }
+    imgURL: string | ArrayBuffer | null;
+    sizeType: 'landscape' | 'portrait';
+  };
   const [selectedImage, setSelectedImage] = useState<Image>({
     imgURL: null,
     sizeType: 'portrait',
-  })
-  const { refreshPage } = useGlobalContext()
-  const { authenticationToken: authenticationStorage } =
-    useAuthenticationContext()
+  });
+  const { refreshPage } = useGlobalContext();
+
+  // temp
+  const authenticationStorage = {
+    identity: {
+      id: 32,
+    },
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues })
+  } = useForm({ defaultValues });
 
   const submitForm: SubmitHandler<PostSubmitData> = async (data) => {
-    if (onExit) onExit()
+    if (onExit) onExit();
     let postData =
       method === 'post'
         ? {
@@ -55,24 +61,24 @@ export default function UploadPostWindow({
             id: defaultPost!.id,
             content: data.content,
             file: data.file[0] as File,
-          }
-    const response = await uploadPost(postData, method)
-    refreshPage()
-    toast.display(response.message, response.success ? 'success' : 'error')
-  }
+          };
+    const response = await uploadPost(postData, method);
+    refreshPage();
+    toast.display(response.message, response.success ? 'success' : 'error');
+  };
 
   useLayoutEffect(() => {
     if (defaultPost) {
       setSelectedImage({
         imgURL: defaultPost.file.dataURL,
         sizeType: defaultPost.file.sizeType,
-      })
+      });
     }
-  }, [defaultPost])
+  }, [defaultPost]);
 
   useEffect(() => {
-    if (errors.file) toast.display('Please select an image', 'error')
-  }, [errors.file])
+    if (errors.file) toast.display('Please select an image', 'error');
+  }, [errors.file]);
 
   return (
     <Overlay exitHandler={() => onExit} zIndex={zIndex}>
@@ -82,7 +88,7 @@ export default function UploadPostWindow({
           'rounded',
           'd-flex flex-column',
           'mw-100',
-          'position-relative'
+          'position-relative',
         )}
       >
         <h3
@@ -97,7 +103,7 @@ export default function UploadPostWindow({
           <div
             className={clsx(
               styles['image-wrapper'],
-              'float-start position-relative h-100'
+              'float-start position-relative h-100',
             )}
           >
             <span
@@ -106,7 +112,7 @@ export default function UploadPostWindow({
                 'w-100 h-100',
                 'd-flex justify-content-center align-items-center',
                 'position-relative start-0 top-0',
-                'd-block'
+                'd-block',
               )}
             >
               {selectedImage.imgURL ? (
@@ -116,7 +122,7 @@ export default function UploadPostWindow({
                     'd-block',
                     selectedImage.sizeType === 'landscape'
                       ? 'w-100 h-auto'
-                      : 'w-auto h-100'
+                      : 'w-auto h-100',
                   )}
                   alt="preview"
                 />
@@ -131,23 +137,23 @@ export default function UploadPostWindow({
               className={clsx(
                 'w-100 h-100',
                 'position-absolute top-0 start-0',
-                'opacity-0'
+                'opacity-0',
               )}
               {...register('file', {
                 onChange: (e) => {
                   if (e.target.files.length > 0) {
-                    const file = e.target.files[0]
-                    const reader = new FileReader()
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
                     reader.onload = (event) => {
-                      const img = new Image()
-                      img.src = event.target!.result as string
+                      const img = new Image();
+                      img.src = event.target!.result as string;
                       img.onload = () => {
                         const sizeType =
-                          img.width > img.height ? 'landscape' : 'portrait'
-                        setSelectedImage({ imgURL: img.src, sizeType })
-                      }
-                    }
-                    reader.readAsDataURL(file)
+                          img.width > img.height ? 'landscape' : 'portrait';
+                        setSelectedImage({ imgURL: img.src, sizeType });
+                      };
+                    };
+                    reader.readAsDataURL(file);
                   }
                 },
                 required: method === 'post',
@@ -167,7 +173,7 @@ export default function UploadPostWindow({
                 styles.submit,
                 'position-absolute top-0 end-0',
                 'pe-3',
-                'fs-5'
+                'fs-5',
               )}
             >
               Share
@@ -176,5 +182,5 @@ export default function UploadPostWindow({
         </form>
       </div>
     </Overlay>
-  )
+  );
 }

@@ -56,13 +56,12 @@ exports[`components Overlay should render the overlay correctly 1`] = `
 >
   <span
     className="overlay z-n1"
-    onClick={[Function]}
+    onClick={[MockFunction]}
   />
   <button
     aria-label="close"
     className="button shadow-none btn-close btn-close-white position-absolute top-0 end-0 p-3"
-    onClick={[Function]}
-    type="button"
+    onClick={[MockFunction]}
   />
   <div>
     Test

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { accountService, fileService } from '@services';
-import { isEmptyObject, logger } from '@utils';
-import { PostModel, PostDocument } from '@db/schema.mongodb';
+import { isEmptyObject, logger } from '@utilities';
+import { PostModel, PostDocument } from '@database';
 import { Account, PostData, Post, CommentData } from '@types';
 
 interface PostQuery extends Omit<Post, 'uid'> {
@@ -10,7 +10,10 @@ interface PostQuery extends Omit<Post, 'uid'> {
 
 async function getManyByID(post: PostQuery): Promise<PostData[]> {
   try {
-    const posts = await PostModel.find({ ...post, uid: { $in: post.uid } }).sort({
+    const posts = await PostModel.find({
+      ...post,
+      uid: { $in: post.uid },
+    }).sort({
       createdAt: -1,
     });
 
@@ -30,7 +33,7 @@ async function getManyByID(post: PostQuery): Promise<PostData[]> {
           likes: post.likes,
           comments: post.comments,
         } as PostData;
-      })
+      }),
     );
   } catch (error) {
     logger.error(`${error}`, 'Post service');
@@ -38,7 +41,10 @@ async function getManyByID(post: PostQuery): Promise<PostData[]> {
   }
 }
 
-async function create(post: Post, file: Express.Multer.File): Promise<PostDocument> {
+async function create(
+  post: Post,
+  file: Express.Multer.File,
+): Promise<PostDocument> {
   const fileUpload = await fileService
     .addImage(file, post.uid)
     .catch((error) => Promise.reject(error));
@@ -58,7 +64,7 @@ async function create(post: Post, file: Express.Multer.File): Promise<PostDocume
 async function updateByID(
   postId: PostData['id'],
   post: PostData,
-  file: Express.Multer.File | undefined
+  file: Express.Multer.File | undefined,
 ): Promise<PostDocument | null> {
   const _id = new mongoose.Types.ObjectId(postId);
   if (file) {
@@ -77,7 +83,9 @@ async function updateByID(
   return await PostModel.findByIdAndUpdate(_id, post);
 }
 
-async function removeByID(postId: PostData['id']): Promise<PostDocument | null> {
+async function removeByID(
+  postId: PostData['id'],
+): Promise<PostDocument | null> {
   const deletedPost = await PostModel.findById(postId);
   if (!deletedPost) return Promise.reject('Post not found');
   const success = await fileService.deleteImage(deletedPost.file!.dataURL!);
@@ -107,12 +115,17 @@ async function exploreByID(id: Account['id']): Promise<PostData[]> {
         likes: post.likes,
         comments: post.comments,
       } as PostData;
-    })
+    }),
   );
 }
 
-async function likeByID(uid: Account['id'], postId: PostData['id']): Promise<PostDocument | null> {
-  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+async function likeByID(
+  uid: Account['id'],
+  postId: PostData['id'],
+): Promise<PostDocument | null> {
+  const post = await PostModel.findById(postId).catch((error) =>
+    Promise.reject(error),
+  );
   if (!post) return Promise.reject('Post not found');
   const liked = post.likes!.includes(uid);
   if (liked) post.likes = post.likes!.filter((id) => id !== uid);
@@ -123,15 +136,19 @@ async function likeByID(uid: Account['id'], postId: PostData['id']): Promise<Pos
 async function addCommentByID(
   uid: Account['id'],
   postId: PostData['id'],
-  content: Post['comments']
+  content: Post['comments'],
 ): Promise<PostDocument | null> {
-  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+  const post = await PostModel.findById(postId).catch((error) =>
+    Promise.reject(error),
+  );
   if (!post) return Promise.reject('Post not found');
   post.comments!.push({ uid, content });
   return await post.save();
 }
 
-async function getCommentsByID(postId: PostData['id']): Promise<CommentData[] | null> {
+async function getCommentsByID(
+  postId: PostData['id'],
+): Promise<CommentData[] | null> {
   const post = await PostModel.findById(postId).select('comments');
   if (!post) return Promise.reject('Post not found');
   return await Promise.all(
@@ -146,15 +163,17 @@ async function getCommentsByID(postId: PostData['id']): Promise<CommentData[] | 
         content: comment.content,
         createdAt: comment.createdAt,
       };
-    })
+    }),
   );
 }
 
 async function removeCommentByID(
   postId: PostData['id'],
-  commentId: CommentData['id']
+  commentId: CommentData['id'],
 ): Promise<PostDocument | null> {
-  const post = await PostModel.findById(postId).catch((error) => Promise.reject(error));
+  const post = await PostModel.findById(postId).catch((error) =>
+    Promise.reject(error),
+  );
   if (!post) return Promise.reject('Post not found');
   post.comments = post.comments!.filter((comment) => comment._id != commentId);
   return await post.save();

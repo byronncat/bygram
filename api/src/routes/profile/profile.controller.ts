@@ -3,7 +3,7 @@ import { accountService, postService } from '@services';
 import { API, AvatarAPI, Profile, ProfileAPI, SearchProfileAPI } from '@types';
 
 import multer from 'multer';
-import { isEmptyObject } from '@utils';
+import { isEmptyObject } from '@utilities';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

@@ -9,6 +9,7 @@
     "outDir": "./dist",
     "sourceMap": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
@@ -16,12 +17,15 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@*": ["./src/*"],
-      "@types": ["./src/types/index.d.ts"],
-      "@db": ["./src/db/index.ts"],
-      "@libs": ["./src/libs/index.ts"],
-      "@services": ["./src/services/index.ts"],
-      "@utils": ["./src/utils/index.ts"]
+      "@/*": ["src/*"],
+      "@constants": ["src/constants/index.ts"],
+      "@database": ["src/database/index.ts"],
+      "@libraries": ["src/libraries/index.ts"],
+      "@middlewares": ["src/middlewares/index.ts"],
+      "@controllers": ["src/controllers/index.ts"],
+      "@services": ["src/services/index.ts"],
+      "@types": ["src/types/index.d.ts"],
+      "@utilities": ["src/utilities/index.ts"]
     }
   }
 }

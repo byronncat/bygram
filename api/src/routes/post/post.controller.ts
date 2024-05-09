@@ -4,8 +4,8 @@ import { API, Profile, PostData, PostAPI, CommentAPI } from '@types';
 
 // setting options for multer
 import multer from 'multer';
-import { logger } from '@utils';
-import { PostDocument } from '@db/schema.mongodb';
+import { logger } from '@utilities';
+import { PostDocument } from '@database';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -25,13 +25,13 @@ async function getHomePosts(req: Request, res: Response, next: NextFunction) {
           success: true,
           message: 'Posts retrieved',
           data: posts,
-        } as PostAPI)
+        } as PostAPI),
       )
       .catch((error) =>
         res.status(404).json({
           success: false,
           message: JSON.stringify(error),
-        } as PostAPI)
+        } as PostAPI),
       );
   } catch (error: any) {
     logger.error(`${error}`, 'Post controller');
@@ -59,13 +59,13 @@ async function explorePosts(req: Request, res: Response, next: NextFunction) {
           success: true,
           message: 'Posts retrieved',
           data: posts,
-        } as PostAPI)
+        } as PostAPI),
       )
       .catch((error) =>
         res.status(404).json({
           success: false,
           message: JSON.stringify(error),
-        } as PostAPI)
+        } as PostAPI),
       );
   } catch (error: any) {
     return res.status(404).json({
@@ -98,7 +98,7 @@ async function createPost(req: Request, res: Response) {
         res.status(409).json({
           success: false,
           message: JSON.stringify(error),
-        } as API)
+        } as API),
       );
   } catch (error: any) {
     return res.status(500).json({
@@ -178,7 +178,7 @@ async function likePost(req: Request, res: Response, next: NextFunction) {
         res.status(409).json({
           success: false,
           message: JSON.stringify(error),
-        } as API)
+        } as API),
       );
   } catch (error) {
     res.status(500).json({
@@ -208,7 +208,7 @@ async function commentPost(req: Request, res: Response, next: NextFunction) {
         res.status(409).json({
           success: false,
           message: JSON.stringify(error),
-        } as API)
+        } as API),
       );
   } catch (error) {
     res.status(500).json({
@@ -228,13 +228,13 @@ async function getComments(req: Request, res: Response, next: NextFunction) {
           success: true,
           message: 'Comments retrieved',
           data: comments,
-        } as CommentAPI)
+        } as CommentAPI),
       )
       .catch((error) =>
         res.status(409).json({
           success: false,
           message: JSON.stringify(error),
-        } as CommentAPI)
+        } as CommentAPI),
       );
   } catch (error) {
     res.status(500).json({
@@ -270,7 +270,7 @@ async function deleteComment(req: Request, res: Response, next: NextFunction) {
         res.status(409).json({
           success: false,
           message: JSON.stringify(error),
-        } as API)
+        } as API),
       );
   } catch (error) {
     res.status(500).json({

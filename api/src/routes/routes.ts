@@ -1,5 +1,8 @@
 import { Express, Router } from 'express';
-import authRouter from './auth/index';
+
+import authenticationRouter from './authentication.route';
+
+import authRouter from './authentication/index';
 import postRouter from './post/post.route';
 import profileRouter from './profile/profile.route';
 import utilsRouter from './utils/utils.route';
@@ -11,8 +14,8 @@ type Route = {
 
 const routes: Route[] = [
   {
-    path: '/auth/login',
-    router: authRouter.loginRouter,
+    path: '',
+    router: authenticationRouter,
   },
   {
     path: '/auth/register',

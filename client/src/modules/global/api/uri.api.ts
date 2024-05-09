@@ -1,4 +1,7 @@
 export function getHostingServer(path: string): string {
+  path = path.startsWith('/') ? path : '/' + path
+  path = '/api' + path
+
   if (process.env.REACT_APP_API_URL)
     return process.env.REACT_APP_API_URL + '' + path
   else return path

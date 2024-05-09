@@ -1,50 +1,43 @@
-import { useLayoutEffect } from 'react'
-import { Link, useNavigate, useOutletContext } from 'react-router-dom'
-import { SubmitHandler } from 'react-hook-form'
-import clsx from 'clsx'
+import { useLayoutEffect } from 'react';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { SubmitHandler } from 'react-hook-form';
+import clsx from 'clsx';
 
-import { toast } from '@global'
-import { useAuthenticationContext } from '../providers'
-import { useClassNameContext } from '../providers/className.context'
-import Form from '../components/form.component'
-import { registerAPI } from '../services/auth.service'
-import { FIELD } from '../constants'
-import { AuthenticationInformation } from '../types'
+import { toast } from '@global';
+import { useClassNameContext } from '../providers/className.context';
+import Form from '../components/form.component';
+import { registerAPI } from '../services/auth.service';
+import { FIELD } from '../constants';
+import { AuthenticationInformation } from '../types';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
   username: '',
   password: '',
-}
+};
 
 function RegisterPage() {
-  const navigate = useNavigate()
-  const { className } = useClassNameContext()
-  const { handleChangeAuthentication: setAuthenticationStorage } =
-    useAuthenticationContext()
+  const navigate = useNavigate();
+  const { className } = useClassNameContext();
 
   const {
     setTitle,
   }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext()
+    useOutletContext();
   useLayoutEffect(() => {
-    setTitle('sign up')
-  }, [setTitle])
+    setTitle('sign up');
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (
-    data
+    data,
   ) => {
-    toast.display("Waiting for server's response", 'loading')
-    const response = await registerAPI(data)
+    toast.display("Waiting for server's response", 'loading');
+    const response = await registerAPI(data);
     if (response.success && response.data) {
-      setAuthenticationStorage({
-        identity: response.data,
-        isAuthenticated: true,
-      })
-      navigate('/')
+      navigate('/');
     }
-    toast.display(response.message, response.success ? 'success' : 'error')
-  }
+    toast.display(response.message, response.success ? 'success' : 'error');
+  };
 
   return (
     <>
@@ -61,7 +54,7 @@ function RegisterPage() {
         </Link>
       </Form>
     </>
-  )
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

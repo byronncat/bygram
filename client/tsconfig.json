@@ -21,7 +21,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@*": ["./src/modules/*"]
+      "@/*": ["src/*"],
+      "@assets/*": ["src/assets/*"],
+      "@authentication": ["src/modules/authentication/index.ts"],
+      "@global": ["src/modules/global/index.ts"],
+      "@core": ["src/modules/core/index.ts"],
+      "@sass/*": ["src/modules/sass/*"]
     }
   },
   "include": ["src"]
