@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { useGlobalContext, toast, Overlay, ReactProps } from '@global';
-import { useAuthenticationContext } from '@authentication';
 import { useSidebarOptionsContext } from '../providers';
 
 import Menu from './menu.component';

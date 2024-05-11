@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { ReactProps } from '@global';
-import { useAuthenticationContext } from '@authentication';
 import { useSidebarOptionsContext } from '../providers';
 import UploadPostWindow from './upload-post-window.component';
 import SearchSide from './search-side.component';

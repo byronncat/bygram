@@ -1,28 +1,36 @@
-import { FormFieldProps } from '../types'
+import { FormFieldProps } from '../types';
 
-const Validation = {
-  User: {
+interface Validation {
+  [key: string]: {
+    minLength?: { value: number; message: string };
+    pattern?: { value: RegExp; message: string };
+    required?: string;
+  };
+}
+
+const VALIDATION: Validation = {
+  USER: {
     minLength: {
       value: 3,
       message: 'Username must be at least 3 characters',
     },
   },
-  Password: {
+  PASSWORD: {
     minLength: {
       value: 6,
       message: 'Password must be at least 6 characters',
     },
   },
-  Email: {
+  EMAIL: {
     pattern: {
       value: /\S+@\S+\.\S+/,
       message: 'Wrong email format',
     },
   },
-}
+};
 
-for (const key in Validation) {
-  Validation[key].required = `${key} is required`
+for (const key in VALIDATION) {
+  VALIDATION[key].required = `${key} is required`;
 }
 
 export const LOGIN = [
@@ -30,42 +38,42 @@ export const LOGIN = [
     name: 'email',
     type: 'email',
     placeholder: 'Email',
-    validation: Validation.Email,
+    validation: VALIDATION.USER,
   },
   {
     name: 'password',
     type: 'password',
     placeholder: 'Password',
-    validation: Validation.Password,
+    validation: VALIDATION.PASSWORD,
   },
-] as FormFieldProps[]
+] as FormFieldProps[];
 
 export const REGISTER = [
   {
     name: 'email',
     type: 'email',
     placeholder: 'Email',
-    validation: Validation.Email,
+    validation: VALIDATION.EMAIL,
   },
   {
     name: 'username',
     type: 'text',
     placeholder: 'Username',
-    validation: Validation.User,
+    validation: VALIDATION.USER,
   },
   {
     name: 'password',
     type: 'password',
     placeholder: 'Password',
-    validation: Validation.Password,
+    validation: VALIDATION.PASSWORD,
   },
-] as FormFieldProps[]
+] as FormFieldProps[];
 
 export const SEND_EMAIL = [
   {
     name: 'email',
     type: 'email',
     placeholder: 'Email',
-    validation: Validation.Email,
+    validation: VALIDATION.EMAIL,
   },
-] as FormFieldProps[]
+] as FormFieldProps[];

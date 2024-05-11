@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import Sidebar from '../components/sidebar.component';
+// import Sidebar from '../components/sidebar.component';
 import clsx from 'clsx';
 
 function RootLayout() {

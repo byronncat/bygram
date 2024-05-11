@@ -2,7 +2,7 @@ import passport from 'passport';
 import { IStrategyOptions, Strategy as LocalStrategy } from 'passport-local';
 import { accountService } from '@services';
 import { logger } from '@utilities';
-import { Account, Identity } from '@types';
+import { Account } from '@types';
 
 passport.use(
   'local-register',
@@ -21,8 +21,8 @@ passport.use(
           logger.error(`${error}`, 'Passport');
           return done(error);
         });
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser(function (user: any, done) {

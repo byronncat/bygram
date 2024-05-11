@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 import { toast, useDebounce, ReactProps } from '@global';
-import { useAuthenticationContext } from '@authentication';
 import { searchProfile } from '../services/profile.service';
 import { Profile } from '../types';
 import styles from '../styles/components/search-side.module.sass';

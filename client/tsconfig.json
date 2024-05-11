@@ -1,33 +1,46 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "types": ["node", "jest"],
+    "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2015",
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+
     "allowJs": true,
     "checkJs": true,
+
     "skipLibCheck": true,
-    "esModuleInterop": true,
+
+    "noEmit": true,
+
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+
     "module": "esnext",
     "moduleResolution": "node",
+    "types": ["node", "jest"],
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
+      "@route": ["src/route/index.ts"],
       "@authentication": ["src/modules/authentication/index.ts"],
       "@global": ["src/modules/global/index.ts"],
       "@core": ["src/modules/core/index.ts"],
       "@sass/*": ["src/modules/sass/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["__tests__", "setupProxy.js", "setupTests.ts"]
 }

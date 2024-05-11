@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import { PostWindow } from '../components';
 import Menu from '../components/menu.component';
 import { useGlobalContext, toast, Loader, Overlay } from '@global';
-import { useAuthenticationContext } from '@authentication';
 import {
   changeAvatar,
   follow,
@@ -87,6 +86,7 @@ function ProfilePage() {
   const inpurRef = useRef<HTMLInputElement | null>(null);
   const { ref, ...rest } = register('file', {
     onChange: (data) => {
+      console.log(data);
       handleSubmit(changeAvatarHandler)();
     },
     required: true,

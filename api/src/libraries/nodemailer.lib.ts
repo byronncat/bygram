@@ -1,6 +1,4 @@
 import nodemailer from 'nodemailer';
-import path from 'path';
-import fs from 'fs';
 import { logger } from '@utilities';
 
 const transporter = nodemailer.createTransport({

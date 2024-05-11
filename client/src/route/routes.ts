@@ -20,5 +20,4 @@ export function isAuthorizedRoute(path: string) {
   return Object.values(AUTHORIZED_ROUTE).includes(path);
 }
 
-export default ROUTE;
-export { AUTHORIZED_ROUTE, UNAUTHORIZED_ROUTE };
+export { ROUTE, AUTHORIZED_ROUTE, UNAUTHORIZED_ROUTE };

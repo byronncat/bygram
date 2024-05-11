@@ -12,12 +12,8 @@ import {
   useAuthenticationContext,
 } from '@authentication';
 import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
-import { useCurrentPath, ErrorPage, ReactProps } from '@global';
-import ROUTE, {
-  AUTHORIZED_ROUTE,
-  isAuthorizedRoute,
-  UNAUTHORIZED_ROUTE,
-} from './route';
+import { ErrorPage, ReactProps } from '@global';
+import { ROUTE, isAuthorizedRoute, useCurrentPath } from '@route';
 
 interface ProtectedRouteProps extends ReactProps {
   children: JSX.Element;

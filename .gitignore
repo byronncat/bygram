@@ -3,6 +3,9 @@ node_modules/
 build/
 dist/
 
+# diagram
+*.ldb
+
 # dependencies
 /node_modules
 /.pnp

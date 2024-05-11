@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext, createContext } from 'react';
-import axios from 'axios';
+import { useState, useContext, createContext } from 'react';
+// import axios from 'axios';
 
 import { ReactProps } from '@global';
 import { SessionId } from '../types';
@@ -22,7 +22,7 @@ export default function AuthenticationProvider({
   initSession,
 }: AuthenticationContextProps) {
   const [sessionToken, _setToken] = useState(
-    localStorage.getItem('session_id'),
+    localStorage.getItem('session_id' || initSession),
   );
 
   const session = {

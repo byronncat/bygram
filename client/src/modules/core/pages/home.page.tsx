@@ -17,8 +17,6 @@ import postWindowStyles from '../styles/components/post-window.module.sass';
 import { uri, toast, useGlobalContext, Loader, Overlay } from '@global';
 import { useSidebarOptionsContext } from '../providers';
 
-import { useAuthenticationContext } from '@authentication';
-
 function HomePage() {
   const [ready, setReady] = useState(false);
   const [posts, setPosts] = useState([] as PostData[]);
@@ -88,7 +86,7 @@ function HomePage() {
 
   useEffect(() => {
     (async function fetchPosts() {
-      const response = await getHomePosts(authenticationStorage.identity?.id!);
+      const response = await getHomePosts(32);
       if (response.success && response.data) {
         setPosts(response.data);
         setReady(true);

@@ -1,21 +1,22 @@
-import type { JestConfigWithTsJest } from 'ts-jest'
-import { compilerOptions } from '../tsconfig.json'
+const { compilerOptions } = require('../tsconfig.json');
+
+const paths = compilerOptions.paths;
 
 const moduleNameMapper = Object.keys(compilerOptions.paths).reduce(
   (acc, key) => {
-    const value = compilerOptions.paths[key][0]
-    const name = key.replace('/*', '/(.*)$')
-    acc[name] = `<rootDir>/${value.replace('/*', '/$1')}`
-    return acc
+    const value = paths[key][0];
+    const name = key.replace('/*', '/(.*)$');
+    acc[name] = `<rootDir>/${value.replace('/*', '/$1')}`;
+    return acc;
   },
   {
     '^axios$': 'axios/dist/node/axios.cjs',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-  }
-)
+  },
+);
 
-const config: JestConfigWithTsJest = {
+const config = {
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testEnvironment: 'jsdom',
   collectCoverageFrom: [
@@ -45,6 +46,6 @@ const config: JestConfigWithTsJest = {
     'node',
   ],
   resetMocks: true,
-}
+};
 
-export default config
+module.exports = config

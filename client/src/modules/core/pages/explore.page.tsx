@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { PostWindow } from '../components';
 import { uri, toast, Loader } from '@global';
-import { useAuthenticationContext } from '@authentication';
 import { explorePost } from '../services/post.service';
 import { Post } from '../types';
 import clsx from 'clsx';
@@ -10,13 +9,6 @@ import styles from '../styles/pages/explore.module.sass';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 function ExplorePage() {
-  // temp
-  const authenticationStorage = {
-    identity: {
-      id: 32,
-    },
-  };
-
   const [ready, setReady] = useState(false);
   const [post, setPost] = useState({} as any);
   const [showPost, setShowPost] = useState(false);
@@ -24,13 +16,13 @@ function ExplorePage() {
 
   useEffect(() => {
     (async function FetchData() {
-      const response = await explorePost(authenticationStorage.identity!.id);
+      const response = await explorePost(32);
       if (response.success && response.data) {
         setPosts(response.data);
         setReady(true);
       } else toast.display(response.message, 'error');
     })();
-  }, [ready, authenticationStorage]);
+  }, [ready]);
   if (!ready) return <Loader />;
   return (
     <>

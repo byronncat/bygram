@@ -31,7 +31,7 @@ describe('login controller', () => {
       .expect((res) => {
         expect(res.body).toHaveProperty('success', true);
         expect(res.body).toHaveProperty('message', LoginResult.SUCCESS);
-        expect(res.body.data).toHaveProperty('session_id');
+        expect(res.body.data).toHaveProperty('sessionId');
       });
   });
 

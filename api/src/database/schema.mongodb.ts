@@ -19,7 +19,7 @@ const ProfileSchema = new mongoose.Schema<ProfileDocument>(
   },
   {
     versionKey: false,
-  }
+  },
 );
 // ProfileSchema.index({ username: 'text' });
 const ProfileModel = mongoose.model('profile', ProfileSchema);
@@ -50,9 +50,9 @@ const PostModel = mongoose.model(
     },
     {
       versionKey: false,
-    }
-  )
+    },
+  ),
 );
 
-export { ProfileModel, ProfileDocument };
-export { PostModel, PostDocument };
+export { ProfileModel, PostModel };
+export type { ProfileDocument, PostDocument };
