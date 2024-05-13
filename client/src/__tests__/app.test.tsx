@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 
-import App from '../App'
-import { act } from 'react-dom/test-utils'
+import App from '../app';
+import { act } from 'react-dom/test-utils';
 
 describe('Router', () => {
   // beforeEach(() => {
@@ -25,6 +25,6 @@ describe('Router', () => {
   // })
   // })
   it('temp', () => {
-    expect(true).toBe(true)
-  })
-})
+    expect(true).toBe(true);
+  });
+});

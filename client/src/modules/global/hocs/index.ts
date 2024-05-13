@@ -1,1 +1,1 @@
-export { default as Global, useGlobalContext } from './global.hoc'
+export { default as Global } from './global.hoc';

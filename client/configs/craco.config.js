@@ -1,6 +1,7 @@
 const webpackConfig = require('./webpack.config');
 const jestConfig = require('./jest.config');
 const eslintConfig = require('./eslint.config');
+const postcssConfig = require('./postcss.config');
 
 const config = {
   webpack: webpackConfig,
@@ -9,6 +10,9 @@ const config = {
   },
   eslint: {
     configure: eslintConfig,
+  },
+  style: {
+    postcssOptions: postcssConfig,
   },
 };
 

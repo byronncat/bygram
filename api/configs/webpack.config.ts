@@ -1,9 +1,11 @@
-const path = require('path');
-const root = path.resolve(__dirname, '..')
-const dotenv = require('dotenv').config()
+import path from 'path';
+import dotenv from 'dotenv';
+import type { Configuration } from 'webpack';
 
+dotenv.config();
+const root = path.resolve(__dirname, '..');
 
-module.exports = {
+const config: Configuration = {
   target: 'node',
   entry: path.resolve(root, 'src/index.ts'),
   resolve: {
@@ -16,7 +18,7 @@ module.exports = {
       '@services': path.resolve(root, 'src/services'),
       '@types': path.resolve(root, 'src/types'),
       '@utilities': path.resolve(root, 'src/utils'),
-    }
+    },
   },
   devtool: 'inline-source-map',
   module: {
@@ -25,12 +27,16 @@ module.exports = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
-      }
-    ]
+      },
+    ],
   },
   output: {
     filename: 'bundle.js',
     path: path.resolve(root, 'dist'),
   },
-  mode: process.env.NODE_ENV || 'development',
+  mode:
+    (process.env.NODE_ENV as 'development' | 'none' | 'production') ||
+    'development',
 };
+
+export default config;

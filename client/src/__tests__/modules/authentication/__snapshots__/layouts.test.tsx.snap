@@ -2,7 +2,7 @@
 
 exports[`AuthenticationLayout should render correctly when not authenticated 1`] = `
 <div
-  className="w-100 h-100 overflow-hidden user-select-none position-relative"
+  className="w-100 h-100 bg-slate-700 overflow-hidden user-select-none position-relative"
 >
   <span
     className="w-100 h-100 d-block position-absolute z-n1"

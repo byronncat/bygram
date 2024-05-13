@@ -1,7 +1,4 @@
-@use '@sass/utils' as utils
-@import "~bootstrap/scss/functions"
-@import "~bootstrap/scss/variables"
-@import "~bootstrap/scss/mixins"
+@use '@sass/utilities' as util
 
 $color-1: #C2146D
 $color-2: #760D50
@@ -10,80 +7,7 @@ $color-4: #320C3B
 $color-5: #280C3D
 $color-6: #1E0D37
 
-.wrapper
-  background: $color-6
-  color: white
-
-.square404
-  display: flex
-  justify-content: center
-  align-items: center
-  width: 50%
-
 .square
-  $edge: 50%
-  width: $edge
-  position: relative
-  transform: rotateZ(-21deg)
-  display: flex
-  justify-content: center
-  align-items: center
-
   &::after
-    content: ''
-    display: block
-    width: 100%
-    padding-bottom: 100%
-    position: absolute
-
-    border-radius: 1.2rem
     background: $color-1
-    box-shadow: $color-2 0 0 5px 30px, $color-3 0 0 10px 60px,$color-4 0 0 15px 90px, $color-5 0 0 20px 120px, $color-6 0 0 25px 150px
-
-  & p
-    position: relative
-    z-index: 1
-    font-size: 10vw
-    font-weight: 700
-    color: $color-6
-    text-align: center
-    transform: translateZ(90px)
-    text-shadow: 0 0 2px rgba(0, 0, 0, .6)
-    user-select: none
-
-.texts
-  z-index: 5
-  padding: 0 4rem
-  width: 50%
-
-.button
-  display: inline-block
-  width: utils.pxToRem(200)
-  padding: 0.8rem 0
-  color: var(--color-light-text)
-  text-align: center
-  font-weight: 700
-  vertical-align: middle
-  border: var(--color-light-text) 1px solid
-  border-radius: .25rem
-  cursor: pointer
-  user-select: none
-  transition: all .4s ease-in-out
-  &:hover
-    background: var(--color-light-text)
-    color: var(--color-dark-theme)
-
-@include media-breakpoint-down(md)
-  .wrapper
-    flex-direction: column
-  .square404
-    width: 100%
-    height: 50%
-    .square
-      width: 120px
-      height: 120px
-
-  .texts
-    width: 100%
-    a
-      align-self: center
+    box-shadow: $color-2 0 0 util.pxToRem(5) util.pxToRem(30), $color-3 0 0 util.pxToRem(10) util.pxToRem(60), $color-4 0 0 util.pxToRem(15) util.pxToRem(90), $color-5 0 0 util.pxToRem(20) util.pxToRem(120), $color-6 0 0 util.pxToRem(25) util.pxToRem(150)

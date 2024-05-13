@@ -1,12 +1,12 @@
-import clsx from 'clsx'
-import { ReactProps } from '@global'
-import { Brand } from '../components'
-import styles from '../styles/layouts/auth.module.sass'
-import effects from '@sass/effects.module.sass'
-import backgroundImageURL from '@assets/images/night-neon.avif'
+import clsx from 'clsx';
+import { ReactProps } from '@global';
+import { Brand } from '../components';
+import styles from '../styles/layouts/auth.module.sass';
+import effects from '@sass/effects.module.sass';
+import backgroundImageURL from '@assets/images/night-neon.avif';
 
 interface AuthenticationLayoutProps extends ReactProps {
-  title: string
+  title: string;
 }
 
 export default function AuthenticationLayout({
@@ -16,9 +16,9 @@ export default function AuthenticationLayout({
   return (
     <div
       className={clsx(
-        'w-100 h-100',
+        'w-100 h-100 bg-slate-700',
         'overflow-hidden user-select-none',
-        'position-relative'
+        'position-relative',
       )}
     >
       <span
@@ -35,7 +35,7 @@ export default function AuthenticationLayout({
           'text-white',
           'position-relative float-end',
           'h-100',
-          'd-flex flex-column justify-content-center align-items-center'
+          'd-flex flex-column justify-content-center align-items-center',
         )}
       >
         <Brand />
@@ -44,7 +44,7 @@ export default function AuthenticationLayout({
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 function Title({ data }: { data: string }) {
@@ -55,12 +55,12 @@ function Title({ data }: { data: string }) {
         effects['text-neon-glowing-2'],
         'm-2',
         'text-capitalize',
-        'position-absolute start-0 top-0'
+        'position-absolute start-0 top-0',
       )}
     >
       {data}
     </span>
-  )
+  );
 }
 
 function PanelBackground() {
@@ -69,8 +69,8 @@ function PanelBackground() {
       className={clsx(
         styles['panel-bg'],
         'w-100 h-100',
-        'position-absolute z-n1'
+        'position-absolute z-n1',
       )}
     />
-  )
+  );
 }

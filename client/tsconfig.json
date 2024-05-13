@@ -30,6 +30,7 @@
     "moduleResolution": "node",
     "types": ["node", "jest"],
     "resolveJsonModule": true,
+    "rootDir": "./",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
@@ -42,5 +43,5 @@
     }
   },
   "include": ["src"],
-  "exclude": ["__tests__", "setupProxy.js", "setupTests.ts"]
+  "exclude": ["setupProxy.js", "setupTests.ts"]
 }

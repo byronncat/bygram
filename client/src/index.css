@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.white-theme {
+  @apply bg-white text-black;
+}
+
+.dark-theme {
+  @apply bg-black text-white;
+}
+
+.cerise-theme {
+  /* @apply bg-cerise text-white; */
+}
+
+.button {
+  @apply bg-cerise-700 text-white select-none;
+  @apply w-fit py-2 px-3 rounded;
+  @apply font-semibold text-center;
+
+  @apply transition-colors duration-200;
+  @apply hover:bg-cerise-800 hover:text-gray-300;
+}
+
+.flicker-slightly {
+  animation: flicker-slightly 5s infinite alternate;
+}
+@keyframes flicker-slightly {
+  44% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.7;
+  }
+  46% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

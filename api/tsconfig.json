@@ -44,5 +44,6 @@
       "@types": ["src/types/index.d.ts"],
       "@utilities": ["src/utilities/index.ts"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "configs/**/*.ts"]
 }

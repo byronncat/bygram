@@ -1,7 +1,4 @@
-@use '@sass/utils.sass' as utils
-@import "~bootstrap/scss/functions"
-@import "~bootstrap/scss/variables"
-@import "~bootstrap/scss/mixins"
+@use '@sass/utilities.sass' as utils
 
 $border-width: 2
 $sidebar-width: 248 + $border-width
@@ -76,21 +73,21 @@ $link-height: 52
 .minimize
   @include minimize
 
-@include media-breakpoint-down(md)
-  .wrapper
-    width: auto
-  .sidebar
-    @include minimize
+// @include media-breakpoint-down(md)
+//   .wrapper
+//     width: auto
+//   .sidebar
+//     @include minimize
 
-@include media-breakpoint-up(md)
-  .link-text,
-  .brand-name
+// @include media-breakpoint-up(md)
+//   .link-text,
+//   .brand-name
 
-    animation: identifier $transition-time
+//     animation: identifier $transition-time
 
-    @keyframes identifier
-      0%,
-      60%
-        opacity: 0
-      100%
-        opacity: 1
+//     @keyframes identifier
+//       0%,
+//       60%
+//         opacity: 0
+//       100%
+//         opacity: 1
