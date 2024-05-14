@@ -4,6 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'neon': {
+          'red': '#ff0000',
+        },
         'cerise': {
           '50': '#fdf2f9',
           '100': '#fde6f5',
@@ -46,6 +49,9 @@ module.exports = {
       },
       fontSize: {
         '10vw': '10vw',
+      },
+      spacing: {
+        '100': '25rem',
       },
       padding: {
         'full': '100%',

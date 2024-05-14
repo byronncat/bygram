@@ -44,18 +44,16 @@ function LoginPage() {
         fieldClass={className}
         submitPlaceholder="Login"
       >
-        <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        {/* <span className={clsx('d-flex justify-content-between', 'mt-4')}> */}
+        <p className={clsx('text-center', 'my-2')}>--- or ---</p>
         <Link
           to="/register"
-          className={clsx('link d-block', 'text-center fs-6')}
+          className={clsx(
+            'block font-medium text-center capitalize',
+            'duration-300 hover:text-slate-300',
+          )}
         >
-          Sign up
+          sign up
         </Link>
-        {/* <Link to="/forgot-password" className={clsx('d-block link', 'text-center fs-6')}>
-            Forgot password?
-          </Link>
-        </span> */}
       </Form>
     </>
   );

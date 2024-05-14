@@ -9,7 +9,7 @@ import {
 
 describe('provider', () => {
   describe('global', () => {
-    it('should refresh the page', async () => {
+    it('should refresh the page', () => {
       const INIT_RENDER_COUNT = 0;
       let renderCount = INIT_RENDER_COUNT;
       const Test = () => {
@@ -22,7 +22,7 @@ describe('provider', () => {
         return <div>Test</div>;
       };
 
-      await render(
+      render(
         <GlobalProvider>
           <Test />
         </GlobalProvider>,
@@ -32,14 +32,14 @@ describe('provider', () => {
   });
 
   describe('theme', () => {
-    it('should have dark theme default', async () => {
+    it('should have dark theme default', () => {
       const Test = () => {
         const { theme } = useThemeContext();
 
         return <div data-testid="theme">{theme}</div>;
       };
 
-      const { getByTestId } = await render(
+      const { getByTestId } = render(
         <ThemeProvider>
           <Test />
         </ThemeProvider>,
@@ -48,7 +48,7 @@ describe('provider', () => {
       expect(getByTestId('theme').textContent).toBe('dark');
     });
 
-    it('should update theme', async () => {
+    it('should update theme', () => {
       const Test = () => {
         const { theme, updateTheme } = useThemeContext();
 
@@ -59,7 +59,7 @@ describe('provider', () => {
         );
       };
 
-      const { getByTestId } = await render(
+      const { getByTestId } = render(
         <ThemeProvider>
           <Test />
         </ThemeProvider>,
@@ -68,7 +68,7 @@ describe('provider', () => {
       const themeElement = getByTestId('theme');
       expect(themeElement.textContent).toBe('dark');
 
-      await fireEvent.click(themeElement);
+      fireEvent.click(themeElement);
       expect(themeElement.textContent).toBe('light');
     });
   });

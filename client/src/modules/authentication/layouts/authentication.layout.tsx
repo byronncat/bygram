@@ -1,7 +1,9 @@
 import clsx from 'clsx';
+
 import { ReactProps } from '@global';
 import { Brand } from '../components';
-import styles from '../styles/layouts/auth.module.sass';
+import styles from '../styles/layouts/authentication.module.sass';
+
 import effects from '@sass/effects.module.sass';
 import backgroundImageURL from '@assets/images/night-neon.avif';
 
@@ -15,14 +17,10 @@ export default function AuthenticationLayout({
 }: AuthenticationLayoutProps) {
   return (
     <div
-      className={clsx(
-        'w-100 h-100 bg-slate-700',
-        'overflow-hidden user-select-none',
-        'position-relative',
-      )}
+      className={clsx('w-full h-full relative', 'overflow-hidden select-none')}
     >
       <span
-        className={clsx('w-100 h-100', 'd-block position-absolute z-n1')}
+        className={clsx('w-full h-full block', 'absolute z-0')}
         style={{
           backgroundImage: `url(${backgroundImageURL})`,
           backgroundPosition: 'center center',
@@ -31,11 +29,10 @@ export default function AuthenticationLayout({
       />
       <div
         className={clsx(
-          styles['form-side'],
           'text-white',
-          'position-relative float-end',
-          'h-100',
-          'd-flex flex-column justify-content-center align-items-center',
+          'w-full md:w-1/2 h-full relative z-10',
+          'flex flex-col justify-center items-center',
+          'duration-500 ease-in-out',
         )}
       >
         <Brand />
@@ -51,11 +48,10 @@ function Title({ data }: { data: string }) {
   return (
     <span
       className={clsx(
-        styles.title,
         effects['text-neon-glowing-2'],
-        'm-2',
-        'text-capitalize',
-        'position-absolute start-0 top-0',
+        'px-4 py-2 m-2',
+        'font-sacramento text-4xl text-capitalize capitalize',
+        'absolute top-0 left-0',
       )}
     >
       {data}
@@ -67,9 +63,9 @@ function PanelBackground() {
   return (
     <span
       className={clsx(
-        styles['panel-bg'],
-        'w-100 h-100',
-        'position-absolute z-n1',
+        styles['panel-background'],
+        'w-full h-full',
+        'absolute top-0 -z-10',
       )}
     />
   );

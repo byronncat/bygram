@@ -42,6 +42,7 @@ function RegisterPage() {
   return (
     <>
       <Form
+        className={className.form}
         fieldList={FIELD.REGISTER}
         defaultValues={defaultValues}
         submitHandler={submitHandler}
@@ -49,8 +50,14 @@ function RegisterPage() {
         submitPlaceholder="Register"
       >
         <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        <Link to="/login" className={clsx('link d-block', ' text-center fs-6')}>
-          Login here
+        <Link
+          to="/login"
+          className={clsx(
+            'block font-medium text-center capitalize',
+            'duration-300 hover:text-slate-300',
+          )}
+        >
+          sign in
         </Link>
       </Form>
     </>

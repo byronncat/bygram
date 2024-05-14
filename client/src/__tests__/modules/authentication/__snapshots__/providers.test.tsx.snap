@@ -2,11 +2,11 @@
 
 exports[`Providers ClassName should return className object 1`] = `
 Object {
-  "form": "mw-100 rounded",
-  "formErrorMessage": "error-message mt-1 mb-2 fw-bolder",
+  "form": "form-background max-w-full w-100 px-9 py-14 rounded shadow-xl",
+  "formErrorMessage": "mt-1 mb-2 font-medium text-neon-red",
   "formErrorMessageAnimation": "flicker-one",
-  "formField": "form-field form-floating",
-  "formInput": "form-input form-control",
-  "formLabel": "form-label",
+  "formField": "relative",
+  "formInput": "block w-full px-3 pt-5 pb-2 rounded bg-gray-50 dark:bg-gray-700 border-0 border-b-2 appearance-none border-gray-600 text-white transition duration-300 focus:border-slate-400 focus:outline-none focus:ring-0 peer",
+  "formLabel": "absolute start-3 top-4 z-10 text-gray-400 duration-300 -translate-y-4 scale-75 origin-[0] peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4",
 }
 `;

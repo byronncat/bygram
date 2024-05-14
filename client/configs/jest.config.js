@@ -23,7 +23,7 @@ const config = {
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!**/index.{tsx,ts}',
-    '!src/**/{constants,libraries}/**',
+    '!src/**/{constants,libraries,route}/**',
     '!src/{setupTests.ts,reportWebVitals.ts,setupProxy.js}',
   ],
   moduleNameMapper,

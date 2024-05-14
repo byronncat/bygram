@@ -1,42 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthenticationLayout should render correctly when not authenticated 1`] = `
-<div
-  className="w-100 h-100 bg-slate-700 overflow-hidden user-select-none position-relative"
->
-  <span
-    className="w-100 h-100 d-block position-absolute z-n1"
-    style={
-      Object {
-        "backgroundImage": "url(night-neon.avif)",
-        "backgroundPosition": "center center",
-        "backgroundSize": "cover",
-      }
-    }
-  />
+exports[`authentication layout should render correctly when not authenticated 1`] = `
+<div>
   <div
-    className="form-side text-white position-relative float-end h-100 d-flex flex-column justify-content-center align-items-center"
+    class="w-full h-full relative overflow-hidden select-none"
   >
-    <img
-      alt="logo"
-      className="d-block"
-      height={60}
-      src="logo.svg"
-      width={60}
-    />
-    <h1
-      className="brand-name text-neon-glowing-1 text-uppercase fs-2 mt-2 my-3"
-    >
-      bygram
-    </h1>
     <span
-      className="panel-bg w-100 h-100 position-absolute z-n1"
+      class="w-full h-full block absolute z-0"
+      style="background-image: url(night-neon.avif); background-position: center center; background-size: cover;"
     />
-    <span
-      className="title text-neon-glowing-2 m-2 text-capitalize position-absolute start-0 top-0"
+    <div
+      class="text-white w-full md:w-1/2 h-full relative z-10 flex flex-col justify-center items-center duration-500 ease-in-out"
     >
-      login
-    </span>
+      <img
+        alt="logo"
+        class="block"
+        height="60"
+        src="logo.svg"
+        width="60"
+      />
+      <h1
+        class="text-neon-glowing-1 mt-2 mb-6 font-monoton text-3xl tracking-widest -skew-y-6"
+      >
+        bygram
+      </h1>
+      <span
+        class="panel-background w-full h-full absolute top-0 -z-10"
+      />
+      <span
+        class="text-neon-glowing-2 px-4 py-2 m-2 font-sacramento text-4xl text-capitalize capitalize absolute top-0 left-0"
+      >
+        login
+      </span>
+    </div>
   </div>
 </div>
 `;

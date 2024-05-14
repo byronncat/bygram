@@ -10,18 +10,21 @@ interface Validation {
 
 const VALIDATION: Validation = {
   USER: {
+    required: 'Username is required',
     minLength: {
       value: 3,
       message: 'Username must be at least 3 characters',
     },
   },
   PASSWORD: {
+    required: 'Password is required',
     minLength: {
       value: 6,
       message: 'Password must be at least 6 characters',
     },
   },
   EMAIL: {
+    required: 'Email is required',
     pattern: {
       value: /\S+@\S+\.\S+/,
       message: 'Wrong email format',
@@ -29,16 +32,12 @@ const VALIDATION: Validation = {
   },
 };
 
-for (const key in VALIDATION) {
-  VALIDATION[key].required = `${key} is required`;
-}
-
 export const LOGIN = [
   {
     name: 'email',
     type: 'email',
     placeholder: 'Email',
-    validation: VALIDATION.USER,
+    validation: VALIDATION.EMAIL,
   },
   {
     name: 'password',

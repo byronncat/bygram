@@ -1,1 +1,1 @@
-export * as windowUtility from './window.utility'
+export * as windowUtility from './window.utility';

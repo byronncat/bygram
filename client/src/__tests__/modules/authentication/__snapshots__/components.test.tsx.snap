@@ -1,74 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components Form should render component correctly 1`] = `
-<form
-  onSubmit={[Function]}
->
-  <div>
-    <input
-      id="email"
-      name="email"
-      onBlur={[Function]}
-      onChange={[Function]}
-      placeholder="Email"
-      type="email"
-    />
-    <label
-      htmlFor="email"
-    >
-      Email
-    </label>
-    <p
-      className=""
-    />
-  </div>
-  <div>
-    <input
-      id="password"
-      name="password"
-      onBlur={[Function]}
-      onChange={[Function]}
-      placeholder="Password"
-      type="password"
-    />
-    <label
-      htmlFor="password"
-    >
-      Password
-    </label>
-    <span
-      className="icon-eye"
-      onClick={[Function]}
-    >
-      <i
-        className="icon-eye"
+<div>
+  <form>
+    <div>
+      <input
+        class=""
+        id="email"
+        name="email"
+        placeholder=" "
+        type="email"
       />
-    </span>
+      <label
+        class=""
+        for="email"
+      >
+        Email
+      </label>
+    </div>
     <p
-      className=""
+      class=""
     />
-  </div>
-  <input
-    className="submit-btn w-100 pt-2 my-2 btn"
-    type="submit"
-    value="Login"
-  />
-</form>
+    <div>
+      <input
+        class=""
+        id="password"
+        name="password"
+        placeholder=" "
+        type="password"
+      />
+      <label
+        class=""
+        for="password"
+      >
+        Password
+      </label>
+      <span
+        class="flex justify-center items-center absolute top-0 right-0 h-full w-12 text-xl cursor-pointer transition duration-300 opacity-50 hover:opacity-100"
+      >
+        <i
+          class="icon-eye"
+        />
+      </span>
+    </div>
+    <p
+      class=""
+    />
+    <input
+      class="button w-full mt-5"
+      type="submit"
+      value="Login"
+    />
+  </form>
+</div>
 `;
 
 exports[`components should render the Brand component correctly 1`] = `
-Array [
+<div>
   <img
     alt="logo"
-    className="d-block"
-    height={60}
+    class="block"
+    height="60"
     src="logo.svg"
-    width={60}
-  />,
+    width="60"
+  />
   <h1
-    className="brand-name text-neon-glowing-1 text-uppercase fs-2 mt-2 my-3"
+    class="text-neon-glowing-1 mt-2 mb-6 font-monoton text-3xl tracking-widest -skew-y-6"
   >
     bygram
-  </h1>,
-]
+  </h1>
+</div>
 `;

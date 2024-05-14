@@ -3,17 +3,17 @@ import { Loader, Overlay } from '@global';
 
 describe('components', () => {
   describe('loader', () => {
-    it('should render the loader correctly', async () => {
-      const { container } = await render(<Loader />);
+    it('should render the loader correctly', () => {
+      const { container } = render(<Loader />);
       expect(container).toMatchSnapshot();
     });
   });
 
   describe('overlay', () => {
-    it('should render the overlay correctly', async () => {
+    it('should render the overlay correctly', () => {
       const exitHandler = jest.fn();
 
-      const { container } = await render(
+      const { container } = render(
         <Overlay exitHandler={exitHandler}>
           <div>Test</div>
         </Overlay>,
@@ -21,19 +21,19 @@ describe('components', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('should call the exitHandler when the overlay is clicked', async () => {
+    it('should call the exitHandler when the overlay is clicked', () => {
       const exitHandler = jest.fn();
 
-      const { container } = await render(
+      const { container } = render(
         <Overlay exitHandler={exitHandler}>
           <div>Test</div>
         </Overlay>,
       );
 
       const overlay = container.querySelector('.overlay');
-      if (overlay) await fireEvent.click(overlay);
+      if (overlay) fireEvent.click(overlay);
       const exitButton = container.querySelector('button');
-      if (exitButton) await fireEvent.click(exitButton);
+      if (exitButton) fireEvent.click(exitButton);
 
       expect(exitHandler).toHaveBeenCalledTimes(2);
     });
