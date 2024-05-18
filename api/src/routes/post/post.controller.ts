@@ -6,10 +6,17 @@ import { API, Profile, PostData, PostAPI, CommentAPI } from '@types';
 import multer from 'multer';
 import { logger } from '@utilities';
 import { PostDocument } from '@database';
+import { jwt } from '@/libraries';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 async function getHomePosts(req: Request, res: Response, next: NextFunction) {
+  let bearerToken: any = req.headers.authorization;
+  bearerToken = bearerToken?.split(' ')[1];
+  if (bearerToken) console.log(jwt.verifyAccessToken(bearerToken));
+
+  // bearerToken = jwt.verifyAccessToken(bearerToken!);
+
   const { uid }: Profile = req.query;
   if (!uid)
     return res.status(409).json({

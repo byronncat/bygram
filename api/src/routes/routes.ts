@@ -2,7 +2,6 @@ import { Express, Router } from 'express';
 
 import authenticationRouter from './authentication.route';
 
-import authRouter from './authentication/index';
 import postRouter from './post/post.route';
 import profileRouter from './profile/profile.route';
 import utilsRouter from './utils/utils.route';
@@ -16,10 +15,6 @@ const routes: Route[] = [
   {
     path: '',
     router: authenticationRouter,
-  },
-  {
-    path: '/auth/register',
-    router: authRouter.registerRouter,
   },
   {
     path: '/post',

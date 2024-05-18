@@ -11,8 +11,8 @@ import cors from 'cors';
 import './database/MongoDB.database';
 import Redis from './database/Redis.database';
 import RedisStore from 'connect-redis';
-import { logger as log } from '@utilities';
 import { TIME } from './constants';
+import { logger as log } from '@utilities';
 
 const app: Express = express();
 
@@ -45,14 +45,15 @@ const redisStore = new RedisStore({
 
 app.use(
   session({
+    name: 'session_id',
     store: redisStore,
     secret: process.env.TOKEN_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
-    name: 'session_id',
     cookie: {
+      maxAge: TIME.COOKIE_MAX_AGE,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: TIME.MONTH,
     },
   } as session.SessionOptions),
 );

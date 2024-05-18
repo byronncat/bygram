@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`components Form should render component correctly 1`] = `
+exports[`components form should render correctly 1`] = `
 <div>
   <form>
     <div>
@@ -55,7 +55,7 @@ exports[`components Form should render component correctly 1`] = `
 </div>
 `;
 
-exports[`components should render the Brand component correctly 1`] = `
+exports[`components should render brand component correctly 1`] = `
 <div>
   <img
     alt="logo"
@@ -69,5 +69,26 @@ exports[`components should render the Brand component correctly 1`] = `
   >
     bygram
   </h1>
+</div>
+`;
+
+exports[`components should render divider component correctly 1`] = `
+<div>
+  <p
+    class="text-center my-2"
+  >
+    --- or ---
+  </p>
+</div>
+`;
+
+exports[`components should render navigation button component correctly 1`] = `
+<div>
+  <a
+    class="block font-medium text-center capitalize duration-300 hover:text-slate-300"
+    href="/register"
+  >
+    register
+  </a>
 </div>
 `;

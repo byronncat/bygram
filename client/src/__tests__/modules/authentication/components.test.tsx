@@ -1,18 +1,26 @@
+import { BrowserRouter } from 'react-router-dom';
 import { act, fireEvent, render } from '@testing-library/react';
-import { Brand, Form, FIELD, DEFAULT_VALUES } from '@authentication';
+import {
+  Brand,
+  Form,
+  FIELD,
+  DEFAULT_VALUES,
+  Divider,
+  NavigationButton,
+} from '@authentication';
 
 describe('components', () => {
-  it('should render the Brand component correctly', () => {
+  it('should render brand component correctly', () => {
     const { container } = render(<Brand />);
     expect(container).toMatchSnapshot();
   });
 
-  describe('Form', () => {
-    it('should render component correctly', () => {
+  describe('form', () => {
+    it('should render correctly', () => {
       const { container } = render(
         <Form
           fieldList={FIELD.LOGIN}
-          defaultValues={DEFAULT_VALUES.LOGIN}
+          defaultValues={DEFAULT_VALUES.LOGIN_FORM}
           submitHandler={() => console.log('submit')}
           submitPlaceholder="Login"
         />,
@@ -20,12 +28,12 @@ describe('components', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('should call the submitHandler when the form is submitted', async () => {
+    it('should call submitHandler when the form is submitted', async () => {
       const submitHandler = jest.fn();
       const { container } = render(
         <Form
           fieldList={FIELD.LOGIN}
-          defaultValues={DEFAULT_VALUES.LOGIN}
+          defaultValues={DEFAULT_VALUES.LOGIN_FORM}
           submitHandler={submitHandler}
           submitPlaceholder="Login"
         />,
@@ -36,5 +44,19 @@ describe('components', () => {
       });
       expect(submitHandler).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('should render divider component correctly', () => {
+    const { container } = render(<Divider />);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render navigation button component correctly', () => {
+    const { container } = render(
+      <BrowserRouter>
+        <NavigationButton text="register" path="/register" />
+      </BrowserRouter>,
+    );
+    expect(container).toMatchSnapshot();
   });
 });

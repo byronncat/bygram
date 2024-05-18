@@ -1,34 +1,28 @@
-import { useLayoutEffect } from 'react'
-import { Link, useOutletContext } from 'react-router-dom'
-import { SubmitHandler } from 'react-hook-form'
-import clsx from 'clsx'
-import { toast, API } from '@global'
-import Form from '../components/form.component'
-import { useClassNameContext } from '../providers'
-import { sendResetEmailAPI } from '../services/auth.service'
-import { FIELD } from '../constants'
-import { AuthenticationInformation } from '../types'
+import { useLayoutEffect } from 'react';
+import { Link, useOutletContext } from 'react-router-dom';
+import { SubmitHandler } from 'react-hook-form';
+import clsx from 'clsx';
+import Form from '../components/form.component';
+import { useClassNameContext } from '../providers';
+import { FIELD } from '../constants';
+import { AuthenticationInformation } from '../types';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
-}
+};
 
 function ForgotPasswordPage() {
-  const { className } = useClassNameContext()
+  const { className } = useClassNameContext();
   const {
     setTitle,
   }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext()
+    useOutletContext();
   useLayoutEffect(() => {
-    setTitle('forgot')
-  }, [setTitle])
+    setTitle('forgot');
+  }, [setTitle]);
 
-  const submitHandler: SubmitHandler<AuthenticationInformation> = async (
-    data
-  ) => {
-    const response: API = await sendResetEmailAPI(data)
-    toast.display(response.message, response.success ? 'success' : 'error')
-  }
+  const submitHandler: SubmitHandler<AuthenticationInformation> = (data) =>
+    console.log(data);
 
   return (
     <>
@@ -45,7 +39,7 @@ function ForgotPasswordPage() {
         </Link>
       </Form>
     </>
-  )
+  );
 }
 
-export default ForgotPasswordPage
+export default ForgotPasswordPage;

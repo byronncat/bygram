@@ -1,25 +1,23 @@
-const { PostgreSQL } = require('@database');
-
-import { ProfileDocument, ProfileModel } from '@database';
-import { logger, escapeRegExp, isEmptyObject } from '@utilities';
-import { LoginResult } from '@constants';
-import { Account, Identity, RegisterData, Profile } from '@types';
 import fileService from './file.service';
+import { PostgreSQL, ProfileDocument, ProfileModel } from '@database';
+import { password as passwrodHelper } from '@helpers';
+import { logger, isEmptyObject } from '@utilities';
+import { LoginResult, RegisterResult } from '@constants';
+import {
+  createUser,
+  getUserByEmail,
+  getUserByUsername,
+} from '@/database/accesss';
+import type { Account, Identity, Profile } from '@types';
 
-// Postgresql database
 async function login(
   email: Account['email'],
   password: Account['password'],
 ): Promise<Identity> {
-  password = escapeRegExp(password);
   try {
-    const query = await PostgreSQL.oneOrNone(
-      `SELECT * FROM accounts WHERE email = $(email)`,
-      { email },
-    );
-
+    const query = await getUserByEmail(email);
     if (!query) return { userId: null, message: LoginResult.NOT_EXIST };
-    if (query.password !== password)
+    if (!(await passwrodHelper.compare(password, query.password)))
       return { userId: null, message: LoginResult.INCORRECT_PASSWORD };
     return { userId: query.id, message: LoginResult.SUCCESS };
   } catch (error) {
@@ -27,32 +25,18 @@ async function login(
   }
 }
 
-async function registerAuthenticate(email: Account['email']) {
+async function register(data: Account): Promise<Identity> {
   try {
-    const result = await PostgreSQL.oneOrNone(
-      `SELECT * FROM accounts WHERE email = $(email)`,
-      { email },
-    );
-    if (result && result.email === email)
-      return { user: null, message: 'Email already exists' };
-    return { user: { email }, message: 'Can register' };
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
+    const queryEmail = await getUserByEmail(data.email);
+    if (queryEmail && queryEmail.email === data.email)
+      return { userId: null, message: RegisterResult.EMAIL_EXISTS };
 
-async function register(data: RegisterData): Promise<any> {
-  if (data.email == undefined || data.password == undefined)
-    return Promise.reject('Email and password are required');
+    const queryUsername = await getUserByUsername(data.username);
+    if (queryUsername && queryUsername.username === data.username)
+      return { userId: null, message: RegisterResult.USERNAME_EXISTS };
 
-  try {
-    const { id, email } = await createAccount(data.email, data.password);
-    const { username } = await createProfile({
-      uid: id,
-      username: data.username,
-    });
-    const toNum = id as any as string;
-    return { id: toNum, username, email };
+    const result = await createUser(data);
+    return { userId: result.id, message: RegisterResult.SUCCESS };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -111,15 +95,15 @@ async function createAccount(
   }
 }
 
-async function createProfile(data: Profile): Promise<ProfileDocument> {
-  try {
-    const profile = new ProfileModel(data);
-    await profile.save();
-    return profile;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
+// async function createProfile(data: Profile): Promise<ProfileDocument> {
+//   try {
+//     const profile = new ProfileModel(data);
+//     await profile.save();
+//     return profile;
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// }
 
 async function getUsernameByID(id: Account['id']): Promise<string> {
   try {
@@ -205,8 +189,8 @@ async function unfollow(uid: number, target: number) {
 
 export default {
   login,
-  registerAuthenticate,
   register,
+
   setAvatar,
   removeAvatar,
   createAccount,

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { ReactProps } from '../types';
+import type { ReactProps } from '../types';
 
 type Theme = 'light' | 'dark' | 'neon';
 

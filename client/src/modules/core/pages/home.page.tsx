@@ -16,6 +16,7 @@ import styles from '../styles/pages/home.module.sass';
 import postWindowStyles from '../styles/components/post-window.module.sass';
 import { uri, toast, useGlobalContext, Loader, Overlay } from '@global';
 import { useSidebarOptionsContext } from '../providers';
+import axios from 'axios';
 
 function HomePage() {
   const [ready, setReady] = useState(false);
@@ -97,6 +98,20 @@ function HomePage() {
   if (!ready) return <Loader />;
   return (
     <>
+      <button
+        onClick={() => {
+          axios
+            .delete('http://localhost:3000/api/logout')
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }}
+      >
+        Testtttttttttttttttttt
+      </button>
       {showActionMenu && (
         <Overlay exitHandler={() => setShowActionMenu(false)}>
           <Menu

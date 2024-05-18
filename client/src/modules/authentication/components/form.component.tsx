@@ -1,8 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-
-import { ReactProps } from '@global';
-import FormField from '../libraries/react-hook-form.library';
-import { AuthenticationInformation, FormFieldProps } from '../types';
+import { FormField } from '../libraries';
+import type { ReactProps } from '@global';
+import type { AuthenticationInformation, FormFieldProps } from '../types';
 
 interface FormProps extends ReactProps {
   fieldList: FormFieldProps[];

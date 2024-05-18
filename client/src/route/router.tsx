@@ -12,36 +12,18 @@ import {
   useAuthenticationContext,
 } from '@authentication';
 import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
-import { ErrorPage, ReactProps } from '@global';
-import { ROUTE, isAuthorizedRoute, useCurrentPath } from '@route';
-
-interface ProtectedRouteProps extends ReactProps {
-  children: JSX.Element;
-}
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { session } = useAuthenticationContext();
-  const token = session.get();
-  const currentPath = useCurrentPath();
-
-  if (isAuthorizedRoute(currentPath) && !token)
-    return <Navigate to={ROUTE.LOGIN} />;
-  if (!isAuthorizedRoute(currentPath) && token) return <ErrorPage />;
-
-  return children;
-}
+import { ErrorPage } from '@global';
+import { ROUTE } from '@route';
 
 export default function Router() {
+  const { isAuthenticated } = useAuthenticationContext();
   const router = createBrowserRouter([
     {
       path: '*',
       element: <ErrorPage />,
     },
     {
-      element: (
-        <ProtectedRoute>
-          <RootLayout />
-        </ProtectedRoute>
-      ),
+      element: isAuthenticated ? <RootLayout /> : <Navigate to={ROUTE.LOGIN} />,
       errorElement: <ErrorPage />,
       children: [
         { path: ROUTE.HOME, element: <HomePage /> },
@@ -50,10 +32,10 @@ export default function Router() {
       ],
     },
     {
-      element: (
-        <ProtectedRoute>
-          <AuthenticationHoc />
-        </ProtectedRoute>
+      element: isAuthenticated ? (
+        <Navigate to={ROUTE.HOME} />
+      ) : (
+        <AuthenticationHoc />
       ),
       errorElement: <ErrorPage />,
       children: [

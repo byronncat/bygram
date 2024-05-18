@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-
 import styles from '../styles/pages/error.module.sass';
 
 export function ErrorPage() {

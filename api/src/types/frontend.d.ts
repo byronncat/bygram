@@ -6,10 +6,6 @@ export interface UserToken {
   email?: string;
 }
 
-export interface RegisterData extends Account {
-  username: string;
-}
-
 export interface PostData
   extends Pick<Profile, 'username' | 'avatar'>,
     Omit<Post, 'comments'> {

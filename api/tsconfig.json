@@ -37,6 +37,7 @@
       "@/*": ["src/*"],
       "@constants": ["src/constants/index.ts"],
       "@database": ["src/database/index.ts"],
+      "@helpers": ["src/helpers/index.ts"],
       "@libraries": ["src/libraries/index.ts"],
       "@middlewares": ["src/middlewares/index.ts"],
       "@controllers": ["src/controllers/index.ts"],

@@ -1,2 +1,2 @@
-export * as DEFAULT_VALUES from './default.constant'
-export * as FIELD from './field.constant'
+export * as DEFAULT_VALUES from './default-values.constant';
+export * as FIELD from './form-fields.constant';

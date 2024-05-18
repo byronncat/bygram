@@ -5,7 +5,7 @@ import { AuthenticationProvider } from '@authentication';
 import { SidebarOptionsProvider } from '@core';
 import { toast } from '../libraries';
 import { GlobalProvider, ThemeProvider } from '../providers';
-import { ReactProps } from '../types';
+import type { ReactProps } from '../types';
 
 import 'react-toastify/dist/ReactToastify.css';
 import '@assets/icons/css/fontello.css';

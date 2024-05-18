@@ -1,5 +1,5 @@
 import { useState, useContext, createContext } from 'react';
-import { ReactProps } from '../types';
+import type { ReactProps } from '../types';
 
 const GlobalContext = createContext(
   {} as {

@@ -1,53 +1,30 @@
-import { useState, useContext, createContext } from 'react';
-// import axios from 'axios';
+import { useState, useContext, createContext, useEffect } from 'react';
 
 import { ReactProps } from '@global';
-import { SessionId } from '../types';
-
+import { authenticateAPI } from '../api';
 const AuthenticationContext = createContext(
   {} as {
-    session: {
-      get: () => SessionId | null;
-      set: (token: SessionId) => void;
-    };
+    isAuthenticated: boolean;
+    setAuthenticatedState: React.Dispatch<React.SetStateAction<boolean>>;
   },
 );
 
-// TODO: Add classes and divide the context into two separate contexts
-interface AuthenticationContextProps extends ReactProps {
-  initSession?: SessionId;
-}
-export default function AuthenticationProvider({
-  children,
-  initSession,
-}: AuthenticationContextProps) {
-  const [sessionToken, _setToken] = useState(
-    localStorage.getItem('session_id' || initSession),
-  );
+export default function AuthenticationProvider({ children }: ReactProps) {
+  const [isAuthenticated, setAuthenticatedState] = useState(false);
 
-  const session = {
-    get: () => sessionToken,
-    set: (token: SessionId) => {
-      _setToken(token);
-      localStorage.setItem('session_id', token);
-    },
-    session: sessionToken,
-  };
-
-  // useEffect(() => {
-  //   if (token) {
-  //     // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-  //     // localStorage.setItem('token', token)
-  //   } else {
-  //     // delete axios.defaults.headers.common['Authorization']
-  //     // localStorage.removeItem('token')
-  //   }
-  // }, [token])
+  useEffect(() => {
+    (async () => {
+      const response = await authenticateAPI();
+      if (isAuthenticated !== response.success)
+        setAuthenticatedState(response.success);
+    })();
+  }, [isAuthenticated]);
 
   return (
     <AuthenticationContext.Provider
       value={{
-        session,
+        isAuthenticated,
+        setAuthenticatedState,
       }}
     >
       {children}

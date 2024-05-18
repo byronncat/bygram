@@ -1,9 +1,7 @@
 import { createContext, useContext } from 'react';
 import clsx from 'clsx';
 import { ReactProps } from '@global';
-
 import styles from '../styles/layouts/authentication.module.sass';
-import effects from '@sass/effects.module.sass';
 
 const className = {
   form: clsx(
@@ -26,7 +24,7 @@ const className = {
     'peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4',
   ),
   formErrorMessage: clsx('mt-1 mb-2', 'font-medium text-neon-red'),
-  formErrorMessageAnimation: clsx(effects['flicker-one']),
+  formErrorMessageAnimation: 'flicker-once',
 };
 
 const ClassNameContext = createContext(

@@ -12,8 +12,12 @@ const VALIDATION: Validation = {
   USER: {
     required: 'Username is required',
     minLength: {
-      value: 3,
-      message: 'Username must be at least 3 characters',
+      value: 2,
+      message: 'Username must be at least 2 characters',
+    },
+    pattern: {
+      value: /^[a-zA-Z0-9.\-_]+$/,
+      message: 'Please only use numbers, letters, underscores _ , or periods.',
     },
   },
   PASSWORD: {

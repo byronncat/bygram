@@ -1,21 +1,12 @@
-import React, { HTMLProps } from 'react'
+import React, { HTMLProps } from 'react';
 
 export interface ReactProps {
-  readonly children?: React.ReactNode | JSX.Element
-  readonly className?: HTMLProps<HTMLElement>['className'] | string
-  readonly zIndex?: number
-  readonly onClick?: (e: React.MouseEvent) => void
-  readonly onExit?: () => void
+  readonly children?: React.ReactNode | JSX.Element;
+  readonly className?: HTMLProps<HTMLElement>['className'] | string;
+  readonly zIndex?: number;
+  readonly onClick?: (e: React.MouseEvent) => void;
+  readonly onExit?: () => void;
 }
-
-export enum ToastType {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  INFO = 'info',
-  WARNING = 'warning',
-  LOADING = 'loading',
-}
-export type ToastTypeStrings = `${ToastType}`
 
 export enum SidebarOption {
   HOME = 'home',
@@ -25,4 +16,4 @@ export enum SidebarOption {
   PROFILE = 'profile',
   LOGOUT = 'logout',
 }
-export type SidebarOptionStrings = `${SidebarOption}`
+export type SidebarOptionStrings = `${SidebarOption}`;

@@ -6,6 +6,8 @@ const WEEK = 7 * DAY;
 const MONTH = 30 * DAY;
 const YEAR = 365 * DAY;
 
+const COOKIE_MAX_AGE = YEAR;
+
 export const TIME = {
   SECOND,
   MINUTE,
@@ -14,4 +16,5 @@ export const TIME = {
   WEEK,
   MONTH,
   YEAR,
+  COOKIE_MAX_AGE,
 };

@@ -1,11 +1,11 @@
-import { MouseEventHandler } from 'react'
-import clsx from 'clsx'
+import { MouseEventHandler } from 'react';
+import clsx from 'clsx';
 
-import { ReactProps } from '../types'
-import styles from '../styles/components/overlay.module.sass'
+import styles from '../styles/components/overlay.module.sass';
+import type { ReactProps } from '../types';
 
 interface OverlayProps extends ReactProps {
-  readonly exitHandler: MouseEventHandler
+  readonly exitHandler: MouseEventHandler;
 }
 export default function Overlay({
   children,
@@ -17,7 +17,7 @@ export default function Overlay({
       className={clsx(
         `position-absolute top-0 start-0 z-${zIndex}`,
         'w-100 h-100',
-        'd-flex justify-content-center align-items-center'
+        'd-flex justify-content-center align-items-center',
       )}
     >
       <span className={clsx(styles.overlay, 'z-n1')} onClick={exitHandler} />
@@ -27,12 +27,12 @@ export default function Overlay({
           'shadow-none',
           'btn-close btn-close-white',
           'position-absolute top-0 end-0',
-          'p-3'
+          'p-3',
         )}
         aria-label="close"
         onClick={exitHandler}
       />
       {children}
     </div>
-  )
+  );
 }

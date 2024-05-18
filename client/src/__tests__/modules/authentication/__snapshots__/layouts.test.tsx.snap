@@ -32,6 +32,11 @@ exports[`authentication layout should render correctly when not authenticated 1`
       >
         login
       </span>
+      <span
+        class="text-neon-glowing-2 px-4 py-2 m-2 bg-slate-950/50 rounded-lg font-sacramento text-4xl text-center text-capitalize capitalize flex flex-col items-center justify-center absolute top-0 left-full"
+      >
+        welcome back
+      </span>
     </div>
   </div>
 </div>

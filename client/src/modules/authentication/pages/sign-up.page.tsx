@@ -1,31 +1,24 @@
 import { useLayoutEffect } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import clsx from 'clsx';
 
 import { toast } from '@global';
-import { useClassNameContext } from '../providers/className.context';
-import Form from '../components/form.component';
-import { registerAPI } from '../services/auth.service';
-import { FIELD } from '../constants';
-import { AuthenticationInformation } from '../types';
+import { Divider, Form, NavigationButton } from '../components';
+import { useAuthenticationContext, useClassNameContext } from '../providers';
+import { registerAPI } from '../api';
+import { DEFAULT_VALUES, FIELD } from '../constants';
 
-const defaultValues: AuthenticationInformation = {
-  email: '',
-  username: '',
-  password: '',
-};
+import type { AuthenticationInformation } from '../types';
+import type { OutletContextProps } from '../hocs';
 
 function RegisterPage() {
   const navigate = useNavigate();
   const { className } = useClassNameContext();
+  const { setAuthenticatedState } = useAuthenticationContext();
 
-  const {
-    setTitle,
-  }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext();
+  const { setTitle }: OutletContextProps = useOutletContext();
   useLayoutEffect(() => {
-    setTitle('sign up');
+    setTitle('register');
   }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (
@@ -33,7 +26,8 @@ function RegisterPage() {
   ) => {
     toast.display("Waiting for server's response", 'loading');
     const response = await registerAPI(data);
-    if (response.success && response.data) {
+    if (response.success) {
+      setAuthenticatedState(true);
       navigate('/');
     }
     toast.display(response.message, response.success ? 'success' : 'error');
@@ -44,21 +38,13 @@ function RegisterPage() {
       <Form
         className={className.form}
         fieldList={FIELD.REGISTER}
-        defaultValues={defaultValues}
+        defaultValues={DEFAULT_VALUES.REGISTER_FORM}
         submitHandler={submitHandler}
         fieldClass={className}
         submitPlaceholder="Register"
       >
-        <p className={clsx('text-center', 'my-1')}>--- or ---</p>
-        <Link
-          to="/login"
-          className={clsx(
-            'block font-medium text-center capitalize',
-            'duration-300 hover:text-slate-300',
-          )}
-        >
-          sign in
-        </Link>
+        <Divider />
+        <NavigationButton text="login" path="/login" />
       </Form>
     </>
   );
