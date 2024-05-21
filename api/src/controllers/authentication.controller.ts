@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { signedCookie } from 'cookie-parser';
 
-import { getSession, removeSession } from '@/database/accesss';
+import { getSession, removeSession } from '@/database/access';
 import { jwt } from '@libraries';
 import { accountService } from '@services';
 import { logger } from '@utilities';
@@ -29,7 +29,7 @@ export async function logIn(
         });
       case LoginResult.SUCCESS:
         req.session.user = { id: result.userId! };
-        res.cookie('user_id', jwt.generateAccessToken(result.userId!), {
+        res.cookie('user_id', jwt.generateToken(result.userId!), {
           maxAge: TIME.COOKIE_MAX_AGE,
         });
         return res.status(StatusCode.OK).json({
@@ -70,7 +70,7 @@ export async function register(
         });
       case RegisterResult.SUCCESS:
         req.session.user = { id: result.userId! };
-        res.cookie('user_id', jwt.generateAccessToken(result.userId!), {
+        res.cookie('user_id', jwt.generateToken(result.userId!), {
           maxAge: TIME.COOKIE_MAX_AGE,
         });
         return res.status(StatusCode.OK).json({

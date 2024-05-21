@@ -7,7 +7,7 @@ import {
   createUser,
   getUserByEmail,
   getUserByUsername,
-} from '@/database/accesss';
+} from '@/database/access';
 import type { Account, Identity, Profile } from '@types';
 
 async function login(
@@ -28,11 +28,11 @@ async function login(
 async function register(data: Account): Promise<Identity> {
   try {
     const queryEmail = await getUserByEmail(data.email);
-    if (queryEmail && queryEmail.email === data.email)
+    if (queryEmail)
       return { userId: null, message: RegisterResult.EMAIL_EXISTS };
 
     const queryUsername = await getUserByUsername(data.username);
-    if (queryUsername && queryUsername.username === data.username)
+    if (queryUsername)
       return { userId: null, message: RegisterResult.USERNAME_EXISTS };
 
     const result = await createUser(data);

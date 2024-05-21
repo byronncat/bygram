@@ -11,7 +11,7 @@ import {
   ResetPasswordPage,
   useAuthenticationContext,
 } from '@authentication';
-import { RootLayout, HomePage, ExplorePage, ProfilePage } from '@core';
+import { Dashboard, HomePage, ExplorePage, ProfilePage } from '@core';
 import { ErrorPage } from '@global';
 import { ROUTE } from '@route';
 
@@ -23,7 +23,7 @@ export default function Router() {
       element: <ErrorPage />,
     },
     {
-      element: isAuthenticated ? <RootLayout /> : <Navigate to={ROUTE.LOGIN} />,
+      element: isAuthenticated ? <Dashboard /> : <Navigate to={ROUTE.LOGIN} />,
       errorElement: <ErrorPage />,
       children: [
         { path: ROUTE.HOME, element: <HomePage /> },

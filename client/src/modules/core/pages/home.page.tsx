@@ -34,7 +34,7 @@ function HomePage() {
     },
   };
 
-  const { activeLinkHandler } = useSidebarOptionsContext();
+  const { setLink } = useSidebarOptionsContext();
   const { formatTime } = useFormat();
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
@@ -95,7 +95,7 @@ function HomePage() {
     })();
   }, []);
 
-  if (!ready) return <Loader />;
+  if (ready) return <Loader />;
   return (
     <>
       <button
@@ -189,7 +189,7 @@ function HomePage() {
                   <Link
                     className={clsx(styles.username, 'd-block', 'fw-bolder')}
                     to={`/profile/${post.uid}`}
-                    onClick={() => activeLinkHandler('profile')}
+                    onClick={() => setLink('profile')}
                   >
                     {post.username}
                   </Link>
@@ -231,7 +231,7 @@ function HomePage() {
                     'fw-bold',
                   )}
                   to={`/profile/${post.uid}`}
-                  onClick={() => activeLinkHandler('profile')}
+                  onClick={() => setLink('profile')}
                 >
                   {post.username}
                 </Link>

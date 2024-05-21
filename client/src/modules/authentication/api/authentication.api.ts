@@ -24,3 +24,10 @@ export async function authenticateAPI(): Promise<API> {
     .then((res: AxiosResponse) => res.data)
     .catch((err: any) => err.response.data);
 }
+
+export async function logoutAPI(): Promise<API> {
+  return await axios
+    .delete(uri.getHostingServer('logout'))
+    .then((res: AxiosResponse) => res.data)
+    .catch((err: any) => err.response.data);
+}

@@ -6,9 +6,9 @@ export interface MenuItem {
 
 export interface SidebarLink {
   name: SidebarBtn;
-  icon: string;
+  icon: any;
   path: string;
   notActive?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: () => void;
   onExit?: () => void;
 }

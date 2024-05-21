@@ -1,204 +1,213 @@
-import { useLayoutEffect, useState } from 'react';
+import { cloneElement, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { ReactProps } from '@global';
 import { useSidebarOptionsContext } from '../providers';
 import UploadPostWindow from './upload-post-window.component';
-import SearchSide from './search-side.component';
+// import SearchSide from './search-side.component';
 import { SidebarLink } from '../types/layout.d';
+
 import styles from '../styles/components/sidebar.module.sass';
-import searchStyles from '../styles/components/search-side.module.sass';
-import effects from '@sass/effects.module.sass';
+// import searchStyles from '../styles/components/search-side.module.sass';
 import logoURL from '@assets/images/logo.svg';
 
-function Sidebar() {
+import type { ReactProps } from '@global';
+import {
+  CompassIcon,
+  HouseIcon,
+  MagnifyingGlassIcon,
+  RightFromBracketIcon,
+  SquarePlusIcon,
+  UserIcon,
+} from './icons';
+import { SIDEBAR_OPTION, SidebarOptionStrings } from '../constants';
+import { logoutAPI } from '@/modules/authentication/api';
+import { useAuthenticationContext } from '@/modules/authentication';
+
+export default function Sidebar() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+
   const navigate = useNavigate();
   const [minimize, setMinimize] = useState(false);
+
   const [showSearch, setShowSearch] = useState(false);
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const { activeLink, setActiveLink, getActiveLink, activeLinkHandler } =
-    useSidebarOptionsContext();
+  const { currentLink, setLink } = useSidebarOptionsContext();
+  const { setAuthenticatedState } = useAuthenticationContext();
 
-  function logoutHandler(event: React.MouseEvent<HTMLAnchorElement>) {
-    event.preventDefault();
+  async function logoutHandler() {
     localStorage.removeItem('session_id');
-    localStorage.removeItem('activeLink');
-    setActiveLink('home');
+    localStorage.removeItem('active_link');
+    const response = await logoutAPI();
+    setAuthenticatedState(false);
+    console.log(response);
+    if (response.success) navigate('/login');
     navigate('/login');
   }
 
-  useLayoutEffect(() => {
-    setActiveLink(activeLink);
-  }, [activeLink, setActiveLink]);
-
   const sidebarLinks = [
     {
-      name: 'home',
-      icon: 'icon-home',
+      name: SIDEBAR_OPTION.HOME,
+      icon: <HouseIcon color="white" />,
       path: '/',
     },
     {
-      name: 'search',
-      icon: 'icon-search',
+      name: SIDEBAR_OPTION.SEARCH,
+      icon: <MagnifyingGlassIcon color="white" />,
       path: '#',
-      onClick: () => {
-        searchExitHandler();
-        if (activeLink === 'create post') setShowCreatePost(!showCreatePost);
-      },
     },
     {
-      name: 'explore',
-      icon: 'icon-compass',
+      name: SIDEBAR_OPTION.EXPLORE,
+      icon: <CompassIcon color="white" />,
       path: '/explore',
     },
     {
-      name: 'create post',
-      icon: 'icon-plus-squared-alt',
+      name: SIDEBAR_OPTION.CREATE,
+      icon: <SquarePlusIcon color="white" />,
       path: '#',
-      onClick: () => {
-        createPostExitHandler();
-        if (activeLink === 'search') {
-          setMinimize(!minimize);
-          setShowSearch(!showSearch);
-        }
-      },
+      // onClick: () => {
+      //   if (currentLink === 'search') {
+      //     setMinimize(!minimize);
+      //     setShowSearch(!showSearch);
+      //   }
+      // },
     },
     {
-      name: 'profile',
-      icon: 'icon-user',
+      name: SIDEBAR_OPTION.PROFILE,
+      icon: <UserIcon color="white" />,
       path: `/profile/${user.id}`,
     },
     {
-      name: 'logout',
-      icon: 'icon-logout',
+      name: SIDEBAR_OPTION.LOGOUT,
+      icon: <RightFromBracketIcon color="white" />,
       path: '/login',
-      notActive: true,
-      onClick: logoutHandler,
     },
   ] as SidebarLink[];
 
-  function searchExitHandler() {
+  function toggleSearchHandler() {
     setMinimize(!minimize);
     setShowSearch(!showSearch);
   }
-  function createPostExitHandler() {
+  function togglePostHandler() {
     setShowCreatePost(!showCreatePost);
+  }
+
+  function selectOptionHandler(option: SidebarOptionStrings) {
+    if (option === SIDEBAR_OPTION.LOGOUT) return logoutHandler();
+    if (option === currentLink) return;
+    if (option === SIDEBAR_OPTION.SEARCH) toggleSearchHandler();
+    if (option === SIDEBAR_OPTION.CREATE) togglePostHandler();
+    if (
+      minimize &&
+      !SIDEBAR_OPTION.CANNOT_ACTIVATED.find((index) => index === option)
+    )
+      setMinimize(false);
+    setLink(option);
   }
 
   return (
     <>
-      {showCreatePost && (
-        <UploadPostWindow
-          onExit={() => {
-            createPostExitHandler();
-            activeLinkHandler(getActiveLink());
-          }}
-          method="post"
-        />
-      )}
-      <div className={clsx(styles.wrapper, 'h-100', 'float-start', 'd-flex')}>
-        <SearchSide
+      {showCreatePost && <UploadPostWindow onExit={() => {}} method="post" />}
+      {/* <SearchSide
           className={clsx(showSearch && searchStyles['slide-to-right'])}
           onExit={() => {
             searchExitHandler();
             activeLinkHandler('profile');
           }}
-        />
-        <nav
-          className={clsx(
-            styles.sidebar,
-            effects['flicker-one'],
-            'h-100',
-            'd-flex flex-column',
-            activeLink === 'search' && 'z-3',
-            minimize && styles.minimize,
-          )}
-        >
-          <Brand onClick={() => setActiveLink('home')} />
-          <ul className={clsx('d-flex flex-column align-items-center')}>
-            {sidebarLinks.map((tag) => {
-              return (
-                <li
-                  key={tag.name}
+        /> */}
+      <nav
+        className={clsx(
+          'h-full bg-white/[.08]',
+          'd-flex flex-column',
+          'transition-all duration-300',
+          minimize ? `w-20` : 'w-64',
+        )}
+      >
+        <Brand onClick={() => setLink('home')} isMinimize={minimize} />
+        <ul className={clsx('flex flex-col items-center')}>
+          {sidebarLinks.map((tag) => {
+            return (
+              <li
+                key={tag.name}
+                className={clsx(
+                  'group',
+                  'mb-3 h-12 ',
+                  'transition-all duration-300',
+                  minimize ? 'w-12' : 'w-48',
+                )}
+                aria-current="page"
+              >
+                <Link
+                  id={tag.name}
+                  to={tag.path}
                   className={clsx(
-                    styles[`sidebar-link`],
-                    'mb-3 rounded-3',
-                    activeLink === tag.name && `${styles.active} active`,
+                    'w-full h-full py-2 rounded',
+                    'flex items-center',
+                    'capitalize',
+                    minimize ? 'justify-center w-12 px-2' : 'w-48 ps-6',
+                    currentLink === tag.name
+                      ? `${styles.active} bg-cerise-700 font-semibold tracking-wider`
+                      : 'text-white/[.6] hover:text-white hover:bg-cerise-700/[.4]',
                   )}
-                  aria-current="page"
+                  onClick={() => selectOptionHandler(tag.name)}
                 >
-                  <Link
-                    to={tag.path}
+                  {cloneElement(tag.icon, {
+                    className: clsx(
+                      'w-5 h-5',
+                      'transition-all duration-300',
+                      currentLink === tag.name
+                        ? 'fill-white'
+                        : 'fill-white/[.6] group-hover:fill-white',
+                    ),
+                  })}
+                  <p
                     className={clsx(
-                      styles['link'],
-                      'w-100 h-100',
-                      'd-flex align-items-center',
-                      'text-capitalize',
+                      'ms-3',
+                      'whitespace-nowrap',
+                      'transition-all duration-300',
+                      minimize ? 'hidden' : 'block',
                     )}
-                    onClick={(event) => {
-                      if (tag.onClick) {
-                        tag.onClick(event);
-                      }
-                      if (!tag.notActive) {
-                        if (activeLink === 'search') searchExitHandler();
-                        localStorage.setItem('activeLink', tag.name);
-                        activeLinkHandler(tag.name);
-                      }
-                    }}
                   >
-                    <i
-                      className={clsx(
-                        styles['link-icon'],
-                        `${tag.icon}`,
-                        'h-100',
-                        'fs-5 position-relative',
-                      )}
-                    ></i>
-                    <p
-                      className={clsx(
-                        styles['link-text'],
-                        'ms-3',
-                        'text-nowrap',
-                      )}
-                    >
-                      {tag.name}
-                    </p>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </div>
+                    {tag.name}
+                  </p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </>
   );
 }
 
-function Brand({ onClick }: ReactProps) {
+interface BrandProps extends ReactProps {
+  isMinimize?: boolean;
+}
+function Brand({ onClick, isMinimize }: BrandProps) {
   return (
     <Link
       to="/"
       className={clsx(
         styles.brand,
-        'my-5',
-        'd-flex justify-content-center align-items-center',
+        'my-10',
+        'flex justify-center items-center',
       )}
       onClick={onClick}
     >
-      <img
-        src={logoURL}
-        className={styles.logo}
-        width={40}
-        height={40}
-        alt="logo"
-      />
-      <span className={clsx(styles['brand-name'], 'ms-2', 'fs-2 fw-bold')}>
-        Bygram
-      </span>
+      <img src={logoURL} className="w-12 h-12" alt="logo" />
+      {
+        <span
+          className={clsx(
+            styles['brand-name'],
+            'ms-2',
+            'font-semibold text-2xl tracking-wider',
+            'transition-all duration-700',
+            isMinimize ? 'hidden' : 'block',
+          )}
+        >
+          Bygram
+        </span>
+      }
     </Link>
   );
 }
-
-export default Sidebar;

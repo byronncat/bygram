@@ -7,6 +7,9 @@ module.exports = {
         'neon': {
           'red': '#ff0000',
         },
+        'dark-mode': {
+          'background': '#121212',
+        },
         'cerise': {
           '50': '#fdf2f9',
           '100': '#fde6f5',

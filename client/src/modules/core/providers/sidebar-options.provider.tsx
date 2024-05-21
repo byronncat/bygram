@@ -1,50 +1,56 @@
-import { createContext, useContext, useState } from 'react'
-import { ReactProps, SidebarOptionStrings } from '../../global/types'
+import { createContext, useContext, useState } from 'react';
+import { SIDEBAR_OPTION, SidebarOptionStrings } from '../constants';
+import type { ReactProps } from '@global';
 
 const SidebarOptionsContext = createContext(
   {} as {
-    activeLink: SidebarOptionStrings
-    setActiveLink: React.Dispatch<React.SetStateAction<SidebarOptionStrings>>
-    getActiveLink: () => SidebarOptionStrings
-    activeLinkHandler: (name: SidebarOptionStrings) => void
-  }
-)
+    currentLink: SidebarOptionStrings;
+    setLink: (name: SidebarOptionStrings) => void;
+    getLink: () => SidebarOptionStrings;
+  },
+);
 
 export function SidebarOptionsProvider({ children }: ReactProps) {
-  const [activeLink, setActiveLink] = useState<SidebarOptionStrings>(
-    getActiveLink()
-  )
-  function getActiveLink() {
-    let activeLink: SidebarOptionStrings
-    if (localStorage.getItem('activeLink'))
-      activeLink = localStorage.getItem('activeLink') as SidebarOptionStrings
-    else return 'home'
-    const notActive = ['create post', 'logout', 'search']
-    if (notActive.includes(activeLink))
-      activeLink = localStorage.getItem('previousLink') as SidebarOptionStrings
-    return activeLink
+  const [link, setLink] = useState<SidebarOptionStrings>(getLink());
+
+  function getLink(): SidebarOptionStrings {
+    if (localStorage.getItem('active_link')) {
+      let activeLink: SidebarOptionStrings;
+      activeLink = localStorage.getItem('active_link') as SidebarOptionStrings;
+      if (
+        !SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === activeLink)
+      )
+        activeLink = localStorage.getItem(
+          'previous_link',
+        ) as SidebarOptionStrings;
+      return activeLink;
+    } else return SIDEBAR_OPTION.HOME;
   }
 
-  const activeLinkHandler = (name: SidebarOptionStrings) => {
-    const notActive = ['create post', 'logout', 'search']
-    if (!notActive.includes(name)) localStorage.setItem('previousLink', name)
-    setActiveLink(name)
+  function setLinkHandler(name: SidebarOptionStrings) {
+    localStorage.setItem('active_link', name);
+    setHistory(link);
+    setLink(name);
+  }
+
+  function setHistory(name: SidebarOptionStrings) {
+    if (!SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === name))
+      localStorage.setItem('previous_link', name);
   }
 
   return (
     <SidebarOptionsContext.Provider
       value={{
-        activeLink,
-        setActiveLink,
-        getActiveLink,
-        activeLinkHandler,
+        currentLink: link,
+        setLink: setLinkHandler,
+        getLink,
       }}
     >
       {children}
     </SidebarOptionsContext.Provider>
-  )
+  );
 }
 
 export function useSidebarOptionsContext() {
-  return useContext(SidebarOptionsContext)
+  return useContext(SidebarOptionsContext);
 }

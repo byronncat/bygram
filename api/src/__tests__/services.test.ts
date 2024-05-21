@@ -1,29 +1,56 @@
-// jest.useFakeTimers();
+jest.useFakeTimers();
 import { accountService } from '@services';
-import { PostgreSQL } from '@database';
-import { LoginResult } from '@constants';
+import { LoginResult, RegisterResult } from '@constants';
 
-jest.mock('@database', () => ({
-  PostgreSQL: {
-    oneOrNone: jest.fn(),
-  },
+import {
+  createUser,
+  getUserByEmail,
+  getUserByUsername,
+} from '../database/access';
+import { password } from '@/helpers';
+import { Account } from '@/types';
+
+jest.mock('redis', () => ({
+  createClient: () => ({
+    on: jest.fn(),
+    quit: jest.fn(),
+    connect: jest.fn(),
+  }),
 }));
+jest.mock('mongoose', () => ({
+  connect: jest.fn(),
+  disconnect: jest.fn(),
+  Schema: jest.fn().mockImplementation(() => ({})),
+  model: jest.fn().mockImplementation(() => ({})),
+}));
+jest.mock('pg-promise', () => {
+  return () =>
+    jest.fn().mockImplementation(() => {
+      return {
+        connect: jest.fn().mockResolvedValue({
+          client: {
+            serverVersion: '13.3',
+          },
+          done: jest.fn(),
+        }),
+      };
+    });
+});
 
-const database = {
-  oneOrNone: PostgreSQL.oneOrNone as jest.Mock,
-};
+jest.mock('../database/access');
+jest.mock('@helpers');
 
-describe('services', () => {
-  describe('account service', () => {
-    const mockUser = {
-      id: 1,
-      email: 'test@gmail.com',
-      password: '123456',
-    };
-
+describe('service', () => {
+  describe('account', () => {
     describe('login', () => {
-      it('should return a identity token', async () => {
-        database.oneOrNone.mockResolvedValue(mockUser);
+      beforeEach(() => {});
+      it('should successfully', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue({
+          id: 1,
+          email: 'test@gmail.com',
+          password: '123456',
+        });
+        (password.compare as jest.Mock).mockResolvedValue(true);
         const result = await accountService.login('test@gmail.com', '123456');
         expect(result).toEqual({
           userId: 1,
@@ -31,8 +58,13 @@ describe('services', () => {
         });
       });
 
-      it('should return failure message if password is incorrect', async () => {
-        database.oneOrNone.mockResolvedValue(mockUser);
+      it('should return failure if password is incorrect', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue({
+          id: 1,
+          email: 'test@gmail.com',
+          password: '123456',
+        });
+        (password.compare as jest.Mock).mockResolvedValue(false);
         const result = await accountService.login(
           'test@gmail.com',
           'wrongpassword',
@@ -42,21 +74,85 @@ describe('services', () => {
           message: LoginResult.INCORRECT_PASSWORD,
         });
       });
-
-      it('should return failure message if email does not exist', async () => {
-        database.oneOrNone.mockResolvedValue(null);
+      it('should return failure if email does not exist', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue(null);
         const result = await accountService.login('wrongemail', '123456');
         expect(result).toEqual({
           userId: null,
           message: LoginResult.NOT_EXIST,
         });
       });
-
       it('should throw an error if database query fails', async () => {
-        database.oneOrNone.mockRejectedValue('Database error');
+        (getUserByEmail as jest.Mock).mockRejectedValue('Database error');
         await expect(accountService.login('test', '123456')).rejects.toEqual(
           'Database error',
         );
+      });
+    });
+
+    describe('register', () => {
+      it('should return success', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue(null);
+        (getUserByUsername as jest.Mock).mockResolvedValue(null);
+        (createUser as jest.Mock).mockResolvedValue({
+          id: 1,
+        });
+        const result = await accountService.register({
+          email: '',
+          password: '',
+          username: '',
+        } as Account);
+
+        expect(result).toEqual({
+          userId: 1,
+          message: RegisterResult.SUCCESS,
+        });
+      });
+
+      it('should return failure if email exists', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue({
+          email: '',
+          password: '',
+          username: '',
+        });
+        const result = await accountService.register({
+          email: '',
+          password: '',
+          username: '',
+        } as Account);
+        expect(result).toEqual({
+          userId: null,
+          message: RegisterResult.EMAIL_EXISTS,
+        });
+      });
+
+      it('should return failure if username exists', async () => {
+        (getUserByEmail as jest.Mock).mockResolvedValue(null);
+        (getUserByUsername as jest.Mock).mockResolvedValue({
+          email: '',
+          password: '',
+          username: '',
+        });
+        const result = await accountService.register({
+          email: '',
+          password: '',
+          username: '',
+        } as Account);
+        expect(result).toEqual({
+          userId: null,
+          message: RegisterResult.USERNAME_EXISTS,
+        });
+      });
+
+      it('should throw an error if database query fails', async () => {
+        (getUserByEmail as jest.Mock).mockRejectedValue('Database error');
+        await expect(
+          accountService.register({
+            email: '',
+            password: '',
+            username: '',
+          } as Account),
+        ).rejects.toEqual('Database error');
       });
     });
   });

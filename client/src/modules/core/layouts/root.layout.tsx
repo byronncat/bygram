@@ -1,28 +1,27 @@
-import { Outlet } from 'react-router-dom';
-// import Sidebar from '../components/sidebar.component';
 import clsx from 'clsx';
+import type { ReactProps } from '@global';
+import Sidebar from '../components/sidebar.component';
+import { SidebarOptionsProvider } from '../providers';
 
-function RootLayout() {
+export default function ColumnLayout({ children }: ReactProps) {
   // * /images/wallpaper.jpg different from images/wallpaper.jpg
   return (
     <>
-      <main
-        style={{ background: '#1E0D37' }}
-        className={clsx('w-100 h-100', 'position-relative')}
-      >
-        {/* <Sidebar /> */}
-        <section
+      <main className={clsx('w-full h-full', 'position-relative flex')}>
+        <SidebarOptionsProvider>
+          <Sidebar />
+        </SidebarOptionsProvider>
+
+        <div
           className={clsx(
-            'float-right h-100',
-            'd-flex flex-column align-items-center',
+            'h-full grow',
+            'flex flex-col items-center',
             'overflow-y-scroll',
           )}
         >
-          <Outlet />
-        </section>
+          {children}
+        </div>
       </main>
     </>
   );
 }
-
-export default RootLayout;

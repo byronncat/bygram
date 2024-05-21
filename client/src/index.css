@@ -8,7 +8,7 @@
   }
 
   .dark-theme {
-    @apply bg-black text-white;
+    @apply bg-dark-mode-background text-white;
   }
 
   .cerise-theme {

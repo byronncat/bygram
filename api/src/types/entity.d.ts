@@ -1,7 +1,3 @@
-// Passport
-
-// Main
-
 export interface Post {
   uid?: Account['id'];
   content?: string;

@@ -38,7 +38,6 @@ export async function explorePost(id: UserToken['id']): Promise<PostAPI> {
 }
 
 export async function getHomePosts(id: UserToken['id']): Promise<PostAPI> {
-  console.log('id', id);
   return await axios
     .get(uri.getHostingServer('post/home'), { params: { uid: id } })
     .then((res: AxiosResponse) => res.data)
