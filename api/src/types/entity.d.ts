@@ -1,3 +1,5 @@
+import type { Account } from './authentication';
+
 export interface Post {
   uid?: Account['id'];
   content?: string;
@@ -7,16 +9,15 @@ export interface Post {
   createdAt?: Date;
 }
 
-interface Profile {
-  uid?: Account['id'];
-  username?: string;
-  followers?: Account['id'][];
-  followings?: Account['id'][];
+export interface Profile {
+  uid: Account['id'];
+  followers: Account['id'][];
+  followings: Account['id'][];
   avatar?: File;
   description?: string;
 }
 
 export interface File {
-  dataURL?: string;
-  sizeType?: 'landscape' | 'portrait';
+  url: string;
+  orientation: 'landscape' | 'portrait' | 'square';
 }

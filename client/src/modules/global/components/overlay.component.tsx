@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 import clsx from 'clsx';
-
-import styles from '../styles/components/overlay.module.sass';
+import { XIcon } from '@assets/icons';
+import type { MouseEvent } from 'react';
 import type { ReactProps } from '../types';
 
 interface OverlayProps extends ReactProps {
@@ -12,26 +12,26 @@ export default function Overlay({
   exitHandler,
   zIndex = 1,
 }: OverlayProps) {
+  function overlayHandler(e: MouseEvent) {
+    if (e.target === e.currentTarget) exitHandler(e);
+  }
+
   return (
     <div
       className={clsx(
-        `position-absolute top-0 start-0 z-${zIndex}`,
-        'w-100 h-100',
-        'd-flex justify-content-center align-items-center',
+        `absolute top-0 start-0 z-${zIndex}0`,
+        'w-full h-screen bg-black/50',
+        'flex content-center items-center',
       )}
+      onClick={overlayHandler}
     >
-      <span className={clsx(styles.overlay, 'z-n1')} onClick={exitHandler} />
       <button
-        className={clsx(
-          styles.button,
-          'shadow-none',
-          'btn-close btn-close-white',
-          'position-absolute top-0 end-0',
-          'p-3',
-        )}
+        className={clsx('absolute top-0 right-0', 'p-3')}
         aria-label="close"
         onClick={exitHandler}
-      />
+      >
+        <XIcon className="w-6 h-6 fill-white/[0.7]" />
+      </button>
       {children}
     </div>
   );

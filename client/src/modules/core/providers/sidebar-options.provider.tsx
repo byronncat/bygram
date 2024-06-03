@@ -7,6 +7,7 @@ const SidebarOptionsContext = createContext(
     currentLink: SidebarOptionStrings;
     setLink: (name: SidebarOptionStrings) => void;
     getLink: () => SidebarOptionStrings;
+    sidebarExitHandler: () => void;
   },
 );
 
@@ -18,7 +19,7 @@ export function SidebarOptionsProvider({ children }: ReactProps) {
       let activeLink: SidebarOptionStrings;
       activeLink = localStorage.getItem('active_link') as SidebarOptionStrings;
       if (
-        !SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === activeLink)
+        SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === activeLink)
       )
         activeLink = localStorage.getItem(
           'previous_link',
@@ -38,12 +39,18 @@ export function SidebarOptionsProvider({ children }: ReactProps) {
       localStorage.setItem('previous_link', name);
   }
 
+  function exitHandler() {
+    localStorage.removeItem('active_link');
+    localStorage.removeItem('previous_link');
+  }
+
   return (
     <SidebarOptionsContext.Provider
       value={{
         currentLink: link,
         setLink: setLinkHandler,
         getLink,
+        sidebarExitHandler: exitHandler,
       }}
     >
       {children}

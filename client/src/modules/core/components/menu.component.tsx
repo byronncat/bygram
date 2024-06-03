@@ -9,10 +9,10 @@ interface MenuProps extends ReactProps {
 function Menu({ list }: MenuProps) {
   return (
     <ul className={clsx(styles.menu, 'text-neon-glowing-2', 'list-group z-3')}>
-      {list.map((item, index: any) => {
+      {list.map((item) => {
         return (
           <li
-            key={index}
+            // key={index}
             aria-current="true"
             className={clsx(styles['menu-item'], 'list-group-item text-center')}
             onClick={() => {

@@ -19,11 +19,12 @@
 @layer components {
   .button {
     @apply bg-cerise-700 text-white select-none;
-    @apply w-fit py-2 px-3 rounded;
+    @apply block w-fit py-2 px-3 rounded;
     @apply font-semibold text-center;
 
-    @apply transition-colors duration-200 cursor-pointer;
-    @apply hover:bg-cerise-800 hover:text-gray-300;
+    @apply transition-all duration-300 cursor-pointer;
+    @apply hover:opacity-50;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 }
 
@@ -38,6 +39,10 @@
 
   .font-montserrat {
     font-family: 'Montserrat', sans-serif;
+  }
+
+  .font-oleo-script {
+    font-family: 'Oleo Script', cursive;
   }
 }
 

@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FormField } from '../libraries';
-import type { ReactProps } from '@global';
+import { useGlobalContext, type ReactProps } from '@global';
 import type { AuthenticationInformation, FormFieldProps } from '../types';
 
 interface FormProps extends ReactProps {
@@ -27,6 +27,8 @@ export default function Form({
   } = useForm<AuthenticationInformation>({
     defaultValues,
   });
+  const { loading } = useGlobalContext();
+
   return (
     <>
       <form onSubmit={handleSubmit(submitHandler)} className={className}>
@@ -48,6 +50,7 @@ export default function Form({
           type="submit"
           value={submitPlaceholder}
           className="button w-full mt-5"
+          disabled={loading.get}
         />
         {children}
       </form>

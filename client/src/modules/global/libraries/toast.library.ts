@@ -11,7 +11,7 @@ export type ToastTypeStrings = `${ToastType}`;
 
 export const settings = {
   position: 'top-right',
-  autoClose: 3000,
+  autoClose: 2000,
   limit: 4,
   hideProgressBar: true,
   newestOnTop: false,

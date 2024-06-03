@@ -8,6 +8,14 @@ interface Validation {
   };
 }
 
+export const REQUIREMENTS = {
+  Username: [
+    'At least 2 characters',
+    'Only letters, numbers, underscores, dots, and hyphens',
+  ],
+  Password: ['At least 6 characters '],
+};
+
 const VALIDATION: Validation = {
   USER: {
     required: 'Username is required',
@@ -17,7 +25,8 @@ const VALIDATION: Validation = {
     },
     pattern: {
       value: /^[a-zA-Z0-9.\-_]+$/,
-      message: 'Please only use numbers, letters, underscores _ , or periods.',
+      message:
+        'Username must contain only letters, numbers, underscores, dots, and hyphens',
     },
   },
   PASSWORD: {

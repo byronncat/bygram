@@ -4,18 +4,30 @@ import type { ReactProps } from '../types';
 const GlobalContext = createContext(
   {} as {
     refreshPage: () => void;
+    loading: {
+      start: () => void;
+      end: () => void;
+      get: boolean;
+    };
   },
 );
 
 export default function Global({ children }: ReactProps) {
-  // Refresh page
   const [refresh, setRefresh] = useState(false);
   const refreshPage = () => setRefresh(!refresh);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const loading = {
+    start: () => setIsLoading(true),
+    end: () => setIsLoading(false),
+    get: isLoading,
+  };
 
   return (
     <GlobalContext.Provider
       value={{
         refreshPage,
+        loading,
       }}
     >
       {children}

@@ -1,11 +1,8 @@
-export * from './components'
-export * from './constants'
-export * from './hocs'
-export * from './layouts'
-export * from './providers'
-
-export { default as LoginPage } from './pages/sign-in.page'
-export { default as RegisterPage } from './pages/sign-up.page'
-export { default as ForgotPasswordPage } from './pages/forgot-password.page'
-export { default as ResetPasswordPage } from './pages/reset-password.page'
-export * from './types/index.d'
+export * from './api';
+export * from './components';
+export * from './constants';
+export * from './hocs';
+export * from './layouts';
+export * from './pages';
+export * from './providers';
+export * from './types/index.d';

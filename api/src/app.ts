@@ -11,8 +11,11 @@ import cors from 'cors';
 import './database/MongoDB.database';
 import Redis from './database/Redis.database';
 import RedisStore from 'connect-redis';
-import { TIME } from './constants';
+
 import { logger as log } from '@utilities';
+import setAPI from './api';
+import { TIME } from './constants';
+import type { Account } from './types';
 
 const app: Express = express();
 
@@ -33,7 +36,7 @@ app.use(bodyParser.json());
 declare module 'express-session' {
   export interface SessionData {
     user: {
-      id: string;
+      id: Account['id'];
     };
   }
 }
@@ -58,9 +61,7 @@ app.use(
   } as session.SessionOptions),
 );
 
-// Routes
-const setRoutes = require('./routes/routes');
-setRoutes(app);
+setAPI(app);
 
 // Catch 404 and forward to error handler
 app.use(function (next: NextFunction) {

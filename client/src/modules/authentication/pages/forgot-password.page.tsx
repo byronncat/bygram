@@ -11,7 +11,7 @@ const defaultValues: AuthenticationInformation = {
   email: '',
 };
 
-function ForgotPasswordPage() {
+export default function ForgotPassword() {
   const { className } = useClassNameContext();
   const {
     setTitle,
@@ -41,5 +41,3 @@ function ForgotPasswordPage() {
     </>
   );
 }
-
-export default ForgotPasswordPage;

@@ -1,7 +1,8 @@
-import { API } from '@global';
-import { Profile, Post, UserToken, Comment } from './entity';
-export * from './layout';
-export * from './entity';
+import type { API } from '@global';
+import { Profile, Post, UserToken, Comment } from './schema';
+export * from './api.d';
+export * from './layout.d';
+export * from './schema.d';
 
 export interface PostUploadData {
   id?: string;
@@ -10,14 +11,14 @@ export interface PostUploadData {
   file?: File;
 }
 
-export interface PostData extends Pick<Profile, 'avatar' | 'username' | 'uid'>, Post {}
-export interface CommentData extends Pick<Profile, 'avatar' | 'username'>, Comment {}
+export interface PostData
+  extends Pick<Profile, 'avatar' | 'username' | 'uid'>,
+    Post {}
+export interface CommentData
+  extends Pick<Profile, 'avatar' | 'username'>,
+    Comment {}
 export interface ProfileData extends Profile {
   posts?: PostData[];
-}
-
-export interface SearchAPI extends API {
-  data?: Profile[];
 }
 
 export interface PostAPI extends API {

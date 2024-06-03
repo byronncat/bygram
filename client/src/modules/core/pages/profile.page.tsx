@@ -9,7 +9,7 @@ import { useGlobalContext, toast, Loader, Overlay } from '@global';
 import {
   changeAvatar,
   follow,
-  getProfile,
+  // getProfile,
   removeAvatar,
   unfollow,
 } from '../services/profile.service';
@@ -18,10 +18,13 @@ import { PostData, ProfileData } from '../types';
 import { MenuItem } from '../types/layout.d';
 import styles from '../styles/pages/profile.module.sass';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { getProfileAPI } from '../api';
+import { useAuthenticationContext } from '@/modules/authentication';
 
 function ProfilePage() {
-  const [ready, setReady] = useState(false);
-  const [profile, setProfile] = useState({} as ProfileData);
+  const [ready] = useState(false);
+  const { user } = useAuthenticationContext();
+  const [profile] = useState({} as ProfileData);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const [currentPost, setCurrentPost] = useState({} as PostData);
   const [showCurrentPost, setShowCurrentPost] = useState(false);
@@ -72,16 +75,16 @@ function ProfilePage() {
     toast.display(response.message, response.success ? 'success' : 'error');
   }
 
-  const { uid } = useParams();
+  const { username } = useParams();
   useEffect(() => {
-    (async function fetchProfile() {
-      const response = await getProfile(uid as unknown as number);
+    if (!username) return;
+    (async function getProfile() {
+      const response = await getProfileAPI(username, user!.id);
       if (response.success && response.data) {
-        setReady(true);
-        setProfile(response.data);
+        console.log(response.data);
       } else toast.display(response.message, 'error');
     })();
-  }, [refreshPage, uid]);
+  }, [refreshPage]);
 
   const inpurRef = useRef<HTMLInputElement | null>(null);
   const { ref, ...rest } = register('file', {
@@ -110,10 +113,10 @@ function ProfilePage() {
     },
   ] as MenuItem[];
 
-  if (!ready) return <Loader />;
+  if (true) return <Loader />;
   return (
     <>
-      {showCurrentPost && (
+      {/* {showCurrentPost && (
         <PostWindow
           post={currentPost}
           onExit={() => setShowCurrentPost(false)}
@@ -123,7 +126,7 @@ function ProfilePage() {
         <Overlay exitHandler={() => setShowAvatarMenu(false)}>
           <Menu list={avatarMenu} />
         </Overlay>
-      )}
+      )} */}
 
       <div
         className={clsx(styles['profile-wrapper'], 'text-white', 'w-100 p-5')}
@@ -139,14 +142,12 @@ function ProfilePage() {
           >
             <img
               className={
-                profile.avatar?.sizeType === 'landscape'
+                profile.avatar?.orientation === 'landscape'
                   ? 'w-auto h-100'
                   : 'w-100 h-auto'
               }
               style={{ transform: 'avatar' in profile ? 'none' : 'scale(1.4)' }}
-              src={
-                'avatar' in profile ? profile.avatar!.dataURL : DEFAULT_AVATAR
-              }
+              src={'avatar' in profile ? profile.avatar!.url : DEFAULT_AVATAR}
               alt="profile"
               onClick={
                 profile.uid === authenticationStorage.identity?.id
@@ -175,7 +176,7 @@ function ProfilePage() {
           <div className="ps-5">
             <div className={clsx('d-flex align-items-center', 'my-3')}>
               <h2 className={clsx('m-0 me-5', 'fs-3 lh-1')}>
-                {profile.username}
+                {/* {profile.username} */}
               </h2>
               {profile.uid !== authenticationStorage.identity?.id &&
                 (profile.followers?.includes(
@@ -229,14 +230,15 @@ function ProfilePage() {
         </header>
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
           <Masonry gutter="8px">
-            {profile.posts?.map((post: any, index: number) => {
+            {profile.posts?.map((post: any) => {
               return (
                 <LazyLoadImage
                   role="button"
                   className="img-fluid"
                   alt="profile"
                   src={post.file.dataURL}
-                  key={index}
+                  // wrong key
+                  // key={index}
                   onClick={() => {
                     setCurrentPost(post);
                     setShowCurrentPost(true);

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import clsx from 'clsx';
-import { ReactProps } from '@global';
 import styles from '../styles/layouts/authentication.module.sass';
+import type { ReactProps } from '@global';
 
 const className = {
   form: clsx(
@@ -23,7 +23,7 @@ const className = {
     'duration-300 -translate-y-4 scale-75 origin-[0]',
     'peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4',
   ),
-  formErrorMessage: clsx('mt-1 mb-2', 'font-medium text-neon-red'),
+  formErrorMessage: clsx('mt-1 mb-2', 'font-medium text-sm text-neon-red'),
   formErrorMessageAnimation: 'flicker-once',
 };
 

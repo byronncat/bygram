@@ -1,13 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { uri, API } from '@global';
-import {
-  Post,
-  UserToken,
-  Comment,
-  CommentAPI,
-  PostAPI,
-  PostUploadData,
-} from '../types';
+import { Post, Comment, CommentAPI, PostAPI, PostUploadData } from '../types';
 
 export async function deletePost(postID: Post['id']): Promise<API> {
   return await axios
@@ -29,6 +22,8 @@ export async function uploadPost(
     .then((res: AxiosResponse) => res.data)
     .catch((err: any) => err.response.data);
 }
+
+type UserToken = { id: number };
 
 export async function explorePost(id: UserToken['id']): Promise<PostAPI> {
   return await axios

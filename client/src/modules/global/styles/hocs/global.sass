@@ -1,39 +1,24 @@
 @use '../fonts.sass'
 @use '../libraries/react-toastify.sass'
-// @use '@sass/effects.module.sass'
 @use '@sass/utilities.sass' as util
 
 // Settings
 $global-font-family: 'Montserrat'
 
-// *
-//   --color-dark-theme: #1E0D37
-//   --color-light-theme: #F0F2F5
+// FF, IE7+, chrome (except button) & // chromes and blink button
+input[type=file], input[type=file]::-webkit-file-upload-button
+  cursor: pointer
 
-//   --color-light-text: #E4E6EB
+ul, button, p
+  padding: 0
+  margin: 0
 
-//   --color-persian-pink: #f15fd2
-//   --color-electric-violet: #F613FF
-//   --color-red-violet: #d81d84
-//   --color-black-pearl: #070f22
-//   --color-black-pearl-07: rgb(30 41 59)
-//   --color-wild-sand: #f5f5f5
-//   --main-color: var(--color-red-violet)
+ul
+  list-style: none
 
-// // FF, IE7+, chrome (except button) & // chromes and blink button
-// input[type=file], input[type=file]::-webkit-file-upload-button
-//   cursor: pointer
-
-// ul, button, p
-//   padding: 0
-//   margin: 0
-
-// ul
-//   list-style: none
-
-// a
-//   text-decoration: none
-//   color: inherit
+a
+  text-decoration: none
+  color: inherit
 
 html, body, #root
   height: 100vh

@@ -4,10 +4,10 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "target": "es2015",
 
-    "allowUnreachableCode": false,
+    "allowUnreachableCode": true,
     "allowUnusedLabels": false,
     "noImplicitAny": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "strict": true,

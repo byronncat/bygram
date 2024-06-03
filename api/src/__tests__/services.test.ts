@@ -1,5 +1,5 @@
 jest.useFakeTimers();
-import { accountService } from '@services';
+import { userService } from '@services';
 import { LoginResult, RegisterResult } from '@constants';
 
 import {
@@ -51,7 +51,7 @@ describe('service', () => {
           password: '123456',
         });
         (password.compare as jest.Mock).mockResolvedValue(true);
-        const result = await accountService.login('test@gmail.com', '123456');
+        const result = await userService.login('test@gmail.com', '123456');
         expect(result).toEqual({
           userId: 1,
           message: LoginResult.SUCCESS,
@@ -65,7 +65,7 @@ describe('service', () => {
           password: '123456',
         });
         (password.compare as jest.Mock).mockResolvedValue(false);
-        const result = await accountService.login(
+        const result = await userService.login(
           'test@gmail.com',
           'wrongpassword',
         );
@@ -76,7 +76,7 @@ describe('service', () => {
       });
       it('should return failure if email does not exist', async () => {
         (getUserByEmail as jest.Mock).mockResolvedValue(null);
-        const result = await accountService.login('wrongemail', '123456');
+        const result = await userService.login('wrongemail', '123456');
         expect(result).toEqual({
           userId: null,
           message: LoginResult.NOT_EXIST,
@@ -84,7 +84,7 @@ describe('service', () => {
       });
       it('should throw an error if database query fails', async () => {
         (getUserByEmail as jest.Mock).mockRejectedValue('Database error');
-        await expect(accountService.login('test', '123456')).rejects.toEqual(
+        await expect(userService.login('test', '123456')).rejects.toEqual(
           'Database error',
         );
       });
@@ -97,7 +97,7 @@ describe('service', () => {
         (createUser as jest.Mock).mockResolvedValue({
           id: 1,
         });
-        const result = await accountService.register({
+        const result = await userService.register({
           email: '',
           password: '',
           username: '',
@@ -115,7 +115,7 @@ describe('service', () => {
           password: '',
           username: '',
         });
-        const result = await accountService.register({
+        const result = await userService.register({
           email: '',
           password: '',
           username: '',
@@ -133,7 +133,7 @@ describe('service', () => {
           password: '',
           username: '',
         });
-        const result = await accountService.register({
+        const result = await userService.register({
           email: '',
           password: '',
           username: '',
@@ -147,7 +147,7 @@ describe('service', () => {
       it('should throw an error if database query fails', async () => {
         (getUserByEmail as jest.Mock).mockRejectedValue('Database error');
         await expect(
-          accountService.register({
+          userService.register({
             email: '',
             password: '',
             username: '',

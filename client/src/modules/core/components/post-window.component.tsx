@@ -161,7 +161,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
               onClick={() => setLink('profile')}
             >
               <Avatar file={post.avatar} />
-              <p className="d-inline-block m-0">{post.username}</p>
+              {/* <p className="d-inline-block m-0">{post.username}</p> */}
             </Link>
 
             <span className={clsx(styles.divider, 'my-3')} />
@@ -178,8 +178,8 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                   {post.content}
                 </span>
                 <div>
-                  {comments.map((comment, index) => (
-                    <div key={index} className="d-flex align-items-center my-2">
+                  {comments.map((comment) => (
+                    <div className="d-flex align-items-center my-2">
                       <Avatar file={comment.avatar} />
                       <p className="m-0">
                         <span>
@@ -192,7 +192,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                             )}
                             onClick={() => setLink('profile')}
                           >
-                            {comment.username}
+                            {/* {comment.username} */}
                           </Link>
                           {comment.content}
                         </span>
@@ -314,10 +314,10 @@ function ImageContent({ file }: { file: File }) {
       )}
     >
       <img
-        src={file?.dataURL}
+        src={file?.url}
         alt="post"
         className={clsx(
-          file?.sizeType === 'landscape' ? 'w-100 h-auto' : 'w-auto h-100',
+          file?.orientation === 'landscape' ? 'w-100 h-auto' : 'w-auto h-100',
           'mw-100 mh-100',
         )}
       />
@@ -337,9 +337,9 @@ function Avatar({ file }: { file: File | undefined }) {
     >
       <img
         className={
-          file?.sizeType === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'
+          file?.orientation === 'portrait' ? 'w-100 h-auto' : 'w-auto h-100'
         }
-        src={file?.dataURL || DEFAULT_AVATAR}
+        src={file?.url || DEFAULT_AVATAR}
         alt="profile"
       />
     </span>

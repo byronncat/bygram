@@ -1,6 +1,6 @@
-import { FormFieldProps } from '../types';
 import { useState } from 'react';
 import clsx from 'clsx';
+import type { FormFieldProps } from '../types';
 
 export default function FormField({
   type,
@@ -19,12 +19,10 @@ export default function FormField({
       setInputType('password');
     }
   }
-
   return (
     <>
       <div className={className?.formField}>
         <input
-          key={name}
           type={inputType}
           className={clsx(
             className?.formInput,

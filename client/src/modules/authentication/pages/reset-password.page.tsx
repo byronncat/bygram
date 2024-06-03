@@ -1,13 +1,14 @@
-import { useOutletContext } from 'react-router-dom'
-import { SubmitHandler } from 'react-hook-form'
-import { useClassNameContext } from '../providers'
-import Form from '../components/form.component'
-import { AuthenticationInformation, FormFieldProps } from '../types'
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { SubmitHandler } from 'react-hook-form';
+
+import { useClassNameContext } from '../providers';
+import Form from '../components/form.component';
+import type { AuthenticationInformation, FormFieldProps } from '../types';
 
 const defaultValues: AuthenticationInformation = {
   email: '',
-}
+};
 
 const fieldList: FormFieldProps[] = [
   {
@@ -22,19 +23,20 @@ const fieldList: FormFieldProps[] = [
       },
     },
   },
-]
-function ResetPasswordPage() {
-  const { className } = useClassNameContext()
+];
+
+export default function ResetPassword() {
+  const { className } = useClassNameContext();
   const {
     setTitle,
   }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext()
+    useOutletContext();
   useLayoutEffect(() => {
-    setTitle('reset')
-  }, [setTitle])
+    setTitle('reset');
+  }, [setTitle]);
 
   const submitHandler: SubmitHandler<AuthenticationInformation> = (data) =>
-    console.log(data)
+    console.log(data);
 
   return (
     <>
@@ -46,7 +48,5 @@ function ResetPasswordPage() {
         submitPlaceholder="Confirm"
       />
     </>
-  )
+  );
 }
-
-export default ResetPasswordPage

@@ -1,30 +1,43 @@
 import { useState, useContext, createContext, useEffect } from 'react';
-
-import { ReactProps } from '@global';
+import { useJwt } from 'react-jwt';
+import Cookies from 'js-cookie';
 import { authenticateAPI } from '../api';
+import type { ReactProps } from '@global';
+import type { User } from '@core';
 const AuthenticationContext = createContext(
   {} as {
     isAuthenticated: boolean;
     setAuthenticatedState: React.Dispatch<React.SetStateAction<boolean>>;
+    user: UserToken | null;
   },
 );
 
+interface UserToken extends Omit<User, 'password'> {
+  iat: number;
+}
+
 export default function AuthenticationProvider({ children }: ReactProps) {
   const [isAuthenticated, setAuthenticatedState] = useState(false);
+  const { decodedToken } = useJwt<UserToken>(Cookies.get('user') || '');
+  const [user, setUser] = useState<UserToken | null>(decodedToken);
 
   useEffect(() => {
     (async () => {
       const response = await authenticateAPI();
-      if (isAuthenticated !== response.success)
-        setAuthenticatedState(response.success);
+      setAuthenticatedState(response.success);
     })();
-  }, [isAuthenticated]);
+  }, []);
+
+  useEffect(() => {
+    if (decodedToken) setUser(decodedToken);
+  }, [decodedToken]);
 
   return (
     <AuthenticationContext.Provider
       value={{
         isAuthenticated,
         setAuthenticatedState,
+        user,
       }}
     >
       {children}

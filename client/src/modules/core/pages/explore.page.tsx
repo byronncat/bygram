@@ -32,13 +32,13 @@ function ExplorePage() {
         className={clsx(styles.wrapper, 'w-100 p-3')}
       >
         <Masonry gutter="8px">
-          {posts.map((post: any, index: number) => {
+          {posts.map((post: any) => {
             return (
               <LazyLoadImage
                 className="img-fluid"
                 alt="profile"
                 src={uri.transformImageCDN(post.file.dataURL, 'f_auto')}
-                key={index}
+                // key={index}
                 onClick={() => {
                   setPost(post);
                   setShowPost(true);

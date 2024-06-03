@@ -26,7 +26,7 @@ export default function UploadPostWindow({
   } as PostSubmitData;
   type Image = {
     imgURL: string | ArrayBuffer | null;
-    sizeType: 'landscape' | 'portrait';
+    sizeType: 'landscape' | 'portrait' | 'square';
   };
   const [selectedImage, setSelectedImage] = useState<Image>({
     imgURL: null,
@@ -69,8 +69,8 @@ export default function UploadPostWindow({
   useLayoutEffect(() => {
     if (defaultPost) {
       setSelectedImage({
-        imgURL: defaultPost.file.dataURL,
-        sizeType: defaultPost.file.sizeType,
+        imgURL: defaultPost.file.url,
+        sizeType: defaultPost.file.orientation,
       });
     }
   }, [defaultPost]);

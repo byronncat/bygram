@@ -4,9 +4,3 @@ export interface AuthenticationInformation {
   email?: string;
 }
 export type AuthenticationInformationStrings = keyof AuthenticationInformation;
-
-export type UserData = {
-  id: number;
-  username: string;
-  email: string;
-};

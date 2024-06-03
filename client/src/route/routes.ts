@@ -1,7 +1,7 @@
 const AUTHORIZED_ROUTE = {
   HOME: '/',
   EXPLORE: '/explore',
-  PROFILE: '/profile/:uid',
+  PROFILE: '/profile/:username',
 };
 
 const UNAUTHORIZED_ROUTE = {

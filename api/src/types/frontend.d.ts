@@ -1,11 +1,5 @@
 import { API, Account, Credentials, Post, Profile } from '@types';
 
-export interface UserToken {
-  id?: number;
-  username?: string;
-  email?: string;
-}
-
 export interface PostData
   extends Pick<Profile, 'username' | 'avatar'>,
     Omit<Post, 'comments'> {
@@ -20,11 +14,6 @@ export interface CommentData
 
 export interface ProfileData extends Profile {
   posts?: PostData[];
-}
-
-export interface API {
-  success: boolean;
-  message: string;
 }
 
 export interface RegisterAPI extends API {

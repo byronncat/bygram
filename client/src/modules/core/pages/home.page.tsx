@@ -85,15 +85,15 @@ function HomePage() {
     }
   };
 
-  useEffect(() => {
-    (async function fetchPosts() {
-      const response = await getHomePosts(32);
-      if (response.success && response.data) {
-        setPosts(response.data);
-        setReady(true);
-      } else toast.display(response.message, 'error');
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async function fetchPosts() {
+  //     const response = await getHomePosts(32);
+  //     if (response.success && response.data) {
+  //       setPosts(response.data);
+  //       setReady(true);
+  //     } else toast.display(response.message, 'error');
+  //   })();
+  // }, []);
 
   if (ready) return <Loader />;
   return (
@@ -174,13 +174,13 @@ function HomePage() {
                 >
                   <LazyLoadImage
                     className={clsx(
-                      post.avatar?.sizeType === 'portrait'
+                      post.avatar?.orientation === 'portrait'
                         ? 'w-100 h-auto'
                         : 'w-auto h-100',
                     )}
                     alt="profile"
                     src={uri.transformImageCDN(
-                      'avatar' in post ? post.avatar!.dataURL : DEFAULT_AVATAR,
+                      'avatar' in post ? post.avatar!.url : DEFAULT_AVATAR,
                       'w_56,f_auto',
                     )}
                   />
@@ -191,7 +191,7 @@ function HomePage() {
                     to={`/profile/${post.uid}`}
                     onClick={() => setLink('profile')}
                   >
-                    {post.username}
+                    {/* {post.username} */}
                   </Link>
                   <span className="mx-2 fw-bold">&middot;</span>
                   <p className={clsx(styles['date-time'], 'd-block')}>
@@ -202,7 +202,7 @@ function HomePage() {
               <div
                 role="button"
                 className={clsx(
-                  post.file.sizeType === 'portrait' && styles['post-image'],
+                  post.file.orientation === 'portrait' && styles['post-image'],
                   styles['negative-margin'],
                   'my-3',
                   'd-flex justify-content-center align-items-center',
@@ -215,12 +215,12 @@ function HomePage() {
               >
                 <LazyLoadImage
                   className={
-                    post.file.sizeType === 'landscape'
+                    post.file.orientation === 'landscape'
                       ? 'img-fluid'
                       : 'h-100 w-auto'
                   }
                   alt="profile"
-                  src={uri.transformImageCDN(post.file.dataURL, 'h_584,f_auto')}
+                  src={uri.transformImageCDN(post.file.url, 'h_584,f_auto')}
                 />
               </div>
               <main className={clsx('position-relative')}>
@@ -233,7 +233,7 @@ function HomePage() {
                   to={`/profile/${post.uid}`}
                   onClick={() => setLink('profile')}
                 >
-                  {post.username}
+                  {/* {post.username} */}
                 </Link>
                 <div className={clsx('d-flex align-items-center')}>
                   <span

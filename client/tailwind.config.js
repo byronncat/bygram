@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         'neon': {
           'red': '#ff0000',
+          'green': '#39ff14',
         },
         'dark-mode': {
           'background': '#121212',
@@ -55,6 +56,9 @@ module.exports = {
       },
       spacing: {
         '100': '25rem',
+        '120': '30rem',
+        'md': '48rem',
+        'lg': '64rem',
       },
       padding: {
         'full': '100%',

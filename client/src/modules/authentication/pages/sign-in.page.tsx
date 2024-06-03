@@ -2,17 +2,18 @@ import { useLayoutEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 
-import { toast } from '@global';
-import { Divider, Form, NavigationButton } from '../components';
+import { toast, useGlobalContext } from '@global';
+import { Divider, Form, NavigationText } from '../components';
 import { useAuthenticationContext, useClassNameContext } from '../providers';
 import { loginAPI } from '../api';
 import { DEFAULT_VALUES, FIELD } from '../constants';
 
-import type { AuthenticationInformation } from '../types';
 import type { OutletContextProps } from '../hocs';
+import type { AuthenticationInformation } from '../types';
 
-function LoginPage() {
+export default function Login() {
   const navigate = useNavigate();
+  const { loading } = useGlobalContext();
   const { className } = useClassNameContext();
   const { setAuthenticatedState } = useAuthenticationContext();
 
@@ -24,8 +25,10 @@ function LoginPage() {
   const submitHandler: SubmitHandler<AuthenticationInformation> = async (
     data,
   ) => {
+    loading.start();
     toast.display("Waiting for server's response", 'loading');
     const response = await loginAPI(data);
+    loading.end();
     if (response.success) {
       setAuthenticatedState(true);
       navigate('/');
@@ -34,20 +37,20 @@ function LoginPage() {
   };
 
   return (
-    <>
-      <Form
-        className={className.form}
-        fieldList={FIELD.LOGIN}
-        defaultValues={DEFAULT_VALUES.LOGIN_FORM}
-        submitHandler={submitHandler}
-        fieldClass={className}
-        submitPlaceholder="Login"
-      >
-        <Divider />
-        <NavigationButton text="register" path="/register" />
-      </Form>
-    </>
+    <Form
+      className={className.form}
+      fieldList={FIELD.LOGIN}
+      defaultValues={DEFAULT_VALUES.LOGIN_FORM}
+      submitHandler={submitHandler}
+      fieldClass={className}
+      submitPlaceholder="Login"
+    >
+      <Divider />
+      <NavigationText
+        text="Don't have an account?"
+        navigateText="register"
+        path="/register"
+      />
+    </Form>
   );
 }
-
-export default LoginPage;

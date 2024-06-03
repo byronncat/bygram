@@ -6,7 +6,7 @@ import {
   FIELD,
   DEFAULT_VALUES,
   Divider,
-  NavigationButton,
+  NavigationText,
 } from '@authentication';
 
 describe('components', () => {
@@ -51,10 +51,14 @@ describe('components', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render navigation button component correctly', () => {
+  it('should render navigation component correctly', () => {
     const { container } = render(
       <BrowserRouter>
-        <NavigationButton text="register" path="/register" />
+        <NavigationText
+          navigateText="new user?"
+          text="register"
+          path="/register"
+        />
       </BrowserRouter>,
     );
     expect(container).toMatchSnapshot();
