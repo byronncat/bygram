@@ -7,11 +7,7 @@ import type { ReactProps } from '../types';
 interface OverlayProps extends ReactProps {
   readonly exitHandler: MouseEventHandler;
 }
-export default function Overlay({
-  children,
-  exitHandler,
-  zIndex = 1,
-}: OverlayProps) {
+const Overlay = ({ children, exitHandler, zIndex = 1 }: OverlayProps) => {
   function overlayHandler(e: MouseEvent) {
     if (e.target === e.currentTarget) exitHandler(e);
   }
@@ -20,8 +16,8 @@ export default function Overlay({
     <div
       className={clsx(
         `absolute top-0 start-0 z-${zIndex}0`,
-        'w-full h-screen bg-black/50',
-        'flex content-center items-center',
+        'w-screen h-screen bg-on-surface/[0.76]',
+        'flex justify-center items-center',
       )}
       onClick={overlayHandler}
     >
@@ -30,9 +26,11 @@ export default function Overlay({
         aria-label="close"
         onClick={exitHandler}
       >
-        <XIcon className="w-6 h-6 fill-white/[0.7]" />
+        <XIcon className="w-6 h-6 fill-white/[0.92] hover:fill-white/[0.6] duration-300" />
       </button>
       {children}
     </div>
   );
-}
+};
+
+export default Overlay;

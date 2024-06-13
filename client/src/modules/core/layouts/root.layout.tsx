@@ -15,8 +15,7 @@ export default function ColumnLayout({ children }: ReactProps) {
         <div
           className={clsx(
             'h-full grow',
-            'flex flex-col items-center',
-            'overflow-y-scroll',
+            'flex flex-col justify-center items-center',
           )}
         >
           {children}

@@ -3,7 +3,6 @@ import type { ReactProps } from '../types';
 
 const GlobalContext = createContext(
   {} as {
-    refreshPage: () => void;
     loading: {
       start: () => void;
       end: () => void;
@@ -12,10 +11,7 @@ const GlobalContext = createContext(
   },
 );
 
-export default function Global({ children }: ReactProps) {
-  const [refresh, setRefresh] = useState(false);
-  const refreshPage = () => setRefresh(!refresh);
-
+const Global = ({ children }: ReactProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const loading = {
     start: () => setIsLoading(true),
@@ -26,15 +22,15 @@ export default function Global({ children }: ReactProps) {
   return (
     <GlobalContext.Provider
       value={{
-        refreshPage,
         loading,
       }}
     >
       {children}
     </GlobalContext.Provider>
   );
-}
+};
 
-export function useGlobalContext() {
+export default Global;
+export const useGlobalContext = () => {
   return useContext(GlobalContext);
-}
+};

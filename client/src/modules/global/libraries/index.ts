@@ -1,1 +1,2 @@
-export * as toast from './toast.library'
+export { default as Toast } from './toast.library';
+export * as toast from './toast.library';

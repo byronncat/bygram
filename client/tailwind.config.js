@@ -1,15 +1,43 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'selector',
   content: ["./src/**/*.tsx"],
   theme: {
     extend: {
       colors: {
+        "primary": '#4B53F2',
+        "on-primary": '#FFFFFF',
+        "primary-variant": '#2d32d5',
+        "secondary": '#03DAC6',
+        "on-secondary": '#000000',
+        "secondary-variant": '#018786',
+        "background": '#FFFFFF',
+        "on-background": '#000000',
+        "surface": '#FFFFFF',
+        "on-surface": '#000000',
+        "error": '#D32F2F',
+        "on-error": '#FFFFFF',
+        "success": "#4caf50",
+        "on-success": "#FFFFFF",
+        "dark": {
+          "primary": '#9fbaff',
+          "on-primary": '#000000',
+          "primary-variant": '#2d32d5',
+          "secondary": '#03DAC6',
+          "on-secondary": '#000000',
+          "secondary-variant": '#018786',
+          "background": '#121212',
+          "on-background": '#FFFFFF',
+          "surface": '#121212',
+          "on-surface": '#FFFFFF',
+          "error": '#D32F2F',
+          "on-error": '#000000',
+          "success": "#00C853",
+          "on-success": "#FFFFFF",
+        },
         'neon': {
           'red': '#ff0000',
           'green': '#39ff14',
-        },
-        'dark-mode': {
-          'background': '#121212',
         },
         'cerise': {
           '50': '#fdf2f9',
@@ -57,6 +85,8 @@ module.exports = {
       spacing: {
         '100': '25rem',
         '120': '30rem',
+        '190': '47.5rem',
+        '250': '62.5rem',
         'md': '48rem',
         'lg': '64rem',
       },
@@ -66,6 +96,9 @@ module.exports = {
       rotate: {
         '24': '24deg',
       },
+      borderWidth: {
+        '3': '3px',
+      }
     },
   },
   plugins: [],

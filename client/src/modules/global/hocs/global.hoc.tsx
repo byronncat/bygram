@@ -1,19 +1,19 @@
-import { ToastContainer } from 'react-toastify';
-
-import '../styles/hocs/global.sass';
+import '../styles/global.sass';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthenticationProvider } from '@authentication';
-import { toast } from '../libraries';
+import { Toast } from '../libraries';
 import { GlobalProvider, ThemeProvider } from '../providers';
 import type { ReactProps } from '../types';
 
-export default function Global({ children }: ReactProps) {
+const Global = ({ children }: ReactProps) => {
   return (
     <GlobalProvider>
       <ThemeProvider>
+        <Toast />
         <AuthenticationProvider>{children}</AuthenticationProvider>
-        <ToastContainer {...toast.settings} />
       </ThemeProvider>
     </GlobalProvider>
   );
-}
+};
+
+export default Global;

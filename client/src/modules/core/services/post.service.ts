@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { uri, API } from '@global';
+import { uri, API_v1 } from '@global';
 import { Post, Comment, CommentAPI, PostAPI, PostUploadData } from '../types';
 
-export async function deletePost(postID: Post['id']): Promise<API> {
+export async function deletePost(postID: Post['id']): Promise<API_v1> {
   return await axios
     .delete(uri.getHostingServer(`post/${postID}`))
     .then((res: any) => res.data)
@@ -12,7 +12,7 @@ export async function deletePost(postID: Post['id']): Promise<API> {
 export async function uploadPost(
   postData: PostUploadData,
   method: 'post' | 'put',
-): Promise<API> {
+): Promise<API_v1> {
   const formData = new FormData();
   if (postData.id) formData.append('id', postData.id);
   if (postData.uid) formData.append('uid', postData.uid.toString());
@@ -42,7 +42,7 @@ export async function getHomePosts(id: UserToken['id']): Promise<PostAPI> {
 export async function likePost(
   uid: UserToken['id'],
   postID: Post['id'],
-): Promise<API> {
+): Promise<API_v1> {
   return await axios
     .post(uri.getHostingServer('post/like'), { uid, postID })
     .then((res: AxiosResponse) => res.data)
@@ -53,7 +53,7 @@ export async function sendComment(
   uid: UserToken['id'],
   postID: Post['id'],
   content: string,
-): Promise<API> {
+): Promise<API_v1> {
   return await axios
     .post(uri.getHostingServer('post/comment'), { uid, postID, content })
     .then((res: AxiosResponse) => res.data)
@@ -70,7 +70,7 @@ export async function getComments(postID: Post['id']): Promise<CommentAPI> {
 export async function deleteComment(
   postID: Post['id'],
   commentID: Comment['id'],
-): Promise<API> {
+): Promise<API_v1> {
   return await axios
     .delete(uri.getHostingServer(`post/comment`), {
       data: { postID, commentID },

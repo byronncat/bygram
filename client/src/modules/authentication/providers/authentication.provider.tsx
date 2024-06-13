@@ -17,8 +17,11 @@ interface UserToken extends Omit<User, 'password'> {
 }
 
 export default function AuthenticationProvider({ children }: ReactProps) {
-  const [isAuthenticated, setAuthenticatedState] = useState(false);
-  const { decodedToken } = useJwt<UserToken>(Cookies.get('user') || '');
+  const userCookie = Cookies.get('user');
+  const [isAuthenticated, setAuthenticatedState] = useState(
+    userCookie ? true : false,
+  );
+  const { decodedToken } = useJwt<UserToken>(userCookie || '');
   const [user, setUser] = useState<UserToken | null>(decodedToken);
 
   useEffect(() => {

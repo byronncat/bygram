@@ -27,14 +27,14 @@ export default function Register() {
     data,
   ) => {
     loading.start();
-    toast.display("Waiting for server's response", 'loading');
+    // toast.display("Waiting for server's response", 'loading');
     const response = await registerAPI(data);
     loading.end();
     if (response.success) {
       setAuthenticatedState(true);
       navigate('/');
     }
-    toast.display(response.message, response.success ? 'success' : 'error');
+    // toast.display(response.message, response.success ? 'success' : 'error');
   };
 
   return (

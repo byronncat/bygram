@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { uri, API } from '@global';
+import { uri, API_v1 } from '@global';
 import { AvatarAPI, ProfileAPI } from '../types';
 
 type UserToken = { id: number };
@@ -24,7 +24,7 @@ export async function changeAvatar(
     .catch((error: any) => error.response.data);
 }
 
-export async function removeAvatar(uid: UserToken['id']): Promise<API> {
+export async function removeAvatar(uid: UserToken['id']): Promise<API_v1> {
   return await axios
     .put(uri.getHostingServer('profile/avatar?type=remove'), { uid })
     .then((res) => res.data)
@@ -34,7 +34,7 @@ export async function removeAvatar(uid: UserToken['id']): Promise<API> {
 export async function follow(
   uid: UserToken['id'],
   target: UserToken['id'],
-): Promise<API> {
+): Promise<API_v1> {
   return await axios
     .put(uri.getHostingServer('profile/follow'), { uid, target })
     .then((res) => res.data)
@@ -44,7 +44,7 @@ export async function follow(
 export async function unfollow(
   uid: UserToken['id'],
   target: UserToken['id'],
-): Promise<API> {
+): Promise<API_v1> {
   return await axios
     .put(uri.getHostingServer('profile/unfollow'), { uid, target })
     .then((res) => res.data)

@@ -1,7 +1,6 @@
 // import fileService from './file.service';
 import { PostgreSQL } from '@database';
 import { password as passwrodHelper } from '@helpers';
-import { logger } from '@utilities';
 import { LoginResult, RegisterResult } from '@constants';
 import {
   createUser,
@@ -10,53 +9,53 @@ import {
   createProfile,
   getUsersByRegexp,
   getProfilesByIDs,
+  getUserByID,
+  getProfileByID,
 } from '@/database/access';
-import type { Account, Identity, SearchProfileData } from '@types';
+import type {
+  Account,
+  GetProfileData,
+  Identity,
+  Profile,
+  SearchProfileData,
+} from '@types';
 
 async function login(
   email: Account['email'],
   password: Account['password'],
 ): Promise<Identity> {
-  try {
-    const query = await getUserByEmail(email);
-    if (!query) return { user: null, message: LoginResult.NOT_EXIST };
-    if (!(await passwrodHelper.compare(password, query.password)))
-      return { user: null, message: LoginResult.INCORRECT_PASSWORD };
-    return {
-      user: {
-        id: query.id,
-        email: query.email,
-        username: query.username,
-      },
-      message: LoginResult.SUCCESS,
-    };
-  } catch (error) {
-    return Promise.reject(error);
-  }
+  const query = await getUserByEmail(email);
+  if (!query) return { user: null, message: LoginResult.NOT_EXIST };
+  if (!(await passwrodHelper.compare(password, query.password)))
+    return { user: null, message: LoginResult.INCORRECT_PASSWORD };
+  return {
+    user: {
+      id: query.id,
+      email: query.email,
+      username: query.username,
+    },
+    message: LoginResult.SUCCESS,
+  };
 }
 
 async function register(data: Account): Promise<Identity> {
-  try {
-    const queryEmail = await getUserByEmail(data.email);
-    if (queryEmail) return { user: null, message: RegisterResult.EMAIL_EXISTS };
+  const queryEmail = await getUserByEmail(data.email);
+  if (queryEmail) return { user: null, message: RegisterResult.EMAIL_EXISTS };
 
-    const queryUsername = await getUserByUsername(data.username);
-    if (queryUsername)
-      return { user: null, message: RegisterResult.USERNAME_EXISTS };
+  const queryUsername = await getUserByUsername(data.username);
+  if (queryUsername)
+    return { user: null, message: RegisterResult.USERNAME_EXISTS };
 
-    const result = await createUser(data);
-    await createProfile(result.id);
-    return {
-      user: {
-        id: result.id,
-        email: result.email,
-        username: result.username,
-      },
-      message: RegisterResult.SUCCESS,
-    };
-  } catch (error) {
-    return Promise.reject(error);
-  }
+  const result = await createUser(data);
+  await createProfile(result.id);
+  return {
+    user: {
+      id: result.id,
+      email: result.email,
+      username: result.username,
+    },
+    message: RegisterResult.SUCCESS,
+  };
 }
 
 async function searchProfile(
@@ -76,6 +75,17 @@ async function searchProfile(
     };
   });
   return searchResult;
+}
+
+async function getProfile(id: Profile['uid']): Promise<GetProfileData> {
+  const user = await getUserByID(id);
+  if (!user) throw new Error('User not found');
+  let profile = await getProfileByID(id);
+  return {
+    ...profile,
+    email: user.email,
+    username: user.username,
+  } as GetProfileData;
 }
 
 // async function setAvatar(uid: Account['id'], avatar: Express.Multer.File) {
@@ -144,29 +154,16 @@ async function createAccount(
 //   }
 // }
 
-async function getByID(id: Account['id']): Promise<Account> {
-  try {
-    const result = await PostgreSQL.oneOrNone(
-      `SELECT * FROM accounts WHERE id = $(id)`,
-      {
-        id,
-      },
-    );
-    if (!result) return Promise.reject('Account not found');
-    return result;
-  } catch (error) {
-    logger.error(`${error}`, 'Account service');
-    return Promise.reject(error);
-  }
-}
-
-// async function getProfileByID(id: Profile['uid']): Promise<ProfileDocument> {
+// async function getByID(id: Account['id']): Promise<Account> {
 //   try {
-//     const profile = (await ProfileModel.findOne({
-//       uid: id,
-//     }).exec()) as ProfileDocument | null;
-//     if (!profile) return Promise.reject('Profile not found');
-//     return profile;
+//     const result = await PostgreSQL.oneOrNone(
+//       `SELECT * FROM accounts WHERE id = $(id)`,
+//       {
+//         id,
+//       },
+//     );
+//     if (!result) return Promise.reject('Account not found');
+//     return result;
 //   } catch (error) {
 //     logger.error(`${error}`, 'Account service');
 //     return Promise.reject(error);
@@ -210,12 +207,12 @@ export default {
   login,
   register,
   searchProfile,
+  getProfile,
 
   // setAvatar,
   // removeAvatar,
   createAccount,
-  getByID,
-  // getProfileByID,
+  // getByID,
   // getUsernameByID,
   // getFollowingsByID,
   // follow,

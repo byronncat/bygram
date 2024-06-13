@@ -1,1 +1,1 @@
-export * as uri from './uri.api'
+export * from './uri.api';

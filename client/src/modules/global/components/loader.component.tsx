@@ -1,14 +1,9 @@
 import clsx from 'clsx';
 import styles from '../styles/components/loader.module.sass';
 
-export default function Loader() {
+const Loader = () => {
   return (
-    <div
-      className={clsx(
-        'flex flex-col justify-center items-center',
-        'w-full h-full',
-      )}
-    >
+    <div className={clsx('flex flex-col justify-center items-center')}>
       <div>
         <div
           className={clsx(
@@ -20,7 +15,8 @@ export default function Loader() {
           <span
             className={clsx(
               styles['configure-core'],
-              'w-full h-full bg-dark-mode-background',
+              `dark:${styles['configure-core']}`,
+              'w-full h-full bg-background dark:bg-dark-background',
             )}
           />
         </div>
@@ -34,7 +30,8 @@ export default function Loader() {
           <span
             className={clsx(
               styles['configure-core'],
-              'w-full h-full bg-dark-mode-background',
+              `dark:${styles['configure-core']}`,
+              'w-full h-full bg-background dark:bg-dark-background',
             )}
           />
         </div>
@@ -43,7 +40,8 @@ export default function Loader() {
         className={clsx(
           'text-2xl font-bold tracking-widest',
           'px-4 py-1 mt-12 rounded',
-          'bg-cerise-700 shadow-lg shadow-cerise-700/50',
+          'bg-primary text-on-primary shadow-lg shadow-primary',
+          'dark:bg-dark-primary-variant dark:text-dark-on-primary-variant dark:shadow-dark-primary-variant',
           styles.waviy,
         )}
       >
@@ -57,4 +55,6 @@ export default function Loader() {
       </div>
     </div>
   );
-}
+};
+
+export default Loader;

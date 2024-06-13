@@ -4,5 +4,6 @@ export { default as HouseIcon } from './house.icon';
 export { default as MagnifyingGlassIcon } from './magnifying-glass.icon';
 export { default as RightFromBracketIcon } from './right-from-bracket.icon';
 export { default as SquarePlusIcon } from './square-plus.icon';
+export { default as PhotoFilmIcon } from './photo-film';
 export { default as UserIcon } from './user.icon';
 export { default as XIcon } from './x.icon';

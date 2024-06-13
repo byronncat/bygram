@@ -13,7 +13,7 @@ import {
   deleteComment,
 } from '../services/post.service';
 import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants';
-import { CommentData, File, PostData } from '../types';
+import { CommentData, FileData, PostData } from '../types';
 import homeStyles from '../styles/pages/home.module.sass';
 import styles from '../styles/components/post-window.module.sass';
 
@@ -24,7 +24,7 @@ interface PostWindowProps extends ReactProps {
 export default function PostWindow({ post, onExit }: PostWindowProps) {
   const [comment, setComment] = useState({} as CommentData);
   const [comments, setComments] = useState([] as CommentData[]);
-  const { refreshPage } = useGlobalContext();
+  // const { refreshPage } = useGlobalContext();
   const { setLink } = useSidebarOptionsContext();
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -35,9 +35,12 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     (async () => {
       const response = await getComments(post.id);
       if (response.success && response.data) setComments(response.data);
-      else toast.display(response.message, 'error');
+      // else toast.display(response.message, 'error');
     })();
-  }, [post, refreshPage]);
+  }, [
+    post,
+    // refreshPage
+  ]);
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
     switch (item.name) {
@@ -46,8 +49,8 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
           setShowActionMenu(false);
           onExit();
           const response = await item.function!(post.id);
-          toast.display(response.message, response.success && 'error');
-          refreshPage();
+          // toast.display(response.message, response.success && 'error');
+          // refreshPage();
         };
         break;
       }
@@ -79,7 +82,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     event.preventDefault();
     const form = event.currentTarget;
     const commentValue = (event.target as HTMLFormElement).comment.value;
-    if (!commentValue) return toast.display('Comment cannot be empty', 'error');
+    // if (!commentValue) return toast.display('Comment cannot be empty', 'error');
     const response = await sendComment(
       authenticationStorage.identity!.id,
       post.id,
@@ -87,8 +90,8 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
     );
     if (response.success) {
       form.reset();
-      refreshPage();
-      toast.display(response.message, 'success');
+      // refreshPage();
+      // toast.display(response.message, 'success');
     }
   };
 
@@ -98,8 +101,8 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
       functionHandler: async () => {
         setShowCommentMenu(false);
         const response = await deleteComment(post.id, comment.id);
-        if (response.success) refreshPage();
-        toast.display(response.message, response.success ? 'success' : 'error');
+        // if (response.success) refreshPage();
+        // toast.display(response.message, response.success ? 'success' : 'error');
       },
     },
     {
@@ -116,7 +119,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
         <UploadPostWindow
           defaultPost={post}
           zIndex={3}
-          onExit={() => {
+          exitHandler={() => {
             setShowCreatePost(false);
             onExit();
           }}
@@ -253,7 +256,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                             authenticationStorage.identity?.id!,
                           ]);
                         }
-                        refreshPage();
+                        // refreshPage();
                       }
                     }}
                     className={clsx(
@@ -304,7 +307,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
   );
 }
 
-function ImageContent({ file }: { file: File }) {
+function ImageContent({ file }: { file: FileData }) {
   return (
     <div
       className={clsx(
@@ -325,7 +328,7 @@ function ImageContent({ file }: { file: File }) {
   );
 }
 
-function Avatar({ file }: { file: File | undefined }) {
+function Avatar({ file }: { file: FileData | undefined }) {
   return (
     <span
       className={clsx(

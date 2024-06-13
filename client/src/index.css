@@ -4,11 +4,11 @@
 
 @layer theme {
   .white-theme {
-    @apply bg-white text-black;
+    @apply bg-background text-on-background;
   }
 
   .dark-theme {
-    @apply bg-dark-mode-background text-white;
+    @apply bg-dark-background text-dark-on-background;
   }
 
   .cerise-theme {
@@ -17,13 +17,16 @@
 }
 
 @layer components {
-  .button {
-    @apply bg-cerise-700 text-white select-none;
-    @apply block w-fit py-2 px-3 rounded;
-    @apply font-semibold text-center;
+  .simple-border-button {
+    @apply inline-block;
+    @apply rounded border border-primary;
+    @apply text-sm font-medium text-primary text-center;
+    @apply dark:border-dark-primary dark:text-dark-primary;
+    @apply hover:bg-primary hover:text-on-primary active:bg-primary;
+    @apply dark:hover:bg-dark-primary dark:hover:text-dark-on-primary dark:active:bg-dark-primary;
 
-    @apply transition-all duration-300 cursor-pointer;
-    @apply hover:opacity-50;
+    @apply duration-300 ease-in-out;
+    @apply focus:outline-none focus:ring select-none cursor-pointer;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 }

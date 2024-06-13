@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 
-import { toast, useDebounce, ReactProps } from '@global';
+// import { toast, useDebounce, ReactProps } from '@global';
 import { searchAPI } from '../api';
 import { useSidebarOptionsContext } from '../providers';
 import { SIDEBAR_OPTION, DEFAULT } from '../constants';
 import type { SearchProfileData } from '../types';
+import type { ReactProps } from '@global';
 import { useAuthenticationContext } from '@/modules/authentication';
 
 interface SearchSideProps extends ReactProps {
@@ -22,10 +23,10 @@ function SearchSide({ isShow, exitHandler }: SearchSideProps) {
   const { setLink } = useSidebarOptionsContext();
   const { user } = useAuthenticationContext();
   const { register } = useForm();
-  const [debouncedSearchInput, setSearchInput] = useDebounce<string>(
-    '',
-    DEBOUNCE_TIME,
-  );
+  // const [debouncedSearchInput, setSearchInput] = useDebounce<string>(
+  //   '',
+  //   DEBOUNCE_TIME,
+  // );
   const [searchResult, setSearchResult] = useState([] as SearchProfileData[]);
 
   function navigateProfileHandler() {
@@ -35,7 +36,7 @@ function SearchSide({ isShow, exitHandler }: SearchSideProps) {
 
   function inputHandler(event: React.ChangeEvent<HTMLTextAreaElement>) {
     var lowerCase = event.target.value.toLowerCase();
-    setSearchInput(lowerCase);
+    // setSearchInput(lowerCase);
   }
   const eraseSearch = useCallback(() => {
     if (SearchElement) SearchElement.value = '';
@@ -49,17 +50,15 @@ function SearchSide({ isShow, exitHandler }: SearchSideProps) {
     else eraseSearch();
   }, [isShow, eraseSearch, focusSearch]);
 
-  useEffect(() => {
-    // ! searchInput if empty became /api/profile/search match wrong route
-    if (debouncedSearchInput) {
-      (async function search() {
-        const response = await searchAPI(debouncedSearchInput);
-        if (response.success && response.data) setSearchResult(response.data);
-        else toast.display(response.message, 'error');
-        console.log(response.data);
-      })();
-    }
-  }, [debouncedSearchInput]);
+  // useEffect(() => {
+  //   // ! searchInput if empty became /api/profile/search match wrong route
+  //   if (debouncedSearchInput) {
+  //     (async function search() {
+  //       const response = await searchAPI(debouncedSearchInput);
+  //       if (response.success) setSearchResult(response.data || []);
+  //     })();
+  //   }
+  // }, [debouncedSearchInput]);
 
   return (
     <>

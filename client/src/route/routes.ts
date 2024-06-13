@@ -1,4 +1,4 @@
-const AUTHORIZED_ROUTE = {
+const PROTECTED_ROUTE = {
   HOME: '/',
   EXPLORE: '/explore',
   PROFILE: '/profile/:username',
@@ -12,12 +12,8 @@ const UNAUTHORIZED_ROUTE = {
 };
 
 const ROUTE = {
-  ...AUTHORIZED_ROUTE,
+  ...PROTECTED_ROUTE,
   ...UNAUTHORIZED_ROUTE,
 };
 
-export function isAuthorizedRoute(path: string) {
-  return Object.values(AUTHORIZED_ROUTE).includes(path);
-}
-
-export { ROUTE, AUTHORIZED_ROUTE, UNAUTHORIZED_ROUTE };
+export { ROUTE, PROTECTED_ROUTE, UNAUTHORIZED_ROUTE };

@@ -20,7 +20,7 @@ function ExplorePage() {
       if (response.success && response.data) {
         setPosts(response.data);
         setReady(true);
-      } else toast.display(response.message, 'error');
+      } else toast.error(response.message);
     })();
   }, [ready]);
   if (!ready) return <Loader />;

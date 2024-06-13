@@ -13,7 +13,22 @@ export async function createUser(account: Account): Promise<Account> {
     );
     return result;
   } catch (error) {
-    return Promise.reject(error);
+    throw error;
+  }
+}
+
+export async function getUserByID(id: Account['id']): Promise<Account | null> {
+  try {
+    const result = await PostgreSQL.oneOrNone(
+      `SELECT * FROM users WHERE id = $(id)`,
+      {
+        id,
+      },
+    );
+    if (!result) return null;
+    return result;
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -30,7 +45,7 @@ export async function getUserByEmail(
     if (!result) return null;
     return result;
   } catch (error) {
-    return Promise.reject(error);
+    throw error;
   }
 }
 
@@ -47,7 +62,7 @@ export async function getUserByUsername(
     if (!result) return null;
     return result;
   } catch (error) {
-    return Promise.reject(error);
+    throw error;
   }
 }
 
@@ -61,9 +76,9 @@ export async function getUsersByRegexp(
         regexp,
       },
     );
-    if (!result) return null;
+    if (result.length === 0) return null;
     return result;
   } catch (error) {
-    return Promise.reject(error);
+    throw error;
   }
 }

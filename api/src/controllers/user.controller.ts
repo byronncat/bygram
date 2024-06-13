@@ -2,10 +2,11 @@ import { user } from '@middlewares';
 import { userService } from '@services';
 import { StatusCode } from '@constants';
 import type { Request, Response } from 'express';
-import type { API, SearchProfileData, UserToken } from '@types';
+import type { API, GetProfileData, SearchProfileData } from '@types';
+import { logger } from '@/utilities';
 
 interface SearchProfileAPI extends API {
-  data: SearchProfileData[];
+  data: SearchProfileData[] | null;
 }
 
 async function searchProfile(req: Request, res: Response) {
@@ -14,74 +15,45 @@ async function searchProfile(req: Request, res: Response) {
     return res.status(StatusCode.BAD_REQUEST).json({
       success: false,
       message: 'Missing search term',
-    } as any);
+    } as SearchProfileAPI);
   }
 
-  return res.status(StatusCode.OK).json({
-    success: true,
-    message: 'Search results',
-    data: await userService.searchProfile(searchTerm),
-  } as SearchProfileAPI);
-}
-
-async function getProfile(req: Request, res: Response) {
-  const uid = parseInt(req.headers.uid as string, 10);
-  const user = req.user as UserToken;
-  if (uid !== user.id) {
+  try {
     return res.status(StatusCode.OK).json({
       success: true,
-      message: 'Unauthorized',
-      data: {
-        uid,
-        user: user.id,
-      },
-    } as any);
+      message: 'Search results',
+      data: await userService.searchProfile(searchTerm),
+    } as SearchProfileAPI);
+  } catch (error) {
+    logger.error(JSON.stringify(error), 'Search Profile Controller');
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: JSON.stringify(error),
+    } as SearchProfileAPI);
   }
+}
 
-  // return res.status(StatusCode.OK).json({
-  //   success: true,
-  //   message: 'Profile retrieved',
-  //   data: req.user,
-  // } as API);
-  // try {
-  //   return await accountService
-  //     .getProfileByID(uid)
-  //     .then(async (profile) => {
-  //       if (profile) {
-  //         const posts = await postService.getManyByID({ uid });
-  //         res.status(200).json({
-  //           success: true,
-  //           message: 'Profile retrieved',
-  //           data: {
-  //             ...profile._doc,
-  //             avatar: isEmptyObject(profile.avatar)
-  //               ? undefined
-  //               : profile.avatar,
-  //             posts,
-  //           },
-  //         } as ProfileAPI);
-  //       } else {
-  //         return res.status(402).json({
-  //           success: false,
-  //           message: 'Profile not found',
-  //         } as ProfileAPI);
-  //       }
-  //     })
-  //     .catch((error) =>
-  //       res.status(400).json({
-  //         success: false,
-  //         message: JSON.stringify(error),
-  //       } as ProfileAPI),
-  //     );
-  // } catch (error: any) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     message: JSON.stringify(error),
-  //   } as ProfileAPI);
-  // }
+interface ProfileAPI extends API {
+  data: GetProfileData | null;
+}
+async function getProfile(req: Request, res: Response) {
+  const uid = parseInt(req.headers.uid as string, 10);
+  try {
+    return res.status(StatusCode.OK).json({
+      success: true,
+      message: 'Profile retrieved',
+      data: await userService.getProfile(uid),
+    } as ProfileAPI);
+  } catch (error) {
+    logger.error(JSON.stringify(error), 'Search Profile Controller');
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: JSON.stringify(error),
+    } as SearchProfileAPI);
+  }
 }
 
 export default {
-  search: [user.parse, searchProfile],
-  get: [user.parse, getProfile],
+  search: [user.authenticating, searchProfile],
+  get: [user.authenticating, getProfile],
 };

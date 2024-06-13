@@ -1,33 +1,37 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactProps } from '../types';
 
-type Theme = 'light' | 'dark' | 'neon';
-
-const initialTheme: Theme = 'dark';
+enum Theme {
+  light,
+  dark,
+}
 
 const ThemeContext = createContext(
   {} as {
-    theme: Theme;
-    updateTheme: (newTheme: Theme) => void;
+    setLightTheme: () => void;
+    setDarkTheme: () => void;
   },
 );
 
-export default function ThemeProvider({ children }: ReactProps) {
-  const [theme, setTheme] = useState(initialTheme);
+const ThemeProvider = ({ children }: ReactProps) => {
+  const [theme, setTheme] = useState(Theme.light);
 
-  const updateTheme = (newTheme: Theme) => {
-    setTheme(newTheme);
-  };
+  const setLightTheme = () => setTheme(Theme.light);
+  const setDarkTheme = () => setTheme(Theme.dark);
 
-  document.getElementById('root')?.classList.add(`${theme}-theme`);
+  useEffect(() => {
+    document.documentElement.className = `${Theme[theme]}`;
+    document.getElementById('root')!.className = `${Theme[theme]}-theme`;
+  }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, updateTheme }}>
+    <ThemeContext.Provider value={{ setLightTheme, setDarkTheme }}>
       {children}
     </ThemeContext.Provider>
   );
-}
+};
 
-export function useThemeContext() {
+export default ThemeProvider;
+export const useThemeContext = () => {
   return useContext(ThemeContext);
-}
+};

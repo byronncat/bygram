@@ -1,9 +1,15 @@
 import axios from 'axios';
 import { uri } from '@global';
-import type { API } from '@global';
-import type { SearchProfileData, Post, Profile, User } from '../types';
+import type { API_v1 } from '@global';
+import type {
+  SearchProfileData,
+  Post,
+  Profile,
+  User,
+  ProfileData,
+} from '../types';
 
-interface SearchAPI extends API {
+interface SearchAPI extends API_v1 {
   data?: SearchProfileData[];
 }
 export async function searchAPI(username: string): Promise<SearchAPI> {
@@ -13,10 +19,8 @@ export async function searchAPI(username: string): Promise<SearchAPI> {
     .catch((error: any) => error.response.data);
 }
 
-interface GetProfileAPI extends API {
-  data?: Profile & {
-    posts: Post[];
-  };
+interface GetProfileAPI extends API_v1 {
+  data: ProfileData | null;
 }
 
 export async function getProfileAPI(

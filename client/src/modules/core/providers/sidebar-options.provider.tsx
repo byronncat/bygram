@@ -1,47 +1,42 @@
 import { createContext, useContext, useState } from 'react';
 import { SIDEBAR_OPTION, SidebarOptionStrings } from '../constants';
 import type { ReactProps } from '@global';
+import { PROTECTED_ROUTE, useCurrentPath } from '@route';
 
 const SidebarOptionsContext = createContext(
   {} as {
     currentLink: SidebarOptionStrings;
     setLink: (name: SidebarOptionStrings) => void;
     getLink: () => SidebarOptionStrings;
-    sidebarExitHandler: () => void;
+    setBackToPreviousLink: () => void;
   },
 );
 
 export function SidebarOptionsProvider({ children }: ReactProps) {
+  const path = useCurrentPath();
   const [link, setLink] = useState<SidebarOptionStrings>(getLink());
+  const [previousLink, setPreviousLink] = useState<SidebarOptionStrings>(
+    SIDEBAR_OPTION.HOME,
+  );
 
   function getLink(): SidebarOptionStrings {
-    if (localStorage.getItem('active_link')) {
-      let activeLink: SidebarOptionStrings;
-      activeLink = localStorage.getItem('active_link') as SidebarOptionStrings;
-      if (
-        SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === activeLink)
-      )
-        activeLink = localStorage.getItem(
-          'previous_link',
-        ) as SidebarOptionStrings;
-      return activeLink;
-    } else return SIDEBAR_OPTION.HOME;
+    if (path === PROTECTED_ROUTE.EXPLORE) return SIDEBAR_OPTION.EXPLORE;
+    if (path === PROTECTED_ROUTE.PROFILE) return SIDEBAR_OPTION.PROFILE;
+    return SIDEBAR_OPTION.HOME;
   }
 
   function setLinkHandler(name: SidebarOptionStrings) {
-    localStorage.setItem('active_link', name);
-    setHistory(link);
+    previousLinkHandler(link);
     setLink(name);
   }
 
-  function setHistory(name: SidebarOptionStrings) {
+  function previousLinkHandler(name: SidebarOptionStrings) {
     if (!SIDEBAR_OPTION.CANNOT_ACTIVATED.find((option) => option === name))
-      localStorage.setItem('previous_link', name);
+      setPreviousLink(name);
   }
 
-  function exitHandler() {
-    localStorage.removeItem('active_link');
-    localStorage.removeItem('previous_link');
+  function setBackToPreviousLink() {
+    setLink(previousLink);
   }
 
   return (
@@ -50,7 +45,7 @@ export function SidebarOptionsProvider({ children }: ReactProps) {
         currentLink: link,
         setLink: setLinkHandler,
         getLink,
-        sidebarExitHandler: exitHandler,
+        setBackToPreviousLink,
       }}
     >
       {children}

@@ -15,7 +15,7 @@ import { Dashboard, HomePage, ExplorePage, ProfilePage } from '@core';
 import { ErrorPage } from '@global';
 import { ROUTE } from '@route';
 
-export default function Router() {
+const Router = () => {
   const { isAuthenticated } = useAuthenticationContext();
   const router = createBrowserRouter([
     {
@@ -48,4 +48,6 @@ export default function Router() {
   ]);
 
   return <RouterProvider router={router} />;
-}
+};
+
+export default Router;
