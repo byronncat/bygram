@@ -6,7 +6,7 @@ const GlobalContext = createContext(
     loading: {
       start: () => void;
       end: () => void;
-      get: boolean;
+      isLoading: boolean;
     };
   },
 );
@@ -16,7 +16,7 @@ const Global = ({ children }: ReactProps) => {
   const loading = {
     start: () => setIsLoading(true),
     end: () => setIsLoading(false),
-    get: isLoading,
+    isLoading,
   };
 
   return (

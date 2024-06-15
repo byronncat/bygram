@@ -1,35 +1,42 @@
-import axios, { AxiosResponse } from 'axios';
-import { uri, API_v1 } from '@global';
-import { AuthenticationInformation } from '../types';
+import axios from 'axios';
+import { uri } from '@global';
+import { AuthenticationApiPath } from '../constants';
 
-export async function loginAPI(
-  data: AuthenticationInformation,
-): Promise<API_v1> {
-  return await axios
-    .post(uri.getHostingServer('login'), data)
-    .then((res: AxiosResponse) => res.data)
-    .catch((err: any) => err.response.data);
-}
+import type { AxiosResponse } from 'axios';
+import type { API } from '@global';
+import type { AuthenticationInformation } from '../types';
 
-export async function registerAPI(
-  data: AuthenticationInformation,
-): Promise<API_v1> {
+const login = async (data: AuthenticationInformation): Promise<API> => {
   return await axios
-    .post(uri.getHostingServer('register'), data)
+    .post(uri.getHostingServer(AuthenticationApiPath.login), data)
     .then((res: AxiosResponse) => res.data)
-    .catch((err: any) => err.response.data);
-}
+    .catch((error) => error.response.data);
+};
 
-export async function authenticateAPI(): Promise<API_v1> {
+const register = async (data: AuthenticationInformation): Promise<API> => {
   return await axios
-    .get(uri.getHostingServer('authenticate'))
+    .post(uri.getHostingServer(AuthenticationApiPath.register), data)
     .then((res: AxiosResponse) => res.data)
-    .catch((err: any) => err.response.data);
-}
+    .catch((error) => error.response.data);
+};
 
-export async function logoutAPI(): Promise<API_v1> {
+const authenticate = async (): Promise<API> => {
   return await axios
-    .delete(uri.getHostingServer('logout'))
+    .get(uri.getHostingServer(AuthenticationApiPath.authenticate))
     .then((res: AxiosResponse) => res.data)
-    .catch((err: any) => err.response.data);
-}
+    .catch((error) => error.response.data);
+};
+
+const logout = async (): Promise<API> => {
+  return await axios
+    .delete(uri.getHostingServer(AuthenticationApiPath.logout))
+    .then((res: AxiosResponse) => res.data)
+    .catch((error) => error.response.data);
+};
+
+export const authenticationApi = {
+  login,
+  register,
+  authenticate,
+  logout,
+};

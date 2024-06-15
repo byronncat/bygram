@@ -1,10 +1,4 @@
-export type API_v1 = {
+export type API<DataType = undefined> = {
   readonly success: boolean;
   readonly message: string;
-};
-
-export type API<DataType> = {
-  readonly success: boolean;
-  readonly message: string;
-  readonly data: DataType;
-};
+} & (DataType extends undefined ? {} : { readonly data: DataType });

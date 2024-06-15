@@ -8,7 +8,7 @@ interface Validation {
   };
 }
 
-export const REQUIREMENTS = {
+const REQUIREMENTS = {
   Username: [
     'At least 2 characters',
     'Only letters, numbers, underscores, dots, and hyphens',
@@ -45,7 +45,7 @@ const VALIDATION: Validation = {
   },
 };
 
-export const LOGIN = [
+const LOGIN = [
   {
     name: 'email',
     type: 'email',
@@ -60,7 +60,7 @@ export const LOGIN = [
   },
 ] as FormFieldProps[];
 
-export const REGISTER = [
+const REGISTER = [
   {
     name: 'email',
     type: 'email',
@@ -81,7 +81,7 @@ export const REGISTER = [
   },
 ] as FormFieldProps[];
 
-export const SEND_EMAIL = [
+const SEND_EMAIL = [
   {
     name: 'email',
     type: 'email',
@@ -89,3 +89,10 @@ export const SEND_EMAIL = [
     validation: VALIDATION.EMAIL,
   },
 ] as FormFieldProps[];
+
+export const FIELD = {
+  LOGIN,
+  REGISTER,
+  SEND_EMAIL,
+  REQUIREMENTS,
+};

@@ -41,7 +41,6 @@ const Loader = () => {
           'text-2xl font-bold tracking-widest',
           'px-4 py-1 mt-12 rounded',
           'bg-primary text-on-primary shadow-lg shadow-primary',
-          'dark:bg-dark-primary-variant dark:text-dark-on-primary-variant dark:shadow-dark-primary-variant',
           styles.waviy,
         )}
       >

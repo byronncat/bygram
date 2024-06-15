@@ -1,31 +1,43 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect } from 'react';
+import { useTernaryDarkMode } from 'usehooks-ts';
+import { LocalStorageKey } from '../constants';
 import type { ReactProps } from '../types';
 
-enum Theme {
-  light,
-  dark,
-}
+type TernaryDarkMode = ReturnType<typeof useTernaryDarkMode>['ternaryDarkMode'];
 
 const ThemeContext = createContext(
   {} as {
     setLightTheme: () => void;
     setDarkTheme: () => void;
+    setSystemTheme: () => void;
   },
 );
 
 const ThemeProvider = ({ children }: ReactProps) => {
-  const [theme, setTheme] = useState(Theme.light);
+  const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode({
+    localStorageKey: LocalStorageKey.Theme,
+  });
 
-  const setLightTheme = () => setTheme(Theme.light);
-  const setDarkTheme = () => setTheme(Theme.dark);
+  const setLightTheme = () => {
+    setTernaryDarkMode('light' as TernaryDarkMode);
+  };
+  const setDarkTheme = () => {
+    setTernaryDarkMode('dark' as TernaryDarkMode);
+  };
+  const setSystemTheme = () => {
+    setTernaryDarkMode('system' as TernaryDarkMode);
+  };
 
   useEffect(() => {
-    document.documentElement.className = `${Theme[theme]}`;
-    document.getElementById('root')!.className = `${Theme[theme]}-theme`;
-  }, [theme]);
+    const theme = isDarkMode ? 'dark' : 'light';
+    document.documentElement.className = theme;
+    document.getElementById('root')!.className = `${theme}-theme`;
+  }, [isDarkMode]);
 
   return (
-    <ThemeContext.Provider value={{ setLightTheme, setDarkTheme }}>
+    <ThemeContext.Provider
+      value={{ setLightTheme, setDarkTheme, setSystemTheme }}
+    >
       {children}
     </ThemeContext.Provider>
   );

@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import { signedCookie } from 'cookie-parser';
 
-import { getSession, removeSession } from '@/database/access';
 import { StatusCode } from '@constants';
 import { jwt } from '@libraries';
 import { logger } from '@utilities';
+import { getSession, removeSession } from '@/database/access';
+
 import { TIME } from '@constants';
 import type { API, Identity } from '@types';
 

@@ -16,7 +16,7 @@ import { ErrorPage } from '@global';
 import { ROUTE } from '@route';
 
 const Router = () => {
-  const { isAuthenticated } = useAuthenticationContext();
+  const { isLoggedIn: isAuthenticated } = useAuthenticationContext();
   const router = createBrowserRouter([
     {
       path: '*',

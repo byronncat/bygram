@@ -6,17 +6,17 @@ import clsx from 'clsx';
 import { toast, useGlobalContext } from '@global';
 import { Divider, Form, NavigationText } from '../components';
 import { useAuthenticationContext, useClassNameContext } from '../providers';
-import { registerAPI } from '../api';
+import { authenticationApi } from '../api';
 import { DEFAULT_VALUES, FIELD } from '../constants';
 
 import type { OutletContextProps } from '../hocs';
 import type { AuthenticationInformation } from '../types';
 
-export default function Register() {
+const Register = () => {
   const navigate = useNavigate();
   const { loading } = useGlobalContext();
   const { className } = useClassNameContext();
-  const { setAuthenticatedState } = useAuthenticationContext();
+  const { login } = useAuthenticationContext();
 
   const { setTitle }: OutletContextProps = useOutletContext();
   useLayoutEffect(() => {
@@ -27,14 +27,16 @@ export default function Register() {
     data,
   ) => {
     loading.start();
-    // toast.display("Waiting for server's response", 'loading');
-    const response = await registerAPI(data);
+    toast.loading('Waiting for registration');
+    const response = await authenticationApi.register(data);
     loading.end();
     if (response.success) {
-      setAuthenticatedState(true);
+      login();
       navigate('/');
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
     }
-    // toast.display(response.message, response.success ? 'success' : 'error');
   };
 
   return (
@@ -56,8 +58,21 @@ export default function Register() {
         <div className="basis-1/2 flex flex-col">
           {Object.entries(FIELD.REQUIREMENTS).map(([field, requirements]) => (
             <div key={field} className={clsx('mb-4')}>
-              <h3 className="capitalize mb-2">{field}:</h3>
-              <ul className="space-y-1 text-gray-400 list-disc list-inside">
+              <h3
+                className={clsx(
+                  'mb-2',
+                  'font-semibold capitalize',
+                  'text-on-background/[0.87] dark:text-dark-on-background/[0.87]',
+                )}
+              >
+                {field}:
+              </h3>
+              <ul
+                className={clsx(
+                  'space-y-1 list-disc list-inside',
+                  'text-on-background/[0.87] dark:text-dark-on-background/[0.8]',
+                )}
+              >
                 {requirements.map((requirement, index) => (
                   <li key={index}>{requirement}</li>
                 ))}
@@ -74,4 +89,6 @@ export default function Register() {
       />
     </div>
   );
-}
+};
+
+export default Register;

@@ -13,6 +13,6 @@ export interface FormFieldProps {
     [key: string]: string;
   };
   register?: UseFormRegister<AuthenticationInformation>;
-  errors?: FieldError | undefined;
+  error?: FieldError | undefined;
   validation?: {};
 }

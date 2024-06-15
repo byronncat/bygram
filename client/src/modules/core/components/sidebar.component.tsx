@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import clsx from 'clsx';
 
 import { toast } from '@global';
-import { logoutAPI, useAuthenticationContext } from '@authentication';
+import { authenticationApi, useAuthenticationContext } from '@authentication';
 import { useSidebarOptionsContext } from '../providers';
 import { SearchSide, UploadPostWindow } from './';
 import {
@@ -32,13 +32,13 @@ export default function Sidebar() {
   const [showCreate, setShowCreate] = useState(false);
   const { currentLink, setLink, setBackToPreviousLink } =
     useSidebarOptionsContext();
-  const { setAuthenticatedState, user } = useAuthenticationContext();
+  const { logout, user } = useAuthenticationContext();
 
   async function logoutHandler() {
-    const response = await logoutAPI();
+    const response = await authenticationApi.logout();
     // toast.display(response.message, response.success ? 'success' : 'error');
     if (response.success) {
-      setAuthenticatedState(false);
+      logout();
       navigate('/login');
     }
     // toast.display(response.message, response.success ? 'success' : 'error');

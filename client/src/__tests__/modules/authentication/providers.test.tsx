@@ -6,7 +6,7 @@ import {
 } from '@authentication';
 import { render, renderHook, waitFor } from '@testing-library/react';
 import { ReactProps } from '@global';
-import { authenticateAPI } from '@/modules/authentication/api';
+import { authenticationApi } from '@/modules/authentication/api';
 import { useEffect } from 'react';
 
 jest.mock('@/modules/authentication/api');
@@ -27,7 +27,7 @@ describe('provider', () => {
   // The issue might be related to the scope of the mock.
   describe('authentication', () => {
     beforeEach(() => {
-      (authenticateAPI as jest.Mock).mockResolvedValue({
+      (authenticationApi.login as jest.Mock).mockResolvedValue({
         success: true,
         message: '',
       });
@@ -36,7 +36,7 @@ describe('provider', () => {
     it('should return isAuthenticated object', async () => {
       let result: boolean = false;
       const Test = () => {
-        const { isAuthenticated } = useAuthenticationContext();
+        const { isLoggedIn: isAuthenticated } = useAuthenticationContext();
 
         useEffect(() => {
           result = isAuthenticated;

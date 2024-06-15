@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import { toast, ToastContainerProps, ToastContainer } from 'react-toastify';
+import clsx from 'clsx';
 
 const settings = {
   position: 'top-right',

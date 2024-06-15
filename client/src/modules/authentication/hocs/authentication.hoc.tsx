@@ -3,11 +3,11 @@ import { Outlet } from 'react-router-dom';
 import { ClassNameProvider } from '../providers';
 import { AuthenticationLayout } from '../layouts';
 
-export type OutletContextProps = {
+type OutletContextProps = {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function AuthenticationHoc() {
+const Authentication = () => {
   const [title, setTitle] = useState('');
 
   return (
@@ -17,4 +17,7 @@ export default function AuthenticationHoc() {
       </AuthenticationLayout>
     </ClassNameProvider>
   );
-}
+};
+
+export default Authentication;
+export type { OutletContextProps };

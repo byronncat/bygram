@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { uri } from '@global';
-import type { API_v1 } from '@global';
+import type { API } from '@global';
 import type { PostUploadData } from '../types';
 import type { AxiosResponse } from 'axios';
 
 export async function uploadPost(
   postData: PostUploadData,
   method: 'post' | 'put',
-): Promise<API_v1> {
+): Promise<API> {
   const formData = new FormData();
   if (postData.id) formData.append('id', postData.id);
   if (postData.uid) formData.append('uid', postData.uid.toString());

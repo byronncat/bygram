@@ -27,6 +27,7 @@
 
     @apply duration-300 ease-in-out;
     @apply focus:outline-none focus:ring select-none cursor-pointer;
+    @apply disabled:bg-primary dark:disabled:bg-dark-primary disabled:text-on-primary dark:disabled:text-on-primary;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 }

@@ -1,6 +1,8 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FormField } from '../libraries';
-import { useGlobalContext, type ReactProps } from '@global';
+import { useGlobalContext } from '@global';
+
+import type { ReactProps } from '@global';
 import type { AuthenticationInformation, FormFieldProps } from '../types';
 
 interface FormProps extends ReactProps {
@@ -11,7 +13,7 @@ interface FormProps extends ReactProps {
   submitPlaceholder?: string;
 }
 
-export default function Form({
+const Form = ({
   className,
   fieldList,
   defaultValues,
@@ -19,7 +21,7 @@ export default function Form({
   children,
   fieldClass,
   submitPlaceholder,
-}: FormProps) {
+}: FormProps) => {
   const {
     register,
     handleSubmit,
@@ -42,18 +44,20 @@ export default function Form({
               className={fieldClass}
               register={register}
               validation={field.validation}
-              errors={errors[field.name]}
+              error={errors[field.name]}
             />
           );
         })}
         <input
           type="submit"
           value={submitPlaceholder}
-          className="button w-full mt-5"
-          disabled={loading.get}
+          className="simple-border-button w-full mt-5 py-2"
+          disabled={loading.isLoading}
         />
         {children}
       </form>
     </>
   );
-}
+};
+
+export default Form;

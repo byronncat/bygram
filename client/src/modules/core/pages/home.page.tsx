@@ -24,6 +24,7 @@ import {
 } from '@global';
 import { useSidebarOptionsContext } from '../providers';
 import axios from 'axios';
+import { set } from 'react-hook-form';
 
 function HomePage() {
   console.log('HomePage');
@@ -103,6 +104,8 @@ function HomePage() {
   //   })();
   // }, []);
 
+  const { setDarkTheme } = useThemeContext();
+
   if (!ready)
     return (
       // <Overlay
@@ -110,7 +113,16 @@ function HomePage() {
       //     setReady(true);
       //   }}
       // >
-      <Loader />
+      <div>
+        <Loader />
+        <button
+          onClick={() => {
+            setDarkTheme();
+          }}
+        >
+          test
+        </button>
+      </div>
       // </Overlay>
     );
   return (

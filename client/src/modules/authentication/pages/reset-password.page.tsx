@@ -1,5 +1,3 @@
-import { useLayoutEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 
 import { useClassNameContext } from '../providers';
@@ -27,14 +25,6 @@ const fieldList: FormFieldProps[] = [
 
 export default function ResetPassword() {
   const { className } = useClassNameContext();
-  const {
-    setTitle,
-  }: { setTitle: React.Dispatch<React.SetStateAction<string>> } =
-    useOutletContext();
-  useLayoutEffect(() => {
-    setTitle('reset');
-  }, [setTitle]);
-
   const submitHandler: SubmitHandler<AuthenticationInformation> = (data) =>
     console.log(data);
 

@@ -4,5 +4,4 @@ export * from './hocs';
 export * from './libraries';
 export * from './pages';
 export * from './providers';
-export * from './utilities';
 export * from './types/index.d';

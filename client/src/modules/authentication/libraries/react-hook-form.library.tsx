@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { EyeIcon } from '@/assets/icons';
 import type { FormFieldProps } from '../types';
 
-export default function FormField({
+const FormField = ({
   type,
   placeholder,
   name,
   register,
-  errors,
+  error,
   validation,
   className,
-}: FormFieldProps) {
+}: FormFieldProps) => {
   const [inputType, setInputType] = useState(type);
   function togglePasswordVisibilityHandler() {
     if (inputType === 'password') {
@@ -26,7 +27,7 @@ export default function FormField({
           type={inputType}
           className={clsx(
             className?.formInput,
-            errors?.message && 'border-neon-red focus:border-neon-red',
+            error?.message && 'border-error dark:border-dark-error',
           )}
           id={name}
           placeholder={' '}
@@ -35,7 +36,7 @@ export default function FormField({
         <label
           className={clsx(
             className?.formLabel,
-            errors?.message && 'text-neon-red peer-focus:text-neon-red',
+            error?.message && 'border-error dark:border-dark-error',
           )}
           htmlFor={name}
         >
@@ -48,24 +49,32 @@ export default function FormField({
               'absolute top-0 right-0',
               'h-full w-12',
               'text-xl',
-              'cursor-pointer transition duration-300 opacity-50 hover:opacity-100',
+              'cursor-pointer transition duration-300 opacity-60 hover:opacity-100',
             )}
             onClick={togglePasswordVisibilityHandler}
           >
-            <i
-              className={`icon-eye${inputType !== 'password' ? '-off' : ''}`}
+            <EyeIcon
+              className={clsx(
+                'w-5 h-5',
+                'fill-on-background/[0.8] dark:fill-dark-on-background',
+              )}
+              slash={inputType === 'password'}
             />
           </span>
         )}
       </div>
-      <p
-        className={clsx(
-          className?.formErrorMessage,
-          errors?.message && className?.formErrorMessageAnimation,
-        )}
-      >
-        {errors?.message}
-      </p>
+      {error && (
+        <p
+          className={clsx(
+            className?.formErrorMessage,
+            error?.message && className?.formErrorMessageAnimation,
+          )}
+        >
+          {error?.message}
+        </p>
+      )}
     </>
   );
-}
+};
+
+export default FormField;

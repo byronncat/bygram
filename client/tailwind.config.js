@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary": '#4B53F2',
+        "primary": '#d81d84',
         "on-primary": '#FFFFFF',
         "primary-variant": '#2d32d5',
         "secondary": '#03DAC6',
@@ -20,9 +20,9 @@ module.exports = {
         "success": "#4caf50",
         "on-success": "#FFFFFF",
         "dark": {
-          "primary": '#9fbaff',
+          "primary": '#f242ac',
           "on-primary": '#000000',
-          "primary-variant": '#2d32d5',
+          "primary-variant": '#d81d84',
           "secondary": '#03DAC6',
           "on-secondary": '#000000',
           "secondary-variant": '#018786',
@@ -34,10 +34,6 @@ module.exports = {
           "on-error": '#000000',
           "success": "#00C853",
           "on-success": "#FFFFFF",
-        },
-        'neon': {
-          'red': '#ff0000',
-          'green': '#39ff14',
         },
         'cerise': {
           '50': '#fdf2f9',

@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export enum LogType {
   SUCCESS = 'SUCCESS',
   INFO = 'INFO',
@@ -48,6 +50,15 @@ export const logger = {
     log('SUCCESS', message, location),
   info: (message: string, location: string) => log('INFO', message, location),
   warn: (message: string, location: string) => log('WARN', message, location),
-  error: (message: string, location: string) => log('ERROR', message, location),
+  error: (message: string, location: string) => {
+    log('ERROR', message, location);
+    if (process.env.NODE_ENV === 'development') createLogFile(message);
+  },
   debug: (message: string, location: string) => log('DEBUG', message, location),
 };
+
+function createLogFile(message: string) {
+  const filePath = './src/error.log';
+  const logMessage = `${getCurrentTime()} - ${message}`;
+  fs.appendFileSync(filePath, logMessage + '\n\n');
+}

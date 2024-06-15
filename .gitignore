@@ -4,6 +4,8 @@ build/
 dist/
 temp/
 
+*.log
+
 # diagram
 *.ldb
 

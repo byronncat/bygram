@@ -5,17 +5,17 @@ import { SubmitHandler } from 'react-hook-form';
 import { toast, useGlobalContext } from '@global';
 import { Divider, Form, NavigationText } from '../components';
 import { useAuthenticationContext, useClassNameContext } from '../providers';
-import { loginAPI } from '../api';
+import { authenticationApi } from '../api';
 import { DEFAULT_VALUES, FIELD } from '../constants';
 
 import type { OutletContextProps } from '../hocs';
 import type { AuthenticationInformation } from '../types';
 
-export default function Login() {
+const Login = () => {
   const navigate = useNavigate();
   const { loading } = useGlobalContext();
   const { className } = useClassNameContext();
-  const { setAuthenticatedState } = useAuthenticationContext();
+  const { login } = useAuthenticationContext();
 
   const { setTitle }: OutletContextProps = useOutletContext();
   useLayoutEffect(() => {
@@ -26,14 +26,16 @@ export default function Login() {
     data,
   ) => {
     loading.start();
-    // toast.display("Waiting for server's response", 'loading');
-    const response = await loginAPI(data);
+    toast.loading('Waiting for login');
+    const response = await authenticationApi.login(data);
     loading.end();
     if (response.success) {
-      setAuthenticatedState(true);
+      toast.success(response.message);
+      login();
       navigate('/');
+    } else {
+      toast.error(response.message);
     }
-    // toast.display(response.message, response.success ? 'success' : 'error');
   };
 
   return (
@@ -43,7 +45,7 @@ export default function Login() {
       defaultValues={DEFAULT_VALUES.LOGIN_FORM}
       submitHandler={submitHandler}
       fieldClass={className}
-      submitPlaceholder="Login"
+      submitPlaceholder="Submit"
     >
       <Divider />
       <NavigationText
@@ -53,4 +55,6 @@ export default function Login() {
       />
     </Form>
   );
-}
+};
+
+export default Login;

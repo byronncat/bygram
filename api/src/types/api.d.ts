@@ -1,9 +1,9 @@
 import type { Account, Profile } from '@types';
 
-export interface API {
-  success: boolean;
-  message: string;
-}
+export type API<DataType = undefined> = {
+  readonly success: boolean;
+  readonly message: string;
+} & (DataType extends undefined ? {} : { readonly data: DataType });
 
 export type SearchProfileData = Pick<Account, 'id' | 'username'> &
   Pick<Profile, 'avatar'>;
