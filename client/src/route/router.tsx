@@ -11,7 +11,7 @@ import {
   ResetPasswordPage,
   useAuthenticationContext,
 } from '@authentication';
-import { Dashboard, HomePage, ExplorePage, ProfilePage } from '@core';
+import { DashboardHoc, HomePage, ExplorePage, ProfilePage } from '@core';
 import { ErrorPage } from '@global';
 import { ROUTE } from '@route';
 
@@ -23,7 +23,11 @@ const Router = () => {
       element: <ErrorPage />,
     },
     {
-      element: isAuthenticated ? <Dashboard /> : <Navigate to={ROUTE.LOGIN} />,
+      element: isAuthenticated ? (
+        <DashboardHoc />
+      ) : (
+        <Navigate to={ROUTE.LOGIN} />
+      ),
       errorElement: <ErrorPage />,
       children: [
         { path: ROUTE.HOME, element: <HomePage /> },

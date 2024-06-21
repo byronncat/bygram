@@ -7,16 +7,20 @@ type TernaryDarkMode = ReturnType<typeof useTernaryDarkMode>['ternaryDarkMode'];
 
 const ThemeContext = createContext(
   {} as {
+    theme: TernaryDarkMode;
+    setTheme: (theme: TernaryDarkMode) => void;
     setLightTheme: () => void;
     setDarkTheme: () => void;
     setSystemTheme: () => void;
+    isDarkMode: boolean;
   },
 );
 
 const ThemeProvider = ({ children }: ReactProps) => {
-  const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode({
-    localStorageKey: LocalStorageKey.Theme,
-  });
+  const { isDarkMode, ternaryDarkMode, setTernaryDarkMode } =
+    useTernaryDarkMode({
+      localStorageKey: LocalStorageKey.Theme,
+    });
 
   const setLightTheme = () => {
     setTernaryDarkMode('light' as TernaryDarkMode);
@@ -36,7 +40,14 @@ const ThemeProvider = ({ children }: ReactProps) => {
 
   return (
     <ThemeContext.Provider
-      value={{ setLightTheme, setDarkTheme, setSystemTheme }}
+      value={{
+        theme: ternaryDarkMode,
+        setTheme: setTernaryDarkMode,
+        setLightTheme,
+        setDarkTheme,
+        setSystemTheme,
+        isDarkMode,
+      }}
     >
       {children}
     </ThemeContext.Provider>

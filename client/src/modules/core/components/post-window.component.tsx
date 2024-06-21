@@ -25,7 +25,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
   const [comment, setComment] = useState({} as CommentData);
   const [comments, setComments] = useState([] as CommentData[]);
   // const { refreshPage } = useGlobalContext();
-  const { setLink } = useSidebarOptionsContext();
+  const { setOption } = useSidebarOptionsContext();
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showCommentMenu, setShowCommentMenu] = useState(false);
@@ -161,7 +161,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
             <Link
               to={`/profile/${post.uid}`}
               className={clsx(styles.link, 'd-flex align-items-center')}
-              onClick={() => setLink('profile')}
+              onClick={() => setOption('profile')}
             >
               <Avatar file={post.avatar} />
               {/* <p className="d-inline-block m-0">{post.username}</p> */}
@@ -193,7 +193,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                               'd-inline-block me-2',
                               'fw-bold',
                             )}
-                            onClick={() => setLink('profile')}
+                            onClick={() => setOption('profile')}
                           >
                             {/* {comment.username} */}
                           </Link>

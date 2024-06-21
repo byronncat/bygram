@@ -20,7 +20,7 @@ const DEBOUNCE_TIME = 1000;
 const SearchElement = document.getElementById('search') as HTMLInputElement;
 
 function SearchSide({ isShow, exitHandler }: SearchSideProps) {
-  const { setLink } = useSidebarOptionsContext();
+  const { setOption } = useSidebarOptionsContext();
   const { user } = useAuthenticationContext();
   const { register } = useForm();
   // const [debouncedSearchInput, setSearchInput] = useDebounce<string>(
@@ -30,7 +30,7 @@ function SearchSide({ isShow, exitHandler }: SearchSideProps) {
   const [searchResult, setSearchResult] = useState([] as SearchProfileData[]);
 
   function navigateProfileHandler() {
-    setLink(SIDEBAR_OPTION.PROFILE);
+    setOption(SIDEBAR_OPTION.PROFILE);
     exitHandler();
   }
 

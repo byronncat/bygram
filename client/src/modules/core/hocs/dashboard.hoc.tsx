@@ -1,10 +1,15 @@
 import { Outlet } from 'react-router-dom';
-import ColumnLayout from '../layouts/root.layout';
+import { SidebarOptionsProvider } from '../providers';
+import { ColumnLayout } from '../layouts';
 
-export default function Dashboard() {
+const Dashboard = () => {
   return (
-    <ColumnLayout>
-      <Outlet />
-    </ColumnLayout>
+    <SidebarOptionsProvider>
+      <ColumnLayout>
+        <Outlet />
+      </ColumnLayout>
+    </SidebarOptionsProvider>
   );
-}
+};
+
+export default Dashboard;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ClassNameProvider } from '../providers';
-import { AuthenticationLayout } from '../layouts';
+import { LandingPageLayout } from '../layouts';
 
 type OutletContextProps = {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
@@ -12,9 +12,9 @@ const Authentication = () => {
 
   return (
     <ClassNameProvider>
-      <AuthenticationLayout title={title}>
+      <LandingPageLayout title={title}>
         <Outlet context={{ setTitle }} />
-      </AuthenticationLayout>
+      </LandingPageLayout>
     </ClassNameProvider>
   );
 };

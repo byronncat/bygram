@@ -15,13 +15,13 @@ function ExplorePage() {
   const [posts, setPosts] = useState([] as Post[]);
 
   useEffect(() => {
-    (async function FetchData() {
-      const response = await explorePost(32);
-      if (response.success && response.data) {
-        setPosts(response.data);
-        setReady(true);
-      } else toast.error(response.message);
-    })();
+    // (async function FetchData() {
+    //   const response = await explorePost(32);
+    //   if (response.success && response.data) {
+    //     setPosts(response.data);
+    //     setReady(true);
+    //   } else toast.error(response.message);
+    // })();
   }, [ready]);
   if (!ready) return <Loader />;
   return (

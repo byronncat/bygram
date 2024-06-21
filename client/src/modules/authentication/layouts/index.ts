@@ -1,1 +1,1 @@
-export { default as AuthenticationLayout } from './authentication.layout'
+export { default as LandingPageLayout } from './landing-page.layout';

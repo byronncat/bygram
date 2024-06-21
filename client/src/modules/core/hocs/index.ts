@@ -1,1 +1,1 @@
-export { default as Dashboard } from './dashboard.hoc';
+export { default as DashboardHoc } from './dashboard.hoc';

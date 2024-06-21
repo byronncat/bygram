@@ -43,7 +43,7 @@ function HomePage() {
     },
   };
 
-  const { setLink } = useSidebarOptionsContext();
+  const { setOption } = useSidebarOptionsContext();
   const { formatTime } = useFormat();
 
   const authorMenu = AUTHOR_POST_MENU.map((item) => {
