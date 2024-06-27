@@ -17,8 +17,6 @@ import {
 } from '@assets/icons';
 
 import { SIDEBAR_OPTION, SidebarOptionStrings } from '../constants';
-import styles from '../styles/components/sidebar.module.sass';
-import logoURL from '@assets/images/logo.svg';
 
 interface SidebarLink {
   name: SidebarOptionStrings;
@@ -26,7 +24,7 @@ interface SidebarLink {
   path: string;
 }
 
-export default function Sidebar() {
+const Sidebar = () => {
   const navigate = useNavigate();
   const [minimize, toggleMinimize] = useToggle(false);
   const [showSearch, toggleShowSearch] = useToggle(false);
@@ -39,16 +37,16 @@ export default function Sidebar() {
     toggleMinimize();
     toggleShowSearch();
   }
-  function selectOptionHandler(_option: SidebarOptionStrings) {
-    if (_option === SIDEBAR_OPTION.LOGOUT) return logoutHandler();
-    if (_option === SIDEBAR_OPTION.CREATE) return toggleShowCreate();
-    if (_option === SIDEBAR_OPTION.SEARCH) toggleSearchHandler();
+  function selectOptionHandler(clickedOption: SidebarOptionStrings) {
+    if (clickedOption === SIDEBAR_OPTION.LOGOUT) return logoutHandler();
+    if (clickedOption === SIDEBAR_OPTION.CREATE) return toggleShowCreate();
+    if (clickedOption === SIDEBAR_OPTION.SEARCH) toggleSearchHandler();
     if (option === SIDEBAR_OPTION.SEARCH) {
-      if (showSearch) toggleSearchHandler();
-      return optionBack();
+      if (clickedOption === SIDEBAR_OPTION.SEARCH) return optionBack();
+      else toggleSearchHandler();
     }
-    if (_option === option) return;
-    return setOption(_option);
+    if (clickedOption === option) return;
+    return setOption(clickedOption);
   }
 
   const logoutHandler = async () => {
@@ -101,68 +99,47 @@ export default function Sidebar() {
       {showCreate && (
         <UploadPostWindow exitHandler={toggleShowCreate} method="post" />
       )}
-      <div className={clsx('w-120 h-full', 'relative z-10')}>
+      <div className={clsx('w-120 h-full', 'relative')}>
         <SearchSide isShow={showSearch} exitHandler={toggleSearchHandler} />
         <nav
           className={clsx(
-            'relative z-10',
-            'h-full bg-background/[.08]',
+            'h-full pt-8',
+            'dark:bg-surface/[.07]',
+            'border-r border-on-surface/[.12] dark:border-dark-on-surface/[.1]',
             'transition-all duration-300',
-            'border-r border-white/[.1]',
             minimize ? `w-20` : 'w-64 px-6',
           )}
         >
-          <Link
-            to="/"
-            className={clsx(
-              styles.brand,
-              'h-36',
-              'flex items-center',
-              minimize && 'justify-center',
-            )}
-            onClick={() => setOption('home')}
-          >
-            <img
-              src={logoURL}
-              className={clsx('w-12 h-12', minimize ? 'block' : 'hidden')}
-              alt="logo"
-            />
-            <span
-              className={clsx(
-                styles['brand-name'],
-                'font-oleo-script text-4xl tracking-wider',
-                'transition-all duration-700',
-                minimize ? 'hidden' : 'block',
-              )}
-            >
-              Bygram
-            </span>
-          </Link>
-
           <ul className={clsx('flex flex-col', minimize && 'items-center')}>
             {SIDEBAR_MENU.map((tag) => {
               return (
                 <li
                   key={tag.name}
-                  className={clsx(
-                    'group',
-                    'mb-3 h-12 ',
-                    'transition-all duration-300',
-                    minimize ? 'w-12' : 'w-full',
-                  )}
+                  className={clsx('mb-3 h-12 ', minimize ? 'w-12' : 'w-full')}
                   aria-current="page"
                 >
                   <Link
                     id={tag.name}
                     to={tag.path}
                     className={clsx(
-                      'w-full h-full px-2 rounded',
+                      'group',
+                      'w-full h-full px-3 rounded-lg',
                       'flex items-center',
                       'capitalize',
+                      'transition-all duration-300',
                       minimize ? 'justify-center w-12' : 'w-48',
                       option === tag.name
-                        ? `${styles.active} bg-cerise-700 font-semibold tracking-wider`
-                        : 'text-white/[.62] hover:text-white hover:bg-cerise-700/[.4] active:text-white/[.4] active:bg-cerise-700/[.3]',
+                        ? clsx(
+                            'bg-primary text-on-primary',
+                            'dark:bg-dark-primary/[.7]',
+                            'font-semibold tracking-wider',
+                          )
+                        : clsx(
+                            'text-on-surface/[0.87] hover:text-surface',
+                            'dark:text-dark-on-surface/[0.87] dark:hover:text-surface',
+                            'hover:bg-primary/[.5] active:text-surface active:bg-primary/[.7]',
+                            'dark:hover:bg-dark-primary/[.3] dark:active:text-surface dark:active:bg-dark-primary/[.5]',
+                          ),
                     )}
                     onClick={() => selectOptionHandler(tag.name)}
                   >
@@ -171,15 +148,17 @@ export default function Sidebar() {
                         'w-5 h-5',
                         'transition-all duration-300',
                         option === tag.name
-                          ? 'fill-white'
-                          : 'fill-white/[.62] group-hover:fill-white group-active:fill-white/[.4] group-active:scale-95',
+                          ? 'fill-on-primary'
+                          : clsx(
+                              'fill-on-surface/[0.87] group-hover:fill-surface group-active:fill-surface group-active:scale-95',
+                              'dark:fill-dark-on-surface/[0.87] dark:group-hover:fill-dark-surface dark:group-active:fill-dark-surface dark:group-active:scale-95',
+                            ),
                       ),
                     })}
                     <p
                       className={clsx(
                         'ms-3',
                         'whitespace-nowrap',
-                        'transition-all duration-300',
                         minimize ? 'hidden' : 'block',
                       )}
                     >
@@ -194,4 +173,6 @@ export default function Sidebar() {
       </div>
     </>
   );
-}
+};
+
+export default Sidebar;

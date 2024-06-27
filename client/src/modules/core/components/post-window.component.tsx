@@ -13,8 +13,8 @@ import {
   deleteComment,
 } from '../services/post.service';
 import { AUTHOR_POST_MENU, DEFAULT_AVATAR } from '../constants';
-import { CommentData, FileData, PostData } from '../types';
-import homeStyles from '../styles/pages/home.module.sass';
+import { CommentData, MediaInfo, PostData } from '../types';
+// import homeStyles from '../styles/pages/home.module.sass';
 import styles from '../styles/components/post-window.module.sass';
 
 interface PostWindowProps extends ReactProps {
@@ -133,7 +133,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
       )}
       <Overlay exitHandler={() => onExit()}>
         <div className={clsx(styles['wrapper'], 'mw-100', 'd-flex')}>
-          <ImageContent file={post.file} />
+          {/* <ImageContent file={post.file} /> */}
           <div
             className={clsx(
               styles['post-content-wrapper'],
@@ -228,7 +228,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
               <div className="d-flex align-items-center">
                 <span
                   className={clsx(
-                    homeStyles.icons,
+                    // homeStyles.icons,
                     'd-flex align-items-center',
                   )}
                 >
@@ -260,7 +260,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
                       }
                     }}
                     className={clsx(
-                      homeStyles['likes-icon'],
+                      // homeStyles['likes-icon'],
                       `icon-heart${
                         likes?.includes(authenticationStorage.identity?.id!)
                           ? ''
@@ -307,7 +307,7 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
   );
 }
 
-function ImageContent({ file }: { file: FileData }) {
+function ImageContent({ file }: { file: MediaInfo }) {
   return (
     <div
       className={clsx(
@@ -328,7 +328,7 @@ function ImageContent({ file }: { file: FileData }) {
   );
 }
 
-function Avatar({ file }: { file: FileData | undefined }) {
+function Avatar({ file }: { file: MediaInfo | undefined }) {
   return (
     <span
       className={clsx(

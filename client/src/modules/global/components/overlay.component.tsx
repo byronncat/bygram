@@ -16,7 +16,7 @@ const Overlay = ({ children, exitHandler, zIndex = 1 }: OverlayProps) => {
     <div
       className={clsx(
         `absolute top-0 start-0 z-${zIndex}0`,
-        'w-screen h-screen bg-on-surface/[0.76]',
+        'w-screen h-screen bg-on-surface/[0.6]',
         'flex justify-center items-center',
       )}
       onClick={overlayHandler}

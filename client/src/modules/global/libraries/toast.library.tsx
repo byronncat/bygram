@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 const settings = {
   position: 'top-right',
-  autoClose: 3000,
+  autoClose: 3333000,
   limit: 4,
   hideProgressBar: true,
   newestOnTop: false,
@@ -29,7 +29,7 @@ const contextClass = {
 const Toast = () => {
   return (
     <ToastContainer
-      className="font-medium text-lg"
+      className="font-medium text-lg mt-12 z-10"
       {...settings}
       toastClassName={(context) =>
         clsx(

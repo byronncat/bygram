@@ -12,12 +12,17 @@ enum Time {
 function relativeTime(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
-  const secondsPast = Math.floor((now.getTime() - date.getTime()) / Time.SecondsToMiliseconds);
+  const secondsPast = Math.floor(
+    (now.getTime() - date.getTime()) / Time.SecondsToMiliseconds,
+  );
 
   if (secondsPast < Time.MINUTE) return `${secondsPast} seconds ago`;
-  if (secondsPast < Time.HOUR) return `${Math.floor(secondsPast / Time.MINUTE)} minutes ago`;
-  if (secondsPast <= Time.DAY) return `${Math.floor(secondsPast / Time.HOUR)} hours ago`;
-  if (secondsPast <= Time.WEEK) return `${Math.floor(secondsPast / Time.DAY)} days ago`;
+  if (secondsPast < Time.HOUR)
+    return `${Math.floor(secondsPast / Time.MINUTE)} minutes ago`;
+  if (secondsPast <= Time.DAY)
+    return `${Math.floor(secondsPast / Time.HOUR)} hours ago`;
+  if (secondsPast <= Time.WEEK)
+    return `${Math.floor(secondsPast / Time.DAY)} days ago`;
 
   const day = date.getDate();
   const month = date.getMonth(); // Months are zero indexed
@@ -41,7 +46,7 @@ function relativeTime(dateString: string) {
   return `${monthNames[month]} ${day}, ${year}`;
 }
 
-export default function useFormat() {
+function useFormat() {
   const getFormatter = useCallback(() => {
     return {
       formatTime: (dateString: string) => relativeTime(dateString),
@@ -51,3 +56,5 @@ export default function useFormat() {
   const [formatter] = useState(getFormatter());
   return formatter;
 }
+
+export default useFormat;

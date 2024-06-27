@@ -3,16 +3,12 @@
 @tailwind utilities;
 
 @layer theme {
-  .white-theme {
+  .light-theme {
     @apply bg-background text-on-background;
   }
 
   .dark-theme {
     @apply bg-dark-background text-dark-on-background;
-  }
-
-  .cerise-theme {
-    /* @apply bg-cerise text-white; */
   }
 }
 

@@ -6,12 +6,12 @@ module.exports = {
     extend: {
       colors: {
         "primary": '#d81d84',
-        "on-primary": '#FFFFFF',
         "primary-variant": '#2d32d5',
+        "on-primary": '#FFFFFF',
         "secondary": '#03DAC6',
-        "on-secondary": '#000000',
         "secondary-variant": '#018786',
-        "background": '#FFFFFF',
+        "on-secondary": '#000000',
+        "background": '#F0F2F5',
         "on-background": '#000000',
         "surface": '#FFFFFF',
         "on-surface": '#000000',
@@ -21,20 +21,22 @@ module.exports = {
         "on-success": "#FFFFFF",
         "dark": {
           "primary": '#f242ac',
-          "on-primary": '#000000',
           "primary-variant": '#d81d84',
+          "on-primary": '#000000',
           "secondary": '#03DAC6',
-          "on-secondary": '#000000',
           "secondary-variant": '#018786',
+          "on-secondary": '#000000',
           "background": '#121212',
           "on-background": '#FFFFFF',
-          "surface": '#121212',
+          "surface": '#FFFFFF',
           "on-surface": '#FFFFFF',
           "error": '#D32F2F',
           "on-error": '#000000',
           "success": "#00C853",
           "on-success": "#FFFFFF",
         },
+        'love': '#FF3131',
+
         'cerise': {
           '50': '#fdf2f9',
           '100': '#fde6f5',
@@ -81,6 +83,9 @@ module.exports = {
       spacing: {
         '100': '25rem',
         '120': '30rem',
+        '140': '35rem',
+        '160': '40rem',
+        '180': '45rem',
         '190': '47.5rem',
         '250': '62.5rem',
         'md': '48rem',
@@ -94,6 +99,9 @@ module.exports = {
       },
       borderWidth: {
         '3': '3px',
+      },
+      aspectRatio: {
+        '9/16': '9 / 16',
       }
     },
   },

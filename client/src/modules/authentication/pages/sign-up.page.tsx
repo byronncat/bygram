@@ -62,7 +62,7 @@ const Register = () => {
                 className={clsx(
                   'mb-2',
                   'font-semibold capitalize',
-                  'text-on-background/[0.87] dark:text-dark-on-background/[0.87]',
+                  'text-on-surface/[0.87] dark:text-dark-on-surface/[0.87]',
                 )}
               >
                 {field}:
@@ -70,7 +70,7 @@ const Register = () => {
               <ul
                 className={clsx(
                   'space-y-1 list-disc list-inside',
-                  'text-on-background/[0.87] dark:text-dark-on-background/[0.8]',
+                  'text-on-surface/[0.87] dark:text-dark-on-surface/[0.8]',
                 )}
               >
                 {requirements.map((requirement, index) => (

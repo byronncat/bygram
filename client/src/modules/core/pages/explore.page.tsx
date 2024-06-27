@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { PostWindow } from '../components';
 import { uri, toast, Loader } from '@global';
 import { explorePost } from '../services/post.service';
 import { Post } from '../types';
 import clsx from 'clsx';
-import styles from '../styles/pages/explore.module.sass';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { homepagePost } from '../__mocks__';
 
 function ExplorePage() {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [post, setPost] = useState({} as any);
   const [showPost, setShowPost] = useState(false);
-  const [posts, setPosts] = useState([] as Post[]);
+  const [posts, setPosts] = useState(homepagePost as Post[]);
 
   useEffect(() => {
     // (async function FetchData() {
@@ -27,27 +26,23 @@ function ExplorePage() {
   return (
     <>
       {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{ 576: 1, 768: 2, 992: 3 }}
-        className={clsx(styles.wrapper, 'w-100 p-3')}
-      >
-        <Masonry gutter="8px">
-          {posts.map((post: any) => {
-            return (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {posts.map((post: any) => {
+          return (
+            <div className="aspect-square overflow-hidden">
               <LazyLoadImage
-                className="img-fluid"
+                className="object-cover w-full h-full cursor-pointer"
                 alt="profile"
-                src={uri.transformImageCDN(post.file.dataURL, 'f_auto')}
-                // key={index}
+                src={post.file.url}
                 onClick={() => {
                   setPost(post);
                   setShowPost(true);
                 }}
               />
-            );
-          })}
-        </Masonry>
-      </ResponsiveMasonry>
+            </div>
+          );
+        })}
+      </div>
     </>
   );
 }

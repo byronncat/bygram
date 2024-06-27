@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import clsx from 'clsx';
 
 import { useGlobalContext, toast, Loader, ErrorPage } from '@global';

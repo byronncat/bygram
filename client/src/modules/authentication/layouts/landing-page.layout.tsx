@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 
+import { Header } from '@global';
 import logoURL from '@assets/images/logo.svg';
 import backgroundImageURL from '@assets/images/night-neon.avif';
 import effects from '@sass/effects.module.sass';
-import type { ReactProps } from '@global';
+import { type ReactProps } from '@global';
 
 interface LandingpageLayoutProps extends ReactProps {
   title: string;
@@ -20,7 +21,7 @@ const LandingPage = ({ title, children }: LandingpageLayoutProps) => {
           'flex flex-col justify-center items-center',
         )}
       >
-        <Brand />
+        <Header />
         <span
           className={clsx(
             'block mb-4',

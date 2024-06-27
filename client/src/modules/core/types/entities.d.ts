@@ -1,13 +1,22 @@
+import type { User } from '@global';
 import { CommentData } from './layout';
 
-export interface Post {
+export interface Post extends Pick<Profile, 'avatar'>, Pick<User, 'username'> {
   id: string;
-  uid: UserToken['id'];
+  uid: User['id'];
   content: string;
-  file: FileData;
-  createdAt?: string;
-  likes?: number[];
-  comments?: CommentData[];
+  file: MediaInfo;
+  createdAt: string;
+  likes: number[];
+  comments: CommentData[];
+}
+
+export interface Profile {
+  uid: User['id'];
+  followers: User['id'][];
+  followings: User['id'][];
+  avatar?: MediaInfo;
+  description?: string;
 }
 
 export interface Comment {
@@ -17,15 +26,13 @@ export interface Comment {
   createdAt?: string;
 }
 
-export interface Profile {
-  uid: User['id'];
-  followers: User['id'][];
-  followings: User['id'][];
-  avatar?: FileData;
-  description?: string;
-}
-
-export interface FileData {
+export interface MediaInfo {
   url: string;
+  type: 'image' | 'video';
   orientation: 'landscape' | 'portrait' | 'square';
 }
+
+export type UploadedFile = {
+  id: string;
+  url: string | ArrayBuffer | null;
+} & MediaInfo;

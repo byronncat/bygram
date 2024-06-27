@@ -14,8 +14,8 @@ const Error = () => {
         >
           <span
             className={clsx(
-              'bg-background text-error font-bold text-3xl inline-block px-3',
-              'dark:bg-dark-background dark:text-dark-error',
+              'bg-surface text-error font-bold text-3xl inline-block px-3',
+              'dark:bg-dark-surface dark:text-dark-error',
             )}
           >
             404
