@@ -1,6 +1,9 @@
 .env
 node_modules/
 
+#dev
+logs/
+
 # dependencies
 /node_modules
 /.pnp

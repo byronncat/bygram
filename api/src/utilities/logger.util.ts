@@ -58,7 +58,7 @@ export const logger = {
 };
 
 function createLogFile(message: string) {
-  const filePath = './src/error.log';
+  const filePath = './log/error.log';
   const logMessage = `${getCurrentTime()} - ${message}`;
   fs.appendFileSync(filePath, logMessage + '\n\n');
 }

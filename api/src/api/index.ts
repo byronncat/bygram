@@ -36,7 +36,7 @@ const apis: APIRoute[] = [
   },
 ];
 
-export default function setAPI(app: Express) {
+export default function configureApi(app: Express) {
   const unprotectedAPIs = apis.filter((api) => !api.protected);
   unprotectedAPIs.forEach((api: APIRoute) => {
     app.use(`/api${api.path}`, api.router);

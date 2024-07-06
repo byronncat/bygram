@@ -1,11 +1,21 @@
-import app from './app';
+import serverConfiguration from './server';
 import debug from 'debug';
+import { logger } from '@utilities';
 debug('ts-express:server');
 
 // Set port
 type Port = string | number | false;
 const port: Port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+serverConfiguration.set('port', port);
+
+// Create server
+import http = require('http');
+const server = http.createServer(serverConfiguration);
+server.listen(port, () => {
+  logger.info(`Server is running on port ${port}`, 'Server');
+});
+server.on('error', onError);
+server.on('listening', onListening);
 
 function normalizePort(val: string): Port {
   const radix = 10;
@@ -15,16 +25,6 @@ function normalizePort(val: string): Port {
   if (port >= 0) return port;
   return false;
 }
-
-import { logger } from '@utilities';
-// Create server
-import http = require('http');
-const server = http.createServer(app);
-server.listen(port, () => {
-  logger.info(`Server is running on port ${port}`, 'Server');
-});
-server.on('error', onError);
-server.on('listening', onListening);
 
 function onError(error: any) {
   if (error.syscall !== 'listen') throw error;
