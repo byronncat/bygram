@@ -76,7 +76,7 @@ export async function authenticate(
       process.env.TOKEN_SECRET || 'secret',
     );
 
-    if (sessionId) {
+    if (sessionId && req.cookies.user) {
       if (await getSession(sessionId)) {
         result = {
           statusCode: StatusCode.OK,

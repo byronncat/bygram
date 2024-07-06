@@ -1,16 +1,9 @@
-import {
-  useState,
-  useContext,
-  createContext,
-  useEffect,
-  useLayoutEffect,
-} from 'react';
+import { useState, useContext, createContext, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useJwt } from 'react-jwt';
-import { useToggle } from 'usehooks-ts';
 import Cookies from 'js-cookie';
+import { ROUTE } from '@route';
 
-import { LoadingPage } from '@global';
-import { authenticationApi } from '../api';
 import type { User, ReactProps } from '@global';
 
 const AuthenticationContext = createContext(
@@ -28,39 +21,29 @@ interface UserToken extends Omit<User, 'password'> {
 
 const Authentication = ({ children }: ReactProps) => {
   const userCookie = Cookies.get('user');
+  const navigate = useNavigate();
   const { decodedToken } = useJwt<UserToken>(userCookie || '');
   const [user, setUser] = useState<UserToken | null>(decodedToken);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, toggleLoading] = useToggle(true);
 
-  const login = () => {
+  const login = useCallback(() => {
+    setUser(decodedToken);
     setIsLoggedIn(true);
-  };
-
-  const logout = () => {
+    navigate(ROUTE.HOME);
+  }, [decodedToken, navigate]);
+  const logout = useCallback(() => {
+    setUser(null);
     setIsLoggedIn(false);
-  };
+    navigate(ROUTE.LOGIN);
+  }, [decodedToken, navigate]);
 
-  useLayoutEffect(() => {
-    if (decodedToken) setUser(decodedToken);
-  }, [decodedToken]);
-
-  useEffect(() => {
-    (async function authenticate() {
-      const response = await authenticationApi.authenticate();
-      if (!!userCookie) setIsLoggedIn(response.success);
-      toggleLoading();
-    })();
-  }, [userCookie]);
-
-  if (loading) return <LoadingPage />;
   return (
     <AuthenticationContext.Provider
       value={{
+        user,
         isLoggedIn,
         login,
         logout,
-        user,
       }}
     >
       {children}

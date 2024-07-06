@@ -9,39 +9,6 @@
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage });
 
-// async function getHomePosts(req: Request, res: Response, next: NextFunction) {
-//   const { uid }: Profile = req.query;
-//   if (!uid)
-//     return res.status(409).json({
-//       success: false,
-//       message: 'No user id provided',
-//     } as PostAPI);
-//   try {
-//     const followings = await accountService.getFollowingsByID(uid);
-//     return await postService
-//       .getManyByID({ uid: [uid, ...followings!] })
-//       .then((posts) =>
-//         res.status(200).json({
-//           success: true,
-//           message: 'Posts retrieved',
-//           data: posts,
-//         } as PostAPI),
-//       )
-//       .catch((error) =>
-//         res.status(404).json({
-//           success: false,
-//           message: JSON.stringify(error),
-//         } as PostAPI),
-//       );
-//   } catch (error: any) {
-//     logger.error(`${error}`, 'Post controller');
-//     res.status(404).json({
-//       success: false,
-//       message: error.message,
-//     } as PostAPI);
-//   }
-// }
-
 // async function explorePosts(req: Request, res: Response, next: NextFunction) {
 //   try {
 //     const { uid } = req.query as Profile;

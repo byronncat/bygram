@@ -67,7 +67,9 @@ const Regular = () => (
   />
 );
 
-export default {
+const Loader = {
   BoxSpin,
   Regular,
 };
+
+export default Loader;

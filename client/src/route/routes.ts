@@ -4,7 +4,7 @@ const PROTECTED_ROUTE = {
   PROFILE: '/profile/:username',
 };
 
-const UNAUTHORIZED_ROUTE = {
+const PUBLIC_ROUTE = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
@@ -13,7 +13,7 @@ const UNAUTHORIZED_ROUTE = {
 
 const ROUTE = {
   ...PROTECTED_ROUTE,
-  ...UNAUTHORIZED_ROUTE,
+  ...PUBLIC_ROUTE,
 };
 
-export { ROUTE, PROTECTED_ROUTE, UNAUTHORIZED_ROUTE };
+export { ROUTE, PROTECTED_ROUTE, PUBLIC_ROUTE };

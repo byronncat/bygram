@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 import clsx from 'clsx';
 
@@ -13,7 +13,6 @@ import type { OutletContextProps } from '../hocs';
 import type { AuthenticationInformation } from '../types';
 
 const Register = () => {
-  const navigate = useNavigate();
   const { loading } = useGlobalContext();
   const { className } = useClassNameContext();
   const { login } = useAuthenticationContext();
@@ -32,7 +31,6 @@ const Register = () => {
     loading.end();
     if (response.success) {
       login();
-      navigate('/');
       toast.success(response.message);
     } else {
       toast.error(response.message);

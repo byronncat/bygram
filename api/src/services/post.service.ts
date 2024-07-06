@@ -1,7 +1,7 @@
 // import mongoose from 'mongoose';
 // import { accountService, fileService } from '@services';
 // import { isEmptyObject, logger } from '@utilities';
-import { createPost } from '@/database/access';
+import { createPost, getPostByUIDs } from '@/database/access';
 // import { Account, PostData, , CommentData } from '@types';
 import { Account, PostUploadData, Post } from '@types';
 
@@ -41,6 +41,11 @@ import { Account, PostUploadData, Post } from '@types';
 //     return Promise.reject(error);
 //   }
 // }
+
+async function getHomePosts(uid: Account['id']): Promise<Post[]> {
+  const posts = await getPostByUIDs([uid]);
+  return posts;
+}
 
 async function create(
   uid: Account['id'],
@@ -168,7 +173,7 @@ async function create(
 // }
 
 export default {
-  //   getManyByID,
+  getHomePosts,
   create,
   //   updateByID,
   //   removeByID,

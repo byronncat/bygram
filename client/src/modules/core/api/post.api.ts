@@ -12,3 +12,10 @@ export async function uploadPost(
     .then((res: AxiosResponse) => res.data)
     .catch((err) => err.response.data);
 }
+
+export async function getHomePosts(): Promise<API> {
+  return await axios
+    .get(uri.getHostingServer('post'))
+    .then((res: AxiosResponse) => res.data)
+    .catch((err) => err.response.data);
+}

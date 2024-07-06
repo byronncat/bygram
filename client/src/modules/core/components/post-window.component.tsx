@@ -5,7 +5,7 @@ import { useGlobalContext, toast, Overlay, ReactProps } from '@global';
 import { useSidebarOptionsContext } from '../providers';
 
 import Menu from './menu.component';
-import { UploadPostWindow } from '../components';
+// import { UploadPostWindow } from '../components';
 import {
   getComments,
   sendComment,
@@ -116,15 +116,16 @@ export default function PostWindow({ post, onExit }: PostWindowProps) {
   return (
     <>
       {showCreatePost && (
-        <UploadPostWindow
-          defaultPost={post}
-          zIndex={3}
-          exitHandler={() => {
-            setShowCreatePost(false);
-            onExit();
-          }}
-          method="put"
-        />
+        <div>test</div>
+        // <UploadPostWindow
+        //   defaultPost={post}
+        //   zIndex={3}
+        //   exitHandler={() => {
+        //     setShowCreatePost(false);
+        //     onExit();
+        //   }}
+        //   method="put"
+        // />
       )}
       {showActionMenu && authenticationStorage.identity!.id === post.uid && (
         <Overlay zIndex={2} exitHandler={() => setShowActionMenu(false)}>

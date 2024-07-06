@@ -1,12 +1,13 @@
 import { cloneElement } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useToggle } from 'usehooks-ts';
 import clsx from 'clsx';
 
 import { toast } from '@global';
 import { authenticationApi, useAuthenticationContext } from '@authentication';
+import { UploadWindow } from './post/upload';
 import { useSidebarOptionsContext } from '../providers';
-import { SearchSide, UploadPostWindow } from './';
+import { SearchSide } from './';
 import {
   CompassIcon,
   HouseIcon,
@@ -25,7 +26,6 @@ interface SidebarLink {
 }
 
 const Sidebar = () => {
-  const navigate = useNavigate();
   const [minimize, toggleMinimize] = useToggle(false);
   const [showSearch, toggleShowSearch] = useToggle(false);
   const [showCreate, toggleShowCreate] = useToggle(false);
@@ -53,9 +53,8 @@ const Sidebar = () => {
     toast.loading('Logging out...');
     const response = await authenticationApi.logout();
     if (response.success) {
-      toast.success(response.message);
       logout();
-      navigate('/login');
+      toast.success(response.message);
     } else {
       toast.error(response.message);
     }
@@ -97,7 +96,7 @@ const Sidebar = () => {
   return (
     <>
       {showCreate && (
-        <UploadPostWindow exitHandler={toggleShowCreate} method="post" />
+        <UploadWindow exitHandler={toggleShowCreate} method="post" />
       )}
       <div className={clsx('w-120 h-full', 'relative')}>
         <SearchSide isShow={showSearch} exitHandler={toggleSearchHandler} />

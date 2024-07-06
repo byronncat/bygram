@@ -88,6 +88,6 @@ async function register(
 export default {
   logIn: [logIn, sessionMiddleware.save],
   register: [register, sessionMiddleware.save],
-  authenticate: sessionMiddleware.authenticate,
+  authenticate: [sessionMiddleware.authenticate],
   logout: sessionMiddleware.destroy,
 };

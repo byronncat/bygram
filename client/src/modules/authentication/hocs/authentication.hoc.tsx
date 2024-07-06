@@ -1,23 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { ClassNameProvider } from '../providers';
-import { LandingPageLayout } from '../layouts';
+import { LoadingPage } from '@global';
+import { authenticationApi } from '../api';
+import { AuthenticationProvider, useAuthenticationContext } from '../providers';
 
-type OutletContextProps = {
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
+import type { ReactProps } from '@global';
+
+const Authentication = ({ children }: ReactProps) => {
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuthenticationContext();
+
+  useEffect(() => {
+    (async function authenticate() {
+      console.log('Authenticate');
+      setLoading(true);
+      const response = await authenticationApi.authenticate();
+      if (response.success) login();
+      setLoading(false);
+      console.log('Authenticate Done');
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (loading) return <LoadingPage />;
+  return <>{children}</>;
 };
 
-const Authentication = () => {
-  const [title, setTitle] = useState('');
-
+const AuthenticationWrapper = () => {
   return (
-    <ClassNameProvider>
-      <LandingPageLayout title={title}>
-        <Outlet context={{ setTitle }} />
-      </LandingPageLayout>
-    </ClassNameProvider>
+    <AuthenticationProvider>
+      <Authentication>
+        <Outlet />
+      </Authentication>
+    </AuthenticationProvider>
   );
 };
 
-export default Authentication;
-export type { OutletContextProps };
+export default AuthenticationWrapper;

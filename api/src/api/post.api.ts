@@ -2,7 +2,7 @@ import express from 'express';
 import { postController } from '@controllers';
 const router = express.Router();
 
-// router.get('/home', postController.home);
+router.get('/', postController.home);
 // router.get('/explore', postController.explore);
 // router.get('/comment/:id', postController.getComments);
 // router.post('/like', postController.likePost);

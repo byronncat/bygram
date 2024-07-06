@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { UploadPostWindow, PostWindow } from '../components';
+import { PostWindow } from '../components';
 import Menu from '../components/menu.component';
-import { getHomePosts, likePost, sendComment } from '../services/post.service';
+import { getHomePosts } from '../api';
+import { likePost, sendComment } from '../services/post.service';
 import {
   AUTHOR_POST_MENU,
   FOLLOWP_POST_MENU,
@@ -22,6 +23,7 @@ import { useSidebarOptionsContext } from '../providers';
 import { VerticalPostLayout } from '../layouts';
 import type { Post } from '../types';
 import { homepagePost } from '../__mocks__';
+import { useAuthenticationContext } from '@/modules/authentication';
 
 function HomePage() {
   const [ready, setReady] = useState(true);
@@ -82,15 +84,17 @@ function HomePage() {
   //   }
   // };
 
-  // useEffect(() => {
-  //   (async function fetchPosts() {
-  //     const response = await getHomePosts(32);
-  //     if (response.success && response.data) {
-  //       setPosts(response.data);
-  //       setReady(true);
-  //     } else toast.display(response.message, 'error');
-  //   })();
-  // }, []);
+  const { user } = useAuthenticationContext();
+  useEffect(() => {
+    (async function fetchPosts() {
+      const response = await getHomePosts();
+      console.log(response);
+      // if (response.success && response.data) {
+      //   setPosts(response.data);
+      //   setReady(true);
+      // } else toast.display(response.message, 'error');
+    })();
+  }, []);
 
   if (!ready) return <Loader.BoxSpin />;
   return (

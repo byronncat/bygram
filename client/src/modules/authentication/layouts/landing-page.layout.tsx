@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 
 import { Header } from '@global';
-import logoURL from '@assets/images/logo.svg';
 import backgroundImageURL from '@assets/images/night-neon.avif';
 import effects from '@sass/effects.module.sass';
 import { type ReactProps } from '@global';
@@ -34,23 +33,6 @@ const LandingPage = ({ title, children }: LandingpageLayoutProps) => {
         </span>
         {children}
       </div>
-    </div>
-  );
-};
-
-const Brand = () => {
-  return (
-    <div
-      className={clsx(
-        'flex items-center gap-x-2',
-        'absolute top-0 left-0',
-        'p-5',
-      )}
-    >
-      <img className={clsx('block', 'w-8 h-8')} src={`${logoURL}`} alt="logo" />
-      <span className="font-bold text-2xl text-primary dark:text-dark-primary">
-        bygram
-      </span>
     </div>
   );
 };

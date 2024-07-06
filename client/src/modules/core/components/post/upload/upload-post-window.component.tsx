@@ -10,7 +10,7 @@ import { FilesProvider, useFilesContext } from '../../../providers';
 import { useCloudinaryContext } from '../../../database/cloudinary.database';
 import FileUploadArea from './file-upload-area.component';
 
-import type { UploadedFile, PostData, PostUploadData } from '../../../types';
+import type { UploadedFile, PostUploadData } from '../../../types';
 import type { ReactProps } from '@global';
 
 interface UploadPostWindowProps extends ReactProps {
@@ -207,7 +207,7 @@ const UploadPostWindow = ({
   );
 };
 
-export default ({
+const UploadPostWindowWrapper = ({
   exitHandler,
   method,
   defaultPost,
@@ -220,3 +220,5 @@ export default ({
     />
   </FilesProvider>
 );
+
+export default UploadPostWindowWrapper;

@@ -15,3 +15,12 @@ export async function createPost(
     throw error;
   }
 }
+
+export async function getPostByUIDs(uids: Post['uid'][]): Promise<Post[]> {
+  try {
+    return await PostModel.find({ uid: { $in: uids } });
+  } catch (error) {
+    logger.error(JSON.stringify(error), 'Post Access (Get Post By UIDs)');
+    throw error;
+  }
+}
