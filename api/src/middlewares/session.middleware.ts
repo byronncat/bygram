@@ -1,12 +1,11 @@
-import { Request, Response } from 'express';
 import { signedCookie } from 'cookie-parser';
-
 import { StatusCode } from '@constants';
 import { jwt } from '@libraries';
 import { logger } from '@utilities';
 import { getSession, removeSession } from '@/database/access';
-
 import { TIME } from '@constants';
+
+import type { Request, Response } from 'express';
 import type { API, UserToken } from '@types';
 
 export function save(req: Request, res: Response) {
@@ -65,7 +64,7 @@ export async function authenticate(
 ): Promise<Response<API>> {
   let result = {
     statusCode: StatusCode.OK,
-    respond: {
+    response: {
       success: false,
       message: 'Unauthorized',
     } as API,
@@ -81,7 +80,7 @@ export async function authenticate(
       if (await getSession(sessionId)) {
         result = {
           statusCode: StatusCode.OK,
-          respond: {
+          response: {
             success: true,
             message: 'Authorized',
           },
@@ -92,12 +91,12 @@ export async function authenticate(
     logger.error(JSON.stringify(error), 'Session Token Middleware');
     result = {
       statusCode: StatusCode.INTERNAL_SERVER_ERROR,
-      respond: {
+      response: {
         success: false,
         message: 'Internal server error, authentication failed',
       },
     };
   }
 
-  return res.status(result.statusCode).json(result.respond);
+  return res.status(result.statusCode).json(result.response);
 }

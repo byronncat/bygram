@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
 } from 'react';
 import { useJwt } from 'react-jwt';
+import { useToggle } from 'usehooks-ts';
 import Cookies from 'js-cookie';
 
 import { LoadingPage } from '@global';
@@ -30,7 +31,7 @@ const Authentication = ({ children }: ReactProps) => {
   const { decodedToken } = useJwt<UserToken>(userCookie || '');
   const [user, setUser] = useState<UserToken | null>(decodedToken);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, toggleLoading] = useToggle(true);
 
   const login = () => {
     setIsLoggedIn(true);
@@ -45,10 +46,10 @@ const Authentication = ({ children }: ReactProps) => {
   }, [decodedToken]);
 
   useEffect(() => {
-    (async () => {
+    (async function authenticate() {
       const response = await authenticationApi.authenticate();
       if (!!userCookie) setIsLoggedIn(response.success);
-      setLoading(false);
+      toggleLoading();
     })();
   }, [userCookie]);
 
