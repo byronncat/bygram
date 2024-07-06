@@ -25,7 +25,7 @@ import { homepagePost } from '../__mocks__';
 
 function HomePage() {
   const [ready, setReady] = useState(true);
-  const [posts, setPosts] = useState(homepagePost as Post[]);
+  const [posts, setPosts] = useState(homepagePost);
 
   const [currentPost, setCurrentPost] = useState({} as PostData);
   const [showCurrentPost, setShowCurrentPost] = useState(false);
@@ -92,9 +92,10 @@ function HomePage() {
   //   })();
   // }, []);
 
-  if (!ready) return <Loader />;
+  if (!ready) return <Loader.BoxSpin />;
   return (
-    <VerticalPostLayout posts={posts} />
+    <div>homepage</div>
+    // <VerticalPostLayout posts={posts} />
     // <>
     //   <button
     //     onClick={() => {

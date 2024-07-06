@@ -1,25 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { uri, API } from '@global';
-import { Post, Comment, CommentAPI, PostAPI, PostUploadData } from '../types';
+import { Post, Comment, CommentAPI, PostAPI } from '../types';
 
 export async function deletePost(postID: Post['id']): Promise<API> {
   return await axios
     .delete(uri.getHostingServer(`post/${postID}`))
     .then((res: any) => res.data)
-    .catch((err: any) => err.response.data);
-}
-
-export async function uploadPost(
-  postData: PostUploadData,
-  method: 'post' | 'put',
-): Promise<API> {
-  const formData = new FormData();
-  if (postData.id) formData.append('id', postData.id);
-  if (postData.uid) formData.append('uid', postData.uid.toString());
-  if (postData.content) formData.append('content', postData.content);
-  if (postData.file) formData.append('file', postData.file);
-  return await axios[method](uri.getHostingServer('post'), formData)
-    .then((res: AxiosResponse) => res.data)
     .catch((err: any) => err.response.data);
 }
 

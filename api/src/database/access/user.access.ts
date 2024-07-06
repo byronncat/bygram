@@ -1,4 +1,5 @@
 import { password } from '@helpers';
+import { logger } from '@utilities';
 import { PostgreSQL } from '..';
 import type { Account } from '@types';
 
@@ -13,6 +14,7 @@ export async function createUser(account: Account): Promise<Account> {
     );
     return result;
   } catch (error) {
+    logger.error(JSON.stringify(error), 'User Access (Create User)');
     throw error;
   }
 }
@@ -28,6 +30,7 @@ export async function getUserByID(id: Account['id']): Promise<Account | null> {
     if (!result) return null;
     return result;
   } catch (error) {
+    logger.error(JSON.stringify(error), 'User Access (Get User By ID)');
     throw error;
   }
 }
@@ -45,6 +48,7 @@ export async function getUserByEmail(
     if (!result) return null;
     return result;
   } catch (error) {
+    logger.error(JSON.stringify(error), 'User Access (Get User By Email)');
     throw error;
   }
 }
@@ -62,6 +66,7 @@ export async function getUserByUsername(
     if (!result) return null;
     return result;
   } catch (error) {
+    logger.error(JSON.stringify(error), 'User Access (Get User By Username)');
     throw error;
   }
 }
@@ -79,6 +84,7 @@ export async function getUsersByRegexp(
     if (result.length === 0) return null;
     return result;
   } catch (error) {
+    logger.error(JSON.stringify(error), 'User Access (Get Users By Regexp)');
     throw error;
   }
 }

@@ -1,15 +1,8 @@
 import type { API } from '@global';
-import { Profile, Post, UserToken, Comment } from './entities';
+import { Profile, Post, UserToken, Comment } from './entity';
 export * from './api.d';
-export * from './entities.d';
+export * from './entity.d';
 export * from './layout.d';
-
-export interface PostUploadData {
-  id?: string;
-  uid?: number;
-  content?: string;
-  file?: File;
-}
 
 export interface PostData
   extends Pick<Profile, 'avatar' | 'username' | 'uid'>,

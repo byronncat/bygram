@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 @layer theme {
   .light-theme {
     @apply bg-background text-on-background;
@@ -22,7 +33,7 @@
     @apply dark:hover:bg-dark-primary dark:hover:text-dark-on-primary dark:active:bg-dark-primary;
 
     @apply duration-300 ease-in-out;
-    @apply focus:outline-none focus:ring select-none cursor-pointer;
+    @apply focus:outline-none select-none active:outline-none cursor-pointer;
     @apply disabled:bg-primary dark:disabled:bg-dark-primary disabled:text-on-primary dark:disabled:text-on-primary;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }

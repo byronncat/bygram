@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 const settings = {
   position: 'top-right',
-  autoClose: 3333000,
+  autoClose: 3000,
   limit: 4,
   hideProgressBar: true,
   newestOnTop: false,

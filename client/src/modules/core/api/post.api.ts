@@ -8,12 +8,7 @@ export async function uploadPost(
   postData: PostUploadData,
   method: 'post' | 'put',
 ): Promise<API> {
-  const formData = new FormData();
-  if (postData.id) formData.append('id', postData.id);
-  if (postData.uid) formData.append('uid', postData.uid.toString());
-  if (postData.content) formData.append('content', postData.content);
-  if (postData.file) formData.append('file', postData.file);
-  return await axios[method](uri.getHostingServer('post'), formData)
+  return await axios[method](uri.getHostingServer('post'), postData)
     .then((res: AxiosResponse) => res.data)
-    .catch((err: any) => err.response.data);
+    .catch((err) => err.response.data);
 }

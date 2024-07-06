@@ -104,7 +104,7 @@ function ProfilePage() {
   //     functionHandler: () => setShowAvatarMenu(false),
   //   },
   // ] as MenuItem[];
-  if (!ready) return <Loader />;
+  if (!ready) return <Loader.BoxSpin />;
   // TODO: add not loaded profile page
   // if (ready && !profile) return <ErrorPage />;
   return (

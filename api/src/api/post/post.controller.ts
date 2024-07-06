@@ -75,39 +75,6 @@
 //   }
 // }
 
-// async function createPost(req: Request, res: Response) {
-//   if (!req.file)
-//     return res.status(409).json({
-//       success: false,
-//       message: 'No file uploaded',
-//     } as API);
-//   try {
-//     const postInfo = {
-//       uid: req.body.uid,
-//       content: req.body.content,
-//     } as PostData;
-//     return postService
-//       .create(postInfo, req.file)
-//       .then((post: PostDocument) => {
-//         return res.status(200).json({
-//           success: true,
-//           message: 'Post uploaded',
-//         } as API);
-//       })
-//       .catch((error) =>
-//         res.status(409).json({
-//           success: false,
-//           message: JSON.stringify(error),
-//         } as API),
-//       );
-//   } catch (error: any) {
-//     return res.status(500).json({
-//       success: false,
-//       message: JSON.stringify(error),
-//     } as API);
-//   }
-// }
-
 // async function deletePost(req: Request, res: Response, next: NextFunction) {
 //   const postId: PostData['id'] = req.params.id;
 //   try {
@@ -279,15 +246,3 @@
 //     } as API);
 //   }
 // }
-
-// export default {
-//   home: [getHomePosts],
-//   explore: [explorePosts],
-//   createPost: [upload.single('file'), createPost],
-//   updatePost: [upload.single('file'), updatePost],
-//   deletePost: [deletePost],
-//   likePost: [likePost],
-//   commentPost: [commentPost],
-//   getComments: [getComments],
-//   deleteComment: [deleteComment],
-// };

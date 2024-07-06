@@ -1,4 +1,5 @@
-import { deletePost, uploadPost } from '../services/post.service';
+import { uploadPost } from '../api';
+import { deletePost } from '../services/post.service';
 import { PostData, PostUploadData, MenuItem } from '../types';
 export * from './sidebar.constant';
 export * from './default-values.constant';

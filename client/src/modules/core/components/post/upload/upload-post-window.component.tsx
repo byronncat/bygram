@@ -1,104 +1,101 @@
-import { useCallback } from 'react';
+import { ChangeEvent } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { nanoid } from 'nanoid';
+import { useToggle } from 'usehooks-ts';
 import clsx from 'clsx';
 
-import { toast, useGlobalContext, Overlay } from '@global';
+import { id, toast, Overlay, Loader } from '@global';
+import { useAuthenticationContext } from '@authentication';
 import { uploadPost } from '../../../api';
-import FileUploadArea from './file-upload-area.component';
-import type { UploadedFile, PostData } from '../../../types';
-import type { ReactProps } from '@global';
 import { FilesProvider, useFilesContext } from '../../../providers';
+import { useCloudinaryContext } from '../../../database/cloudinary.database';
+import FileUploadArea from './file-upload-area.component';
 
-interface PostSubmitData {
-  files: FileList;
-  content: string;
-}
+import type { UploadedFile, PostData, PostUploadData } from '../../../types';
+import type { ReactProps } from '@global';
 
 interface UploadPostWindowProps extends ReactProps {
   exitHandler: () => void;
   method: 'post' | 'put';
-  defaultPost?: PostData;
+  defaultPost?: PostUploadData;
 }
+
 const UploadPostWindow = ({
   exitHandler,
   method,
-  defaultPost,
+  defaultPost = { content: '', files: [] },
 }: UploadPostWindowProps) => {
-  const defaultValues = {
-    content: defaultPost?.content || '',
-  } as PostSubmitData;
-
+  const [loading, toggleLoading] = useToggle(false);
   const { files, addFile, isEmpty } = useFilesContext();
+  const fileUploadHandler = (file: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const fileType = file.type.split('/')[0];
+      if (fileType === 'image') {
+        const img = new Image();
+        img.src = event.target!.result as string;
+        img.onload = () => {
+          const orientation =
+            img.width > img.height
+              ? 'landscape'
+              : img.width < img.height
+              ? 'portrait'
+              : 'square';
+          addFile({
+            id: id.generate(),
+            url: img.src,
+            orientation,
+            type: file.type,
+          } as UploadedFile);
+        };
+      } else if (fileType === 'video') {
+        const video = document.createElement('video');
+        video.src = event.target!.result as string;
+        video.onloadedmetadata = () => {
+          const orientation =
+            video.videoWidth > video.videoHeight
+              ? 'landscape'
+              : video.videoWidth < video.videoHeight
+              ? 'portrait'
+              : 'square';
+          addFile({
+            id: id.generate(),
+            url: video.src,
+            orientation,
+            type: file.type,
+          } as UploadedFile);
+        };
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
-  const fileUploadHandler = useCallback(
-    (file: File) => {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const fileType = file.type.split('/')[0];
-        if (fileType === 'image') {
-          const img = new Image();
-          img.src = event.target!.result as string;
-          img.onload = () => {
-            const orientation =
-              img.width > img.height
-                ? 'landscape'
-                : img.width < img.height
-                ? 'portrait'
-                : 'square';
-            addFile({
-              id: nanoid(),
-              url: img.src,
-              orientation,
-              type: file.type,
-            } as UploadedFile);
-          };
-        } else if (fileType === 'video') {
-          const video = document.createElement('video');
-          video.src = event.target!.result as string;
-          video.onloadedmetadata = () => {
-            const orientation =
-              video.videoWidth > video.videoHeight
-                ? 'landscape'
-                : video.videoWidth < video.videoHeight
-                ? 'portrait'
-                : 'square';
-            addFile({
-              id: nanoid(),
-              url: video.src,
-              orientation,
-              type: file.type,
-            } as UploadedFile);
-          };
-        }
+  const { user } = useAuthenticationContext();
+  const { register, handleSubmit } = useForm({ defaultValues: defaultPost });
+  const { uploadFile } = useCloudinaryContext();
+  const submitForm: SubmitHandler<Pick<PostUploadData, 'content'>> = async (
+    data,
+  ) => {
+    try {
+      toggleLoading();
+      const postData: PostUploadData = {
+        content: data.content,
+        files: await uploadFile(files, {
+          asset_folder: user!.username,
+          public_id_prefix: user!.username,
+        }),
       };
-      reader.readAsDataURL(file);
-    },
-    [addFile],
-  );
-
-  const { register, handleSubmit } = useForm({ defaultValues });
-
-  const submitForm: SubmitHandler<PostSubmitData> = async (data) => {
-    exitHandler();
-    console.log('test', data);
-    console.log('test', files);
-    // let postData =
-    //   method === 'post'
-    //     ? {
-    //         uid: authenticationStorage.identity!.id,
-    //         content: data.content,
-    //         file: data.file[0] as File,
-    //       }
-    //     : {
-    //         id: defaultPost!.id,
-    //         content: data.content,
-    //         file: data.file[0] as File,
-    //       };
-    // const response = await uploadPost(postData, method);
-    // refreshPage();
-    // toast.display(response.message, response.success ? 'success' : 'error');
+      const response = await uploadPost(postData, method);
+      toggleLoading();
+      if (response.success) {
+        exitHandler();
+        toast.success(response.message);
+      } else {
+        console.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -132,25 +129,44 @@ const UploadPostWindow = ({
               isEmpty() ? 'w-full' : 'aspect-square',
             )}
           >
-            <FileUploadArea fileUploadHandler={fileUploadHandler} />
-            <input
-              id="dropzone-file"
-              type="file"
-              className="hidden"
-              {...register('files', {
-                onChange: (e) => {
-                  if (e.target.files) fileUploadHandler(e.target.files[0]);
+            <div className="h-full w-full">
+              {loading ? (
+                <div
+                  className={clsx(
+                    'flex justify-center items-center gap-x-3',
+                    'h-full w-full',
+                  )}
+                >
+                  <Loader.Regular />
+                  <span
+                    className={clsx(
+                      'text-xl font-medium',
+                      'text-on-background dark:text-dark-on-background',
+                    )}
+                  >
+                    Loading
+                  </span>
+                </div>
+              ) : (
+                <FileUploadArea fileUploadHandler={fileUploadHandler} />
+              )}
+              <input
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.files)
+                    fileUploadHandler(event.target.files[0]);
                   (function resetValue() {
-                    e.target.value = '';
+                    event.target.value = '';
                   })();
-                },
-                required: method === 'post',
-              })}
-            />
+                }}
+              />
+            </div>
           </div>
 
           {/* Content */}
-          {!isEmpty() && (
+          {!isEmpty() && !loading && (
             <>
               <div
                 className={clsx(

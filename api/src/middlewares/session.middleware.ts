@@ -7,10 +7,10 @@ import { logger } from '@utilities';
 import { getSession, removeSession } from '@/database/access';
 
 import { TIME } from '@constants';
-import type { API, Identity } from '@types';
+import type { API, UserToken } from '@types';
 
 export function save(req: Request, res: Response) {
-  const user = res.locals.user as Identity['user'];
+  const user = res.locals.user as UserToken;
   req.session.user = { id: user!.id };
   res.cookie('user', jwt.generateToken(user!), {
     maxAge: TIME.COOKIE_MAX_AGE,

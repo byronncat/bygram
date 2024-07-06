@@ -65,7 +65,7 @@ const PostItem = ({ post }: PostItemProps) => {
 
       <div
         className={clsx(
-          post.file.orientation === 'portrait' && 'max-h-screen h-160',
+          // post.files.orientation === 'portrait' && 'max-h-screen h-160',
           'my-4',
           'flex justify-center',
           'bg-on-surface/[0.1] dark:bg-dark-on-surface/[0.07]',
@@ -77,12 +77,13 @@ const PostItem = ({ post }: PostItemProps) => {
       >
         <LazyLoadImage
           className={
-            post.file.orientation === 'landscape'
-              ? 'h-auto w-full'
-              : 'h-full w-auto'
+            // post.files.orientation === 'landscape'
+            // ? 'h-auto w-full'
+            // : 'h-full w-auto'
+            'h-full w-auto'
           }
           alt="profile"
-          src={post.file.url}
+          // src={post.files.url}
           // src={uri.transformImageCDN(post.file.url, 'h_584,f_auto')}
         />
       </div>

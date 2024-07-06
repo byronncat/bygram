@@ -16,10 +16,6 @@ export interface ProfileData extends Profile {
   posts?: PostData[];
 }
 
-export interface RegisterAPI extends API {
-  data: UserToken;
-}
-
 export interface SearchProfileAPI extends API {
   data: Profile[];
 }

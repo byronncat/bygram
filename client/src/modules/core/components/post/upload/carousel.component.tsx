@@ -1,17 +1,18 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { animated, Controller } from '@react-spring/web';
 import clsx from 'clsx';
-import { CircleChevronIcon } from '@assets/icons';
-import { useFilesContext } from '@/modules/core/providers';
 
-import type { UploadedFile } from '@/modules/core/types';
+import { useFilesContext } from '../../../providers';
+import { CircleChevronIcon } from '@assets/icons';
+
 import type { ReactProps } from '@global';
+import type { UploadedFile } from '../../../types';
 
 interface CarouselProps extends ReactProps {
   files: UploadedFile[];
 }
 const Carousel = ({ files }: CarouselProps) => {
-  const { activeIndex, setActiveIndex } = useFilesContext();
+  const { activeIndex, setActiveIndex: goToSlide } = useFilesContext();
   const slideStyle = useRef(new Controller());
 
   function slideEffect(direction: 'left' | 'right') {
@@ -21,27 +22,19 @@ const Carousel = ({ files }: CarouselProps) => {
         from: {
           [direction]: '100%',
           [oppositeDirection]: 'unset',
-          transform: 'translateX(0%)',
         },
         immediate: true,
       })
       .then(() => {
         slideStyle.current.start({
           to: {
-            [direction]: '50%',
-            transform: `translateX(${direction === 'left' ? '-' : ''}50%)`,
+            [direction]: '0%',
           },
           config: {
             duration: 300,
           },
         });
       });
-  }
-
-  function goToSlide(index: number) {
-    const newIndex =
-      index >= files.length ? 0 : index < 0 ? files.length - 1 : index;
-    setActiveIndex(newIndex);
   }
 
   return (
@@ -51,30 +44,32 @@ const Carousel = ({ files }: CarouselProps) => {
           key={file.id}
           className={clsx(
             'h-full w-full bg-on-background/[0.12] dark:bg-on-background/[0.42]',
-            index === activeIndex && 'absolute opacity-100',
-            'hidden opacity-0',
+            'opacity-0',
+            index === activeIndex ? 'absolute opacity-100 block' : 'hidden',
           )}
-          style={{
-            display: index === activeIndex ? 'block' : 'none',
-          }}
         >
           <animated.div
             className={clsx(
-              files.length > 1 && 'absolute top-0',
               'flex items-center justify-center',
               'w-full h-full',
+              files.length > 1 && 'absolute top-0',
             )}
             style={slideStyle.current.springs}
           >
-            {file.type === 'video' ? (
+            {file.type.includes('video') ? (
               <video
                 src={file.url}
-                className={clsx('block')}
+                className={clsx(
+                  'block',
+                  file.orientation === 'landscape'
+                    ? 'w-full h-auto'
+                    : 'w-auto h-full',
+                )}
                 autoPlay
                 loop
                 muted
                 playsInline
-              ></video>
+              />
             ) : (
               <img
                 src={file.url}
@@ -90,34 +85,34 @@ const Carousel = ({ files }: CarouselProps) => {
           </animated.div>
         </div>
       ))}
-      <div className="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
-        {files.length > 1 &&
-          files.map((_, index) => (
-            <button
-              key={_.id}
-              type="button"
-              className={clsx(
-                'w-3 h-3 rounded-full',
-                'transition-colors duration-300',
-                index === activeIndex
-                  ? 'bg-primary dark:bg-dark-primary'
-                  : clsx(
-                      'bg-primary/[.6] group-hover:bg-primary/[.87]',
-                      'dark:bg-dark-primary/[.6] dark:group-hover:bg-dark-primary/[.87]',
-                    ),
-              )}
-              aria-current={index === activeIndex}
-              aria-label={`file ${index + 1}`}
-              onClick={() => {
-                if (index === activeIndex) return;
-                goToSlide(index);
-                slideEffect(index < activeIndex ? 'right' : 'left');
-              }}
-            />
-          ))}
-      </div>
+
       {files.length > 1 && (
         <>
+          <div className="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
+            {files.map((_, index) => (
+              <button
+                key={_.id}
+                type="button"
+                className={clsx(
+                  'w-3 h-3 rounded-full',
+                  'transition-colors duration-300',
+                  index === activeIndex
+                    ? 'bg-primary dark:bg-dark-primary'
+                    : clsx(
+                        'bg-primary/[.6] group-hover:bg-primary/[.87]',
+                        'dark:bg-dark-primary/[.6] dark:group-hover:bg-dark-primary/[.87]',
+                      ),
+                )}
+                aria-current={index === activeIndex}
+                aria-label={`file ${index + 1}`}
+                onClick={() => {
+                  if (index === activeIndex) return;
+                  goToSlide(index);
+                  slideEffect(index < activeIndex ? 'right' : 'left');
+                }}
+              />
+            ))}
+          </div>
           <button
             type="button"
             className={clsx(

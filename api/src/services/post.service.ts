@@ -1,8 +1,9 @@
 // import mongoose from 'mongoose';
 // import { accountService, fileService } from '@services';
 // import { isEmptyObject, logger } from '@utilities';
-// import { PostModel, PostDocument } from '@database';
-// import { Account, PostData, Post, CommentData } from '@types';
+import { createPost } from '@/database/access';
+// import { Account, PostData, , CommentData } from '@types';
+import { Account, PostUploadData, Post } from '@types';
 
 // interface PostQuery extends Omit<Post, 'uid'> {
 //   uid?: Account['id'] | Account['id'][];
@@ -41,25 +42,12 @@
 //   }
 // }
 
-// async function create(
-//   post: Post,
-//   file: Express.Multer.File,
-// ): Promise<PostDocument> {
-//   const fileUpload = await fileService
-//     .addImage(file, post.uid)
-//     .catch((error) => Promise.reject(error));
-//   return await PostModel.create({
-//     uid: post.uid,
-//     content: post.content,
-//     file: {
-//       dataURL: fileUpload.secure_url,
-//       sizeType: fileUpload.sizeType,
-//     },
-//   }).catch((error) => {
-//     fileService.deleteImage(fileUpload.secure_url);
-//     return Promise.reject(error);
-//   });
-// }
+async function create(
+  uid: Account['id'],
+  postData: PostUploadData,
+): Promise<Post> {
+  return await createPost(uid, postData);
+}
 
 // async function updateByID(
 //   postId: PostData['id'],
@@ -179,14 +167,14 @@
 //   return await post.save();
 // }
 
-// export default {
-//   getManyByID,
-//   create,
-//   updateByID,
-//   removeByID,
-//   exploreByID,
-//   likeByID,
-//   addCommentByID,
-//   getCommentsByID,
-//   removeCommentByID,
-// };
+export default {
+  //   getManyByID,
+  create,
+  //   updateByID,
+  //   removeByID,
+  //   exploreByID,
+  //   likeByID,
+  //   addCommentByID,
+  //   getCommentsByID,
+  //   removeCommentByID,
+};

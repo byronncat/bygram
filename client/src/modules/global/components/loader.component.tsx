@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import styles from '../styles/components/loader.module.sass';
 
-const Loader = () => {
+const BoxSpin = () => {
   return (
     <div className={clsx('flex flex-col justify-center items-center')}>
       <div>
@@ -56,4 +56,18 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+const Regular = () => (
+  <div
+    className={clsx(
+      'w-10 h-10',
+      'rounded-full animate-spin',
+      'border-4 border-solid border-t-transparent dark:border-t-transparent',
+      'border-primary dark:border-dark-primary',
+    )}
+  />
+);
+
+export default {
+  BoxSpin,
+  Regular,
+};

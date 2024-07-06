@@ -4,7 +4,7 @@ import { Loader, Overlay } from '@global';
 describe('components', () => {
   describe('loader', () => {
     it('should render the loader correctly', () => {
-      const { container } = render(<Loader />);
+      const { container } = render(<Loader.BoxSpin />);
       expect(container).toMatchSnapshot();
     });
   });

@@ -6,7 +6,7 @@ const FilesContext = createContext(
   {} as {
     files: UploadedFile[];
     addFile: (file: UploadedFile) => void;
-    removeFile: (index: number) => void;
+    removeFile: (id: UploadedFile['id']) => void;
     activeIndex: number;
     setActiveIndex: (index: number) => void;
     isEmpty: () => boolean;
@@ -17,17 +17,26 @@ const Files = ({ children }: ReactProps) => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const addFile = (file: UploadedFile) => {
+  function setActiveIndexHandler(index: number) {
+    const _index =
+      index >= files.length ? 0 : index < 0 ? files.length - 1 : index;
+    setActiveIndex(_index);
+  }
+  function addFile(file: UploadedFile) {
     setFiles([...files, file]);
-  };
-
-  const removeFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index));
-  };
-
-  const isEmpty = () => {
+  }
+  function removeFile(id: UploadedFile['id']) {
+    if (
+      activeIndex !== 0 &&
+      activeIndex === files.findIndex((file) => file.id === id)
+    ) {
+      setActiveIndexHandler(activeIndex - 1);
+    }
+    setFiles(files.filter((file) => file.id !== id));
+  }
+  function isEmpty() {
     return files.length === 0;
-  };
+  }
 
   return (
     <FilesContext.Provider
@@ -36,7 +45,7 @@ const Files = ({ children }: ReactProps) => {
         addFile,
         removeFile,
         activeIndex,
-        setActiveIndex,
+        setActiveIndex: setActiveIndexHandler,
         isEmpty,
       }}
     >

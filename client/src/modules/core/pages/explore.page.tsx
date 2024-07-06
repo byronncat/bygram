@@ -11,7 +11,7 @@ function ExplorePage() {
   const [ready, setReady] = useState(true);
   const [post, setPost] = useState({} as any);
   const [showPost, setShowPost] = useState(false);
-  const [posts, setPosts] = useState(homepagePost as Post[]);
+  const [posts, setPosts] = useState(homepagePost);
 
   useEffect(() => {
     // (async function FetchData() {
@@ -22,7 +22,7 @@ function ExplorePage() {
     //   } else toast.error(response.message);
     // })();
   }, [ready]);
-  if (!ready) return <Loader />;
+  if (!ready) return <Loader.BoxSpin />;
   return (
     <>
       {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}

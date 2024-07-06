@@ -1,9 +1,9 @@
-import { user } from '@middlewares';
 import { userService } from '@services';
 import { StatusCode } from '@constants';
+import { logger } from '@utilities';
+
 import type { Request, Response } from 'express';
 import type { API, GetProfileData, SearchProfileData } from '@types';
-import { logger } from '@/utilities';
 
 interface SearchProfileAPI extends API {
   data: SearchProfileData[] | null;
@@ -37,7 +37,7 @@ interface ProfileAPI extends API {
   data: GetProfileData | null;
 }
 async function getProfile(req: Request, res: Response) {
-  const uid = parseInt(req.headers.uid as string, 10);
+  const uid = res.locals.user.id;
   try {
     return res.status(StatusCode.OK).json({
       success: true,
@@ -54,6 +54,6 @@ async function getProfile(req: Request, res: Response) {
 }
 
 export default {
-  search: [user.authenticating, searchProfile],
-  get: [user.authenticating, getProfile],
+  search: [searchProfile],
+  get: [getProfile],
 };

@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
-
 import { userService } from '@services';
 import { sessionMiddleware } from '@middlewares';
 import { logger } from '@utilities';
 import { LoginResult, RegisterResult, StatusCode } from '@constants';
+
+import type { NextFunction, Request, Response } from 'express';
 import type { Account, Identity, API } from '@types';
 
 async function logIn(

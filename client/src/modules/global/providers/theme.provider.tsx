@@ -19,6 +19,7 @@ const ThemeContext = createContext(
 const ThemeProvider = ({ children }: ReactProps) => {
   const { isDarkMode, ternaryDarkMode, setTernaryDarkMode } =
     useTernaryDarkMode({
+      defaultValue: 'dark' as TernaryDarkMode,
       localStorageKey: LocalStorageKey.Theme,
     });
 

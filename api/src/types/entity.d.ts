@@ -1,23 +1,25 @@
 import type { Account } from './authentication';
 
-export interface Post {
-  uid?: Account['id'];
-  content?: string;
-  file?: File;
-  likes?: Account['id'][];
-  comments?: Comment[];
-  createdAt?: Date;
-}
+export type Post = {
+  uid: Account['id'];
+  content: string;
+  files: MediaInfo[];
+  likes: Account['id'][];
+  comments: Comment[];
+  createdAt: Date;
+};
 
-export interface Profile {
+export type Profile = {
   uid: Account['id'];
   followers: Account['id'][];
   followings: Account['id'][];
-  avatar?: File;
+  avatar?: MediaInfo;
   description?: string;
-}
+};
 
-export interface File {
+export type MediaInfo = {
+  id: string;
   url: string;
+  type: 'image' | 'video';
   orientation: 'landscape' | 'portrait' | 'square';
-}
+};

@@ -35,6 +35,4 @@ const SidebarOptions = ({ children }: ReactProps) => {
 };
 
 export default SidebarOptions;
-export const useSidebarOptionsContext = () => {
-  return useContext(SidebarOptionsContext);
-};
+export const useSidebarOptionsContext = () => useContext(SidebarOptionsContext);

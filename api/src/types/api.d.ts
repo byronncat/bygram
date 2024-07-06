@@ -1,4 +1,4 @@
-import type { Account, Profile } from '@types';
+import type { Account, Post, Profile } from '@types';
 
 export type API<DataType = undefined> = {
   readonly success: boolean;
@@ -9,3 +9,8 @@ export type SearchProfileData = Pick<Account, 'id' | 'username'> &
   Pick<Profile, 'avatar'>;
 
 export type GetProfileData = Profile & Pick<Account, 'username' | 'email'>;
+
+export type PostUploadData = {
+  content: Post['content'];
+  files: Post['files'];
+};

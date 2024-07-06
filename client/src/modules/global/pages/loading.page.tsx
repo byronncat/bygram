@@ -5,7 +5,7 @@ import logoURL from '@assets/images/logo.svg';
 const Loading = () => {
   return (
     <div className={clsx('h-full', 'relative', 'flex justify-center')}>
-      <Loader />
+      <Loader.BoxSpin />
       <div
         className={clsx(
           'flex flex-col items-center',
