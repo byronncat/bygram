@@ -1,32 +1,23 @@
 <a name="readme-top"></a>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="resources/logo.svg" alt="Logo" width="80" height="80">
+  <a href="readme-resources/logo.svg">
+    <img src="readme-resources/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Social Media Platform</h3>
 
   <p align="center">
-    Engage with a global network of like-minded individuals!
+    Share your moments, connect with the world!
     <br />
-    <a href="https://example.com"><strong>Explore the docs »</strong></a>
+    <a href="https://youtu.be/0YJ7lPvjlAo"><strong>View Demo »</strong></a>
     <br />
     <br />
-    <a href="https://example.com">View Demo</a>
+    <a href="https://docs.google.com/forms/d/1oUM87A2Kkv7ME9OhRtNDZ_HyMsoKzJR_lOCwna4T_rU/viewform?edit_requested=true">Report Bug</a>
     ·
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSckRXK471OcCgpfQGw1jFJNt6fR9cW8CHolVjuxuJZlTHbRvA/viewform?usp=sf_link">Report Bug</a>
-    ·
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZNQmKaOjla76cfrE4abGi_cnv5jb0hjHsLOzbdwu1WiglgQ/viewform?usp=sf_link">Request Feature</a>
+    <a href="https://docs.google.com/forms/d/1Buxc42n_T9O5ELi6t2nj0SGoZE1yg675G625TSSLJcA/viewform?pli=1&pli=1&edit_requested=true">Request Feature</a>
   </p>
 </div>
 
@@ -48,11 +39,8 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -60,19 +48,30 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![Product Name Screen Shot](readme-resources/product-screenshot.png)
 
-Welcome to Bygram, a dynamic social media platform dedicated to fostering genuine connections and sharing life's special moments with a diverse community.
+**Social Media Platform** is a modern web application designed to help users share images, videos, and connect with others. Built with a focus on clean code and user-friendly design (for personal learning purpose), this platform offers features like user profiles, post exploration, and search functionality.
 
-Our platform is designed to bring people together from all walks of life, allowing you to connect with old friends, discover new ones, and engage in enriching conversations. Whether you're passionate about photography, travel, cooking, or simply want to share your thoughts, Bygram offers a supportive space where your stories are celebrated and your voice is heard.
+### Key Features:
+- **User Authentication**: Secure authentication using JWT and password hashing.
+- **CRUD Operations**: Create, read, update, and delete posts.
+- **Media Management**: Upload and manage images/videos using Cloudinary.
+- **Responsive Design**: Fully responsive UI with advanced CSS effects (e.g., shadows, neon effects) powered by Sass and Tailwind CSS.
+- **Database**: Utilizes MongoDB (with Mongoose for schema management) and Redis for session storage.
+- **UI/UX**: Friendly, support dark mode.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
-- [![Express][Express.js]][Express-url]
 - [![React][React.js]][React-url]
-- [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+- [![Express][Express.js]][Express-url]
+- [![Sass][Sass.js]][Sass-url]
+- [![TailwindCSS][TailwindCSS.js]][TailwindCSS-url]
+- [![MongoDB][MongoDB.js]][MongoDB-url]
+- [![Redis][Redis.js]][Redis-url]
+- [![Cloudinary][Cloudinary.js]][Cloudinary-url]
+- [![TypeScript][TypeScript.js]][TypeScript-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -80,34 +79,33 @@ Our platform is designed to bring people together from all walks of life, allowi
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+- Node.js and npm installed (or pnpm, yarn).
+- MongoDB, Redis and Cloudinary servers running.
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo:
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone ...
    ```
-3. Install NPM packages
+2. Install dependencies:
    ```sh
    npm install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+3. Set up environment variables:
+   - Create a `.env` file in the api and client directory.
+   - Add the variables in `.env.example`.
+4. Start the development server:
+   ```sh
+   npm run dev
+   ```
+5. Start the development client:
+   ```sh
+   npm run start
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -116,30 +114,10 @@ _Below is an example of how you can instruct your audience on installing and set
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
-
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- **Explore Posts**: Browse through posts from other users.
+- **Create Posts**: Share your own images and videos.
+- **Search**: Find users and posts using the search functionality.
+- **Profile Management**: Update your profile and view others' profiles.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -147,7 +125,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -155,48 +133,42 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Ngo Cao Anh Thinh - anhthinhncat@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-- [Choose an Open Source License](https://choosealicense.com)
-- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-- [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-- [Malven's Grid Cheatsheet](https://grid.malven.co/)
-- [Img Shields](https://shields.io)
-- [GitHub Pages](https://pages.github.com)
-- [Font Awesome](https://fontawesome.com)
-- [React Icons](https://react-icons.github.io/react-icons/search)
+Project Link: [Bygram](https://github.com/byronncat/bygram)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/your_username/your_repo_name.svg?style=for-the-badge
+[contributors-url]: https://github.com/your_username/your_repo_name/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/your_username/your_repo_name.svg?style=for-the-badge
+[forks-url]: https://github.com/your_username/your_repo_name/network/members
+[stars-shield]: https://img.shields.io/github/stars/your_username/your_repo_name.svg?style=for-the-badge
+[stars-url]: https://github.com/your_username/your_repo_name/stargazers
+[issues-shield]: https://img.shields.io/github/issues/your_username/your_repo_name.svg?style=for-the-badge
+[issues-url]: https://github.com/your_username/your_repo_name/issues
+[license-shield]: https://img.shields.io/github/license/your_username/your_repo_name.svg?style=for-the-badge
+[license-url]: https://github.com/your_username/your_repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
+[linkedin-url]: https://linkedin.com/in/your_username
 [product-screenshot]: resources/product-screenshot.png
-[Express.js]: https://img.shields.io/badge/next.js-fdfdfd?style=for-the-badge&logo=nextdotjs&logoColor=353535
+[Express.js]: https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white
 [Express-url]: https://expressjs.com/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://react.dev/
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-6e2cf2?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
+[TypeScript.js]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[MongoDB.js]: https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white
+[MongoDB-url]: https://www.mongodb.com/
+[Redis.js]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
+[Redis-url]: https://redis.io/
+[Cloudinary.js]: https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white
+[Cloudinary-url]: https://cloudinary.com/
+[TailwindCSS.js]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[TailwindCSS-url]: https://tailwindcss.com/
+[Sass.js]: https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white
+[Sass-url]: https://sass-lang.com/
