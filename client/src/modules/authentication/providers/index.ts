@@ -1,9 +1,9 @@
 export {
   default as ClassNameProvider,
-  useClassNameContext,
-} from './classname.context';
+  ClassNameContext,
+} from './Classname.context';
 
 export {
   default as AuthenticationProvider,
-  useAuthenticationContext,
-} from './authentication.provider';
+  AuthContext,
+} from './Authentication.provider';

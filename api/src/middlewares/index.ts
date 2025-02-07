@@ -1,2 +1,2 @@
 export * as user from './user.middleware';
-export * as sessionMiddleware from './session.middleware';
+export * as sessionManager from './session.middleware';

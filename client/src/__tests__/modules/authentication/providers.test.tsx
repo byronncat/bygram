@@ -1,7 +1,7 @@
 import {
   useClassNameContext,
   AuthenticationProvider,
-  useAuthenticationContext,
+  useAuthContext,
   ClassNameProvider,
 } from '@authentication';
 import { render, renderHook, waitFor } from '@testing-library/react';
@@ -36,7 +36,7 @@ describe('provider', () => {
     it('should return isAuthenticated object', async () => {
       let result: boolean = false;
       const Test = () => {
-        const { isLoggedIn: isAuthenticated } = useAuthenticationContext();
+        const { isLoggedIn: isAuthenticated } = useAuthContext();
 
         useEffect(() => {
           result = isAuthenticated;

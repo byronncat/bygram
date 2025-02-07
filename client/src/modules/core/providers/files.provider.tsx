@@ -1,39 +1,69 @@
-import { createContext, useContext, useState } from 'react';
-import type { ReactProps } from '@global';
-import type { UploadedFile } from '../types';
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
+import type { MediaInfo, UploadedFile } from '../types';
 
 const FilesContext = createContext(
   {} as {
-    files: UploadedFile[];
-    addFile: (file: UploadedFile) => void;
-    removeFile: (id: UploadedFile['id']) => void;
-    activeIndex: number;
-    setActiveIndex: (index: number) => void;
+    files: UploadedFile[] | MediaInfo[];
+    setFile: React.Dispatch<React.SetStateAction<UploadedFile[] | MediaInfo[]>>;
+    addFile: (
+      files: UploadedFile | UploadedFile[] | MediaInfo | MediaInfo[],
+    ) => void;
+    removeFile: (id: UploadedFile['id'], index: number) => void;
+    currentIndex: number;
+    navigateIndex: (index: number) => void;
     isEmpty: () => boolean;
   },
 );
 
-const Files = ({ children }: ReactProps) => {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+interface FilesProviderProps extends PropsWithChildren {
+  initialFiles?: UploadedFile[] | MediaInfo[];
+}
 
-  function setActiveIndexHandler(index: number) {
+export default function Files({
+  children,
+  initialFiles = [],
+}: FilesProviderProps) {
+  const [files, updateFiles] = useState<UploadedFile[]>(initialFiles);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  function navigateIndex(index: number) {
     const _index =
       index >= files.length ? 0 : index < 0 ? files.length - 1 : index;
-    setActiveIndex(_index);
+    setCurrentIndex(_index);
   }
-  function addFile(file: UploadedFile) {
-    setFiles([...files, file]);
-  }
+
+  const addFile = useCallback(
+    (files: UploadedFile | UploadedFile[] | MediaInfo | MediaInfo[]) => {
+      if (Array.isArray(files)) {
+        updateFiles((prev) => [...prev, ...files]);
+      } else {
+        updateFiles((prev) => [...prev, files]);
+      }
+    },
+    [],
+  );
+
   function removeFile(id: UploadedFile['id']) {
-    if (
-      activeIndex !== 0 &&
-      activeIndex === files.findIndex((file) => file.id === id)
-    ) {
-      setActiveIndexHandler(activeIndex - 1);
+    let removeIndex = -1;
+    const filteredFiles = files.filter((file) => {
+      if (file.id === id) {
+        removeIndex = files.indexOf(file);
+        return false;
+      }
+      return true;
+    });
+    if (removeIndex <= currentIndex && currentIndex !== 0) {
+      navigateIndex(currentIndex - 1);
     }
-    setFiles(files.filter((file) => file.id !== id));
+    updateFiles(filteredFiles);
   }
+
   function isEmpty() {
     return files.length === 0;
   }
@@ -42,17 +72,17 @@ const Files = ({ children }: ReactProps) => {
     <FilesContext.Provider
       value={{
         files,
+        setFile: updateFiles,
         addFile,
         removeFile,
-        activeIndex,
-        setActiveIndex: setActiveIndexHandler,
+        currentIndex,
+        navigateIndex,
         isEmpty,
       }}
     >
       {children}
     </FilesContext.Provider>
   );
-};
+}
 
-export default Files;
 export const useFilesContext = () => useContext(FilesContext);

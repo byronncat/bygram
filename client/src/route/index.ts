@@ -1,3 +1,3 @@
-export { default } from './router';
+export { default } from './Router';
 export * from './routes';
-export { default as useCurrentPath } from './hooks/useCurrentPath';
+export * from './hooks/usePath';

@@ -1,16 +1,8 @@
-import { API, Account, Credentials, Post, Profile } from '@types';
+import { API, User, Credentials, Post, Profile } from '@types';
 
 export interface PostData
   extends Pick<Profile, 'username' | 'avatar'>,
-    Omit<Post, 'comments'> {
-  id?: string;
-}
-
-export interface CommentData
-  extends Pick<Profile, 'username' | 'avatar'>,
-    Comment {
-  id: string;
-}
+    Omit<Post, 'comments'> {}
 
 export interface ProfileData extends Profile {
   posts?: PostData[];

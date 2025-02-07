@@ -1,252 +1,305 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useToggle } from 'usehooks-ts';
 import clsx from 'clsx';
 
-import { useGlobalContext, toast, Loader, ErrorPage } from '@global';
-import {
-  changeAvatar,
-  follow,
-  // getProfile,
-  removeAvatar,
-  unfollow,
-} from '../services/profile.service';
-// import { DEFAULT_AVATAR } from '../constants';
-import { PostData, ProfileData } from '../types';
-import { MenuItem } from '../types/layout.d';
-import styles from '../styles/pages/profile.module.sass';
-// import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { getProfileAPI } from '../api';
-import { useAuthenticationContext } from '@/modules/authentication';
-import { DEFAULT } from '../constants';
+import { toast, Loader, Overlay, id } from '@global';
+import { AuthContext } from '@authentication';
+import { profileApi, postApi } from '../api';
+import { Avatar } from '../components';
+import { GridPostLayout } from '../layouts';
+import type { ProfileData, UploadedFile } from '../types';
+import { LayoutContext } from '../layouts/Dashboard.layout';
+import { CloudinaryContext } from '../providers/Cloudinary.provider';
+import { AVATAR_MENU } from '../constants';
+import Menu from '../components/Menu.component';
+import { PostContext } from '../providers';
 
-function ProfilePage() {
-  const [ready, setReady] = useState(false);
-  const { user } = useAuthenticationContext();
+export default function ProfilePage() {
+  const [isLoaded, setLoaded] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  // const [showAvatarMenu, setShowAvatarMenu] = useState(false);
-  // const [currentPost, setCurrentPost] = useState({} as PostData);
-  // const [showCurrentPost, setShowCurrentPost] = useState(false);
+  const { setPosts } = useContext(PostContext);
 
-  // const { refreshPage } = useGlobalContext();
+  const { user } = useContext(AuthContext);
   const { register, handleSubmit } = useForm<{ file: FileList }>();
-  // const changeAvatarHandler: SubmitHandler<{ file: FileList }> = async (
-  //   data,
-  // ) => {
-  //   const response = await changeAvatar(
-  //     authenticationStorage.identity!.id,
-  //     data.file[0],
-  //   );
-  //   if (response.success) refreshPage();
-  //   toast.display(response.message, response.success ? 'success' : 'error');
-  // };
 
-  // const removeAvatarHandler = async () => {
-  //   setShowAvatarMenu(false);
-  //   const response = await removeAvatar(authenticationStorage.identity!.id);
-  //   if (response.success) refreshPage();
-  //   toast.display(response.message, response.success ? 'success' : 'error');
-  // };
+  const [showAvatarMenu, toggleAvatarMenu] = useToggle();
 
-  // async function followHandler() {
-  //   const response = await follow(
-  //     authenticationStorage.identity!.id,
-  //     profile.uid,
-  //   );
-  //   if (response.success) refreshPage();
-  //   toast.display(response.message, response.success ? 'success' : 'error');
-  // }
+  function isFollowing() {
+    return user && profile?.followers.includes(user.id);
+  }
 
-  // async function unfollowHandler() {
-  //   const response = await unfollow(
-  //     authenticationStorage.identity!.id,
-  //     profile.uid,
-  //   );
-  //   if (response.success) refreshPage();
-  //   toast.display(response.message, response.success ? 'success' : 'error');
-  // }
+  async function followHandler() {
+    if (!profile) return;
+    const response = await profileApi.follow(profile._id);
+    if (response.success)
+      setProfile((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          followers: [...prev.followers, user!.id],
+        };
+      });
+    else toast.error(response.message);
+  }
 
+  async function unfollowHandler() {
+    if (!profile) return;
+    const response = await profileApi.unfollow(profile._id);
+    if (response.success)
+      setProfile((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          followers: prev.followers.filter((id) => id !== user!.id),
+        };
+      });
+    else toast.error(response.message);
+  }
+
+  const page = useRef(0);
   const { username } = useParams();
+  const fetchPosts = useCallback(async () => {
+    if (!username || isFetching.current) return;
+    isFetching.current = true;
+    const response = await postApi.getPostsByUsername(username, page.current);
+    if (response.success && response.data) {
+      setPosts((prev) => [...(prev || []), ...response.data]);
+      page.current += 1;
+    }
+    isFetching.current = false;
+  }, [username, setPosts]);
+
+  const isFetching = useRef(false);
+  const fetchProfile = useCallback(async () => {
+    if (!username || isFetching.current) return;
+    isFetching.current = true;
+    const response = await profileApi.getProfile(username);
+    if (response.success && response.data) {
+      setProfile(response.data);
+    } else toast.error(response.message);
+    setLoaded(true);
+    isFetching.current = false;
+    await fetchPosts();
+  }, [username, fetchPosts]);
+
   useEffect(() => {
-    if (!username || !user) return;
-    (async function fetchProfile() {
-      const response = await getProfileAPI(username, user.id);
-      if (response.success && response.data) {
-        setProfile(response.data);
-      } else toast.error(response.message);
-      setReady(true);
-    })();
-  }, [user]);
+    fetchProfile();
+  }, [fetchProfile]);
 
-  // const inpurRef = useRef<HTMLInputElement | null>(null);
-  // const { ref, ...rest } = register('file', {
-  //   onChange: (data) => {
-  //     console.log(data);
-  //     handleSubmit(changeAvatarHandler)();
-  //   },
-  //   required: true,
-  // });
+  useEffect(() => {
+    setPosts([]);
+    setProfile(null);
+    page.current = 0;
+    fetchProfile();
+  }, [username, fetchProfile, setPosts]);
 
-  // const avatarMenu = [
-  //   {
-  //     name: 'Remove avatar',
-  //     functionHandler: () => removeAvatarHandler(),
-  //   },
-  //   {
-  //     name: 'Upload avatar',
-  //     functionHandler: () => {
-  //       inpurRef.current?.click();
-  //       setShowAvatarMenu(false);
-  //     },
-  //   },
-  //   {
-  //     name: 'Cancel',
-  //     functionHandler: () => setShowAvatarMenu(false),
-  //   },
-  // ] as MenuItem[];
-  if (!ready) return <Loader.BoxSpin />;
-  // TODO: add not loaded profile page
-  // if (ready && !profile) return <ErrorPage />;
+  const { uploadFile } = useContext(CloudinaryContext);
+  const inpurRef = useRef<HTMLInputElement | null>(null);
+  const { ref, ...rest } = register('file', {
+    onChange: () => {
+      handleSubmit(changeAvatarHandler)();
+    },
+    required: true,
+  });
+  const changeAvatarHandler: SubmitHandler<{ file: FileList }> = async (
+    data,
+  ) => {
+    if (showAvatarMenu) toggleAvatarMenu();
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const img = document.createElement('img');
+      img.src = event.target!.result as string;
+      img.onload = async () => {
+        const orientation =
+          img.width > img.height
+            ? 'landscape'
+            : img.width < img.height
+            ? 'portrait'
+            : 'square';
+        const file = {
+          id: id.generate(),
+          url: img.src,
+          orientation,
+          type: data.file[0].type,
+        } as UploadedFile;
+
+        toast.loading('Uploading...');
+        const uploadedFile = await uploadFile(file, {
+          asset_folder: user!.username,
+          public_id_prefix: user!.username,
+        });
+
+        const response = await profileApi.changeAvatar(uploadedFile);
+        if (response.success)
+          setProfile(
+            (prev) =>
+              prev && ({ ...prev, avatar: uploadedFile } as ProfileData),
+          );
+        toast[response.success ? 'success' : 'error'](response.message);
+      };
+    };
+    reader.readAsDataURL(data.file[0]);
+  };
+  const removeAvatarHandler = async () => {
+    toggleAvatarMenu();
+    toast.loading('Removing...');
+    const response = await profileApi.removeAvatar();
+    if (response.success) {
+      const removedAvatar = profile;
+      if (removedAvatar) delete removedAvatar.avatar;
+      setProfile(removedAvatar);
+    }
+    toast[response.success ? 'success' : 'error'](response.message);
+  };
+
+  const { scrollRef } = useContext(LayoutContext);
+  const handleScroll = useCallback(() => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 2) {
+        fetchPosts();
+      }
+    }
+  }, [fetchPosts, scrollRef]);
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) scrollElement.addEventListener('scroll', handleScroll);
+    return () => {
+      if (scrollElement)
+        scrollElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll, scrollRef]);
+
+  if (!isLoaded) return <Loader.BoxSpin />;
   return (
     <>
-      {/* {showCurrentPost && (
-        <PostWindow
-          post={currentPost}
-          onExit={() => setShowCurrentPost(false)}
-        />
-      )}
       {showAvatarMenu && (
-        <Overlay exitHandler={() => setShowAvatarMenu(false)}>
-          <Menu list={avatarMenu} />
+        <Overlay onExit={toggleAvatarMenu}>
+          <Menu
+            title="Change Profile Photo"
+            list={AVATAR_MENU.map((item) => {
+              if (item.name === 'Cancel') {
+                return {
+                  ...item,
+                  functionHandler: toggleAvatarMenu,
+                };
+              }
+              if (item.name === 'Upload Photo') {
+                return {
+                  ...item,
+                  functionHandler: () => inpurRef.current?.click(),
+                };
+              }
+              if (item.name === 'Remove Current Photo') {
+                return {
+                  ...item,
+                  functionHandler: removeAvatarHandler,
+                };
+              }
+              return item;
+            })}
+          />
         </Overlay>
-      )} */}
-
-      <main className={clsx('text-white', 'w-full h-full max-w-250 px-5 py-8')}>
-        <header className={clsx('flex', 'pb-10', 'border-b border-white/[.1]')}>
+      )}
+      <div
+        className={clsx(
+          'w-full max-w-screen-lg min-h-[calc(100vh-8rem)]',
+          'px-4 py-8',
+        )}
+      >
+        <header
+          className={clsx(
+            'flex',
+            'pb-6 mb-7',
+            'gap-x-8 md:gap-x-12',
+            'border-b border-on-background/[.12] dark:border-dark-on-background/[.2]',
+          )}
+        >
           <form
             className={clsx(
-              'w-36 h-36 p-1',
+              'relative',
+              'rounded-full overflow-hidden',
               'flex justify-center items-center',
-              'rounded-full',
-              'relative overflow-hidden',
-              'border-3 border-cerise-700',
+              'hover:opacity-80 transition-opacity duration-300',
             )}
           >
-            <span className="w-full h-full rounded-full overflow-hidden">
-              <img
-                className={clsx(
-                  profile?.avatar?.orientation === 'landscape'
-                    ? 'w-auto h-full'
-                    : 'w-full h-auto',
-                )}
-                // style={{ transform: 'avatar' in profile ? 'none' : 'scale(1.4)' }}
-                src={profile?.avatar?.url || DEFAULT.AVATAR}
-                alt="profile"
-                // onClick={
-                //   profile?.uid === authenticationStorage.identity?.id
-                //     ? () => setShowAvatarMenu(true)
-                //     : () => {}
-                // }
-              />
-            </span>
-            {user?.id === profile?.uid && (
+            <Avatar size={'medium'} image={profile?.avatar} />
+            {profile && user?.id === profile?._id && (
               <input
                 type="file"
                 className={clsx(
-                  // 'cur-pointer',
-                  'absolute top-0 start-0',
                   'opacity-0',
-                  profile?.avatar?.url ? 'd-none' : 'h-100 w-100',
+                  'absolute top-0 left-0',
+                  profile?.avatar?.url ? 'hidden' : 'size-full',
                 )}
-                // {...rest}
-                // name="file"
-                // ref={(e) => {
-                //   ref(e);
-                //   inpurRef.current = e;
-                // }}
+                {...rest}
+                name="file"
+                ref={(e) => {
+                  ref(e);
+                  inpurRef.current = e;
+                }}
               />
             )}
+            <div
+              className={clsx(
+                'opacity-0 cursor-pointer',
+                'absolute top-0 left-0',
+                profile?.avatar?.url ? 'size-full' : 'hidden',
+              )}
+              onClick={toggleAvatarMenu}
+            />
           </form>
-          <div className={clsx('flex flex-col gap-y-4', ' ps-5')}>
-            <div className={clsx('d-flex align-items-center')}>
-              <h2 className={clsx('me-5', 'text-xl lh-1')}>
-                {profile?.username}
-              </h2>
-              {/* {profile.uid !== authenticationStorage.identity?.id &&
-                (profile.followers?.includes(
-                  authenticationStorage.identity!.id,
-                ) ? (
-                  <button
-                    className={clsx(
-                      styles['following-button'],
-                      'd-block rounded',
-                      'px-2 py-1',
-                    )}
-                    onClick={unfollowHandler}
-                  >
-                    Unfollow
-                  </button>
-                ) : (
-                  <button
-                    className={clsx(
-                      styles['following-button'],
-                      'd-block rounded',
-                      'px-2 py-1',
-                    )}
-                    onClick={followHandler}
-                  >
-                    Follow
-                  </button>
-                ))} */}
+
+          <div className={clsx('flex flex-col', 'gap-y-3 md:gap-y-4')}>
+            <div className={clsx('flex items-center', 'gap-x-6')}>
+              <h2 className="text-2xl font-semibold">{profile?.username}</h2>
+              {profile && user?.id !== profile?._id && (
+                <button
+                  className={clsx(
+                    'px-3 md:px-2 py-1',
+                    'text-lg',
+                    'simple-border-button',
+                  )}
+                  onClick={isFollowing() ? unfollowHandler : followHandler}
+                >
+                  {isFollowing() ? 'Unfollow' : 'Follow'}
+                </button>
+              )}
             </div>
 
-            <ul className="flex p-0">
-              <li className={clsx('list-unstyled', 'me-4')}>
-                <span className="pe-1 fw-bolder">0</span>
-                posts
+            <ul
+              className={clsx(
+                'p-0',
+                'list-unstyled opacity-60',
+                'flex flex-col md:flex-row space-x-0 md:space-x-4',
+              )}
+            >
+              <li>
+                <span className="pr-1">{profile?.totalPosts}</span>
+                Posts
               </li>
-              <li className={clsx('list-unstyled', 'me-4')}>
-                <span className="pe-1 fw-bolder">
-                  {profile?.followers.length}
-                </span>
-                followers
+              <li>
+                <span className="pr-1">{profile?.followers.length}</span>
+                Followers
               </li>
-              <li className="list-unstyled">
-                <span className="pe-1 fw-bolder">
-                  {profile?.followings.length}
-                </span>
-                following
+              <li>
+                <span className="pr-1">{profile?.followings.length}</span>
+                Following
               </li>
             </ul>
 
-            {profile?.description || (
-              <p className="text-sm text-white/[0.62]">profile.description</p>
+            {profile?.description && (
+              <p className="text-sm text-white/[0.62]">
+                {profile?.description}
+              </p>
             )}
           </div>
         </header>
-        {/* <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-          <Masonry gutter="8px">
-            {profile.posts?.map((post: any) => {
-              return (
-                <LazyLoadImage
-                  role="button"
-                  className="img-fluid"
-                  alt="profile"
-                  src={post.file.dataURL}
-                  // wrong key
-                  // key={index}
-                  onClick={() => {
-                    setCurrentPost(post);
-                    setShowCurrentPost(true);
-                  }}
-                />
-              );
-            })}
-          </Masonry>
-        </ResponsiveMasonry> */}
-      </main>
+        <GridPostLayout />
+      </div>
     </>
   );
 }
-
-export default ProfilePage;

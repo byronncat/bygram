@@ -1,10 +1,32 @@
+import { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-const Error = () => {
+type ErrorPageProps = {
+  statusCode?: number;
+};
+
+export default function ErrorPage({ statusCode = 400 }: ErrorPageProps) {
+  const backButton = useRef<HTMLAnchorElement>(null);
+  let content = {
+    heading: 'Something went wrong!',
+    message: 'Please try again later.',
+  };
+
+  if (statusCode === 404)
+    content = {
+      heading: 'Page not found',
+      message:
+        'The page you are looking for might have been removed or is temporarily unavailable.',
+    };
+
+  useLayoutEffect(() => {
+    backButton.current?.focus();
+  }, []);
+
   return (
-    <div className={clsx('w-full h-full', 'flex justify-center items-center')}>
-      <div className="flex flex-col items-center">
+    <div className={clsx('w-screen h-svh', 'flex justify-center items-center')}>
+      <div className={clsx('flex flex-col items-center', 'px-12 text-center')}>
         <div
           className={clsx('text-center', 'w-full')}
           style={{
@@ -12,14 +34,15 @@ const Error = () => {
               'radial-gradient(50% 109137.91% at 50% 50%, rgba(176, 0, 32, 0.2) 0%, rgba(254, 244, 247, 0) 100%)',
           }}
         >
-          <span
+          <div
             className={clsx(
-              'bg-surface text-error font-bold text-3xl inline-block px-3',
-              'dark:bg-dark-surface dark:text-dark-error',
+              'inline-block px-4 py-1',
+              'font-bold text-3xl',
+              'bg-error dark:bg-dark-error',
             )}
           >
-            404
-          </span>
+            <span className="text-white">{statusCode}</span>
+          </div>
         </div>
         <h1
           className={clsx(
@@ -28,7 +51,7 @@ const Error = () => {
             'text-on-background dark:text-dark-on-background',
           )}
         >
-          Page Not Found
+          {content.heading}
         </h1>
         <p
           className={clsx(
@@ -36,17 +59,16 @@ const Error = () => {
             'mb-10',
           )}
         >
-          Looks like you've followed a broken link or entered a URL that doesn't
-          exist on this site.
+          {content.message}
         </p>
-        <div className="space-x-4">
-          <Link to="/" className={clsx('px-12 py-3', 'simple-border-button')}>
-            Go to Dashboard
-          </Link>
-        </div>
+        <Link
+          to="/"
+          className={clsx('px-12 py-3', 'simple-border-button')}
+          ref={backButton}
+        >
+          Go to Dashboard
+        </Link>
       </div>
     </div>
   );
-};
-
-export default Error;
+}

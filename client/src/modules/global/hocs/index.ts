@@ -1,1 +1,1 @@
-export { default as Global } from './global.hoc';
+export { default as GlobalSettings } from './GlobalSettings.hoc';

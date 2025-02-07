@@ -1,59 +1,47 @@
-import { useState, useContext, createContext, useCallback } from 'react';
+import { useState, createContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useJwt } from 'react-jwt';
-import Cookies from 'js-cookie';
 import { ROUTE } from '@route';
 
-import type { User, ReactProps } from '@global';
+import type { PropsWithChildren } from 'react';
+import type { UserToken } from '../types';
 
-const AuthenticationContext = createContext(
+export const AuthContext = createContext(
   {} as {
     isLoggedIn: boolean;
-    login: () => void;
+    login: (user: UserToken) => void;
     logout: () => void;
     user: UserToken | null;
+    setUser: (user: UserToken) => void;
   },
 );
 
-interface UserToken extends Omit<User, 'password'> {
-  iat: number;
-}
-
-const Authentication = ({ children }: ReactProps) => {
-  const userCookie = Cookies.get('user');
+export default function Authentication({ children }: PropsWithChildren) {
   const navigate = useNavigate();
-  const { decodedToken } = useJwt<UserToken>(userCookie || '');
-  const [user, setUser] = useState<UserToken | null>(decodedToken);
+  const [user, setUser] = useState<UserToken | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = useCallback(() => {
-    setUser(decodedToken);
+  const login = useCallback((user: UserToken) => {
     setIsLoggedIn(true);
-    navigate(ROUTE.HOME);
-  }, [decodedToken, navigate]);
+    setUser(user);
+  }, []);
+
   const logout = useCallback(() => {
     setUser(null);
     setIsLoggedIn(false);
     navigate(ROUTE.LOGIN);
-  }, [decodedToken, navigate]);
+  }, [navigate]);
 
   return (
-    <AuthenticationContext.Provider
+    <AuthContext.Provider
       value={{
         user,
+        setUser,
         isLoggedIn,
         login,
         logout,
       }}
     >
       {children}
-    </AuthenticationContext.Provider>
+    </AuthContext.Provider>
   );
-};
-
-const useAuthenticationContext = () => {
-  return useContext(AuthenticationContext);
-};
-
-export default Authentication;
-export { useAuthenticationContext };
+}

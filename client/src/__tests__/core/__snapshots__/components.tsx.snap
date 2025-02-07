@@ -33,7 +33,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="home"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 576 512"
             xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="search"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 512 512"
             xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="explore"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 512 512"
             xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="create"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 448 512"
             xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="profile"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 448 512"
             xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@ exports[`component sidebar should render correctly 1`] = `
           id="logout"
         >
           <svg
-            class="w-5 h-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
+            class="size-5 transition-all duration-300 fill-white/[.6] group-hover:fill-white"
             fill="white"
             viewBox="0 0 512 512"
             xmlns="http://www.w3.org/2000/svg"

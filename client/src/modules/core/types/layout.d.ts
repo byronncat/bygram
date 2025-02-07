@@ -1,5 +1,6 @@
 export interface MenuItem {
-  name: string;
-  function?: (...args: any) => any;
-  functionHandler: (...args: any) => any;
+  readonly name: string;
+  readonly color?: 'red' | 'blue';
+  readonly fontWeight?: 'bold' | 'normal';
+  functionHandler?: (...args: any) => any;
 }

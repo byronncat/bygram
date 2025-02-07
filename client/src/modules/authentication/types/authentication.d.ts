@@ -1,6 +1,14 @@
-export interface AuthenticationInformation {
-  username?: string;
-  password?: string;
-  email?: string;
-}
-export type AuthenticationInformationStrings = keyof AuthenticationInformation;
+import type { User } from '@global';
+
+export type LoginFormData = {
+  identity: User['username'] | User['email'];
+  password: User['password'];
+};
+
+export type RegisterFormData = {
+  email: User['email'];
+  username: User['username'];
+  password: User['password'];
+};
+
+export type UserToken =  Pick<User, 'id' | 'username' | 'email'>;

@@ -1,1 +1,1 @@
-export { default as DashboardHoc } from './dashboard.hoc';
+export { default as Dashboard, LoadContext } from './Dashboard.hoc';

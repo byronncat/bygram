@@ -1,1 +1,1 @@
-export * from './authentication.api';
+export * as authenticationApi from './authentication.api';

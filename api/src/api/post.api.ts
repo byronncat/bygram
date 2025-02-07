@@ -1,15 +1,16 @@
 import express from 'express';
-import { postController } from '@controllers';
+import { postController } from '../controllers';
 const router = express.Router();
 
-router.get('/', postController.home);
-// router.get('/explore', postController.explore);
-// router.get('/comment/:id', postController.getComments);
-// router.post('/like', postController.likePost);
-// router.post('/comment', postController.commentPost);
+router.get('/comment/:postId', postController.getComments);
+router.get('/user/:username', postController.getByUsername);
+router.get('/', postController.get);
+router.post('/like', postController.like);
+router.post('/unlike', postController.unlike);
+router.post('/comment', postController.comment);
 router.post('/', postController.create);
-// router.put('/', postController.updatePost);
-// router.delete('/comment', postController.deleteComment);
-// router.delete('/:id', postController.deletePost);
+router.put('/', postController.update);
+router.delete('/:postId/comments/:commentId', postController.deleteComment);
+router.delete('/:postId', postController.delete);
 
 export default router;

@@ -1,12 +1,10 @@
-import { Global } from '@global';
+import { GlobalSettings } from '@global';
 import Router from '@route';
 
-const App = () => {
+export default function App() {
   return (
-    <Global>
+    <GlobalSettings>
       <Router />
-    </Global>
+    </GlobalSettings>
   );
-};
-
-export default App;
+}

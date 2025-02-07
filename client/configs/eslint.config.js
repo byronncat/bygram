@@ -3,7 +3,7 @@ const config = {
     "react-app",
     "react-app/jest"
   ],
-  "plugins": ["jsx-a11y"]
+  "plugins": ["jsx-a11y"],
 }
 
 module.exports = config

@@ -1,28 +1,26 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import {
-  LandingHoc,
+  Landing,
   LoginPage,
   RegisterPage,
-  ForgotPasswordPage,
-  ResetPasswordPage,
-  AuthenticationHoc,
+  Authentication,
 } from '@authentication';
-import { DashboardHoc, HomePage, ExplorePage, ProfilePage } from '@core';
+import { Dashboard, HomePage, ExplorePage, ProfilePage } from '@core';
 import { ErrorPage } from '@global';
 import { ROUTE } from '@route';
 
-const Router = () => {
+export default function Router() {
   const router = createBrowserRouter([
     {
       path: '*',
-      element: <ErrorPage />,
+      element: <ErrorPage statusCode={404} />,
     },
     {
-      element: <AuthenticationHoc />,
-      errorElement: <ErrorPage />,
+      element: <Authentication />,
+      errorElement: <ErrorPage statusCode={400} />,
       children: [
         {
-          element: <DashboardHoc />,
+          element: <Dashboard />,
           errorElement: <ErrorPage />,
           children: [
             { path: ROUTE.HOME, element: <HomePage /> },
@@ -31,13 +29,11 @@ const Router = () => {
           ],
         },
         {
-          element: <LandingHoc />,
+          element: <Landing />,
           errorElement: <ErrorPage />,
           children: [
             { path: ROUTE.LOGIN, element: <LoginPage /> },
             { path: ROUTE.REGISTER, element: <RegisterPage /> },
-            { path: 'forgot-password', element: <ForgotPasswordPage /> },
-            { path: 'reset-password', element: <ResetPasswordPage /> },
           ],
         },
       ],
@@ -45,6 +41,4 @@ const Router = () => {
   ]);
 
   return <RouterProvider router={router} />;
-};
-
-export default Router;
+}

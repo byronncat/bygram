@@ -1,6 +1,7 @@
-export { default as Avatar } from './avatar.component';
-export { default as PostWindow } from './post-window.component';
-export { default as SearchSide } from './search-side.component';
-export { default as Sidebar } from './sidebar.component';
-export { default as UploadPostWindowWrapper } from './post/upload/upload-post-window.component';
-export { default as PostItem } from './post/post-item.component';
+export { default as Avatar } from './Avatar.component';
+export { default as PostDetails } from './post/PostDetails.component';
+export { default as SearchSide } from './SearchSide.component';
+export { default as Sidebar } from './Sidebar.component';
+export { default as UploadPostWindowWrapper } from './post/upload/UploadPostWindow.component';
+export { default as PostCard } from './post/PostCard.component';
+export { default as NoPosts } from './post/NoPosts.component';

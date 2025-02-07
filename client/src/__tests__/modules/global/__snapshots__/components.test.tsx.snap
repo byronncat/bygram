@@ -7,14 +7,14 @@ exports[`components loader should render the loader correctly 1`] = `
   >
     <div>
       <div
-        class="configure-border-1 w-28 h-28 p-0.5 bg-white absolute flex justify-center items-center"
+        class="configure-border-1 size-28 p-0.5 bg-white absolute flex justify-center items-center"
       >
         <span
           class="configure-core w-full h-full bg-dark-mode-background"
         />
       </div>
       <div
-        class="configure-border-2 w-28 h-28 p-0.5 bg-white rotate-45 flex justify-center items-center"
+        class="configure-border-2 size-28 p-0.5 bg-white rotate-45 flex justify-center items-center"
       >
         <span
           class="configure-core w-full h-full bg-dark-mode-background"

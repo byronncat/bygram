@@ -1,26 +1,20 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { ClassNameProvider, useAuthenticationContext } from '../providers';
-import { LandingPageLayout } from '../layouts';
-import { ErrorPage, LoadingPage } from '@/modules/global';
+import { ClassNameProvider } from '../providers';
+import { LandingLayout } from '../layouts';
 
-type OutletContextProps = {
+export type OutletContextProps = {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Landing = () => {
+export default function Landing() {
   const [title, setTitle] = useState('');
-  const { isLoggedIn } = useAuthenticationContext();
-  if (isLoggedIn) return <LoadingPage />;
 
   return (
     <ClassNameProvider>
-      <LandingPageLayout title={title}>
+      <LandingLayout title={title}>
         <Outlet context={{ setTitle }} />
-      </LandingPageLayout>
+      </LandingLayout>
     </ClassNameProvider>
   );
-};
-
-export default Landing;
-export type { OutletContextProps };
+}

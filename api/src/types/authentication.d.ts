@@ -1,18 +1,7 @@
-import { LoginResult, RegisterResult } from '@constants';
+import { LOGIN_RESULT, REGISTER_RESULT } from '@constants';
+import type { User } from './entity';
 
-export type Account = {
-  id: number;
-  email: string;
-  username: string;
-  password: string;
-};
+export type UserToken = Pick<User, 'id' | 'username' | 'email'>;
 
-export type UserToken = Omit<Account, 'password'>;
-
-export type LoginMessage = `${LoginResult}`;
-export type RegisterMessage = `${RegisterResult}`;
-
-export type Identity = {
-  user: UserToken | null;
-  message: LoginMessage | RegisterMessage;
-};
+export type LoginMessage = `${LOGIN_RESULT}`;
+export type RegisterMessage = `${REGISTER_RESULT}`;

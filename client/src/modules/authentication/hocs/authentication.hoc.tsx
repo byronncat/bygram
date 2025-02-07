@@ -1,38 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+
 import { LoadingPage } from '@global';
 import { authenticationApi } from '../api';
-import { AuthenticationProvider, useAuthenticationContext } from '../providers';
+import { AuthContext, AuthenticationProvider } from '../providers';
 
-import type { ReactProps } from '@global';
-
-const Authentication = ({ children }: ReactProps) => {
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuthenticationContext();
+function Authentication() {
+  const [loading, setLoading] = useState(true);
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
     (async function authenticate() {
-      console.log('Authenticate');
       setLoading(true);
       const response = await authenticationApi.authenticate();
-      if (response.success) login();
+      if (response.success) {
+        login(response.data);
+      };
       setLoading(false);
-      console.log('Authenticate Done');
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [login]);
 
   if (loading) return <LoadingPage />;
-  return <>{children}</>;
-};
+  return <Outlet />;
+}
 
-const AuthenticationWrapper = () => {
+export default function AuthenticateWrapper() {
   return (
     <AuthenticationProvider>
-      <Authentication>
-        <Outlet />
-      </Authentication>
+      <Authentication />
     </AuthenticationProvider>
   );
-};
-
-export default AuthenticationWrapper;
+}

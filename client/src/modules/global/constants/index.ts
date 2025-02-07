@@ -1,1 +1,1 @@
-export * from './local-storage.constant';
+export * from './localStorage.constant';

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { escapeRegExp } from '@utilities';
+import { escapeRegExp } from '../utilities';
 
 async function hash(password: string): Promise<string> {
   password = escapeRegExp(password);
@@ -16,11 +16,12 @@ async function compare(
 }
 
 async function generateSalt(): Promise<string> {
-  const saltRounds = 10;
+  const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
   return await bcrypt.genSalt(saltRounds);
 }
 
-export const password = {
+export const passwordHelper = {
   hash,
   compare,
+  generateSalt,
 };

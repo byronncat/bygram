@@ -1,15 +1,14 @@
 import type { User } from '@global';
-import { CommentData } from './layout';
 
-export interface Post extends Pick<Profile, 'avatar'>, Pick<User, 'username'> {
+export type Post = Pick<User, 'username' | 'avatar'> & {
   id: string;
   uid: User['id'];
   content: string;
   files: MediaInfo[];
   createdAt: string;
-  likes: number[];
-  comments: CommentData[];
-}
+  likes: User['id'][];
+  comments: Comment[];
+};
 
 export interface Profile {
   uid: User['id'];
@@ -49,12 +48,14 @@ export type CloudinaryUploadResponse = {
 
 export type MediaInfo = {
   id: CloudinaryUploadResponse['public_id'];
+  _id?: string;
   url: CloudinaryUploadResponse['secure_url'];
   type: 'image' | 'video';
   orientation: 'landscape' | 'portrait' | 'square';
 };
 
-export type UploadedFile = {
+export type UploadedFile = MediaInfo & {
+  _id?: string;
   url: string | ArrayBuffer | null;
   type: CloudinaryUploadResponse['resource_type'];
-} & MediaInfo;
+};

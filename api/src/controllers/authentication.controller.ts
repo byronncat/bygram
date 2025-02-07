@@ -1,93 +1,103 @@
-import { userService } from '@services';
-import { sessionMiddleware } from '@middlewares';
-import { logger } from '@utilities';
-import { LoginResult, RegisterResult, StatusCode } from '@constants';
+import { sessionManager } from '../middlewares';
+import { userService } from '../services';
+import { logger } from '../utilities';
+import {
+  LOGIN_RESULT,
+  REGISTER_RESULT,
+  SERVER_ERROR,
+  STATUS_CODE,
+} from '../constants';
 
 import type { NextFunction, Request, Response } from 'express';
-import type { Account, Identity, API } from '@types';
+import type { User, UserToken } from '@types';
 
-async function logIn(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<Response<API>> {
-  const { email, password } = req.body as Account;
+async function logIn(req: Request, res: Response, next: NextFunction) {
+  const { identity, password } = req.body as Pick<User, 'password'> & {
+    identity: User['email'] | User['username'];
+  };
   try {
-    const result: Identity = await userService.login(email, password);
+    const result = (await userService.login(identity, password)) as {
+      message: LOGIN_RESULT;
+      user?: UserToken;
+    };
 
     switch (result.message) {
-      case LoginResult.NOT_EXIST:
-        return res.status(StatusCode.NOT_FOUND).json({
+      case LOGIN_RESULT.NOT_EXIST:
+        return res.status(STATUS_CODE.NOT_FOUND).json({
           success: false,
-          message: LoginResult.NOT_EXIST,
+          message: LOGIN_RESULT.NOT_EXIST,
         });
-      case LoginResult.INCORRECT_PASSWORD:
-        return res.status(StatusCode.UNAUTHORIZED).json({
+      case LOGIN_RESULT.INCORRECT_PASSWORD:
+        return res.status(STATUS_CODE.UNAUTHORIZED).json({
           success: false,
-          message: LoginResult.INCORRECT_PASSWORD,
+          message: LOGIN_RESULT.INCORRECT_PASSWORD,
         });
-      case LoginResult.SUCCESS:
+      case LOGIN_RESULT.SUCCESS:
         res.locals.user = result.user;
         next();
-        return res.status(StatusCode.OK).json({
+        return res.status(STATUS_CODE.OK).json({
           success: true,
-          message: LoginResult.SUCCESS,
+          message: LOGIN_RESULT.SUCCESS,
+          data: res.locals.user,
         });
       default:
         throw new Error('Invalid login result');
     }
   } catch (error) {
-    logger.error(JSON.stringify(error), 'Login Controller');
-    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+    logger.error(error, 'Authentication controller - login');
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: 'Internal server error, login failed',
+      message: SERVER_ERROR.INTERNAL,
     });
   }
 }
 
-async function register(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<Response<API>> {
-  const registerData = req.body as Account;
+async function register(req: Request, res: Response, next: NextFunction) {
+  const registerData = req.body as Pick<
+    User,
+    'email' | 'username' | 'password'
+  >;
 
   try {
-    const result: Identity = await userService.register(registerData);
+    const result = (await userService.register(registerData)) as {
+      message: REGISTER_RESULT;
+      user?: UserToken;
+    };
 
     switch (result.message) {
-      case RegisterResult.EMAIL_EXISTS:
-        return res.status(StatusCode.CONFLICT).json({
+      case REGISTER_RESULT.EMAIL_EXISTS:
+        return res.status(STATUS_CODE.CONFLICT).json({
           success: false,
-          message: RegisterResult.EMAIL_EXISTS,
+          message: REGISTER_RESULT.EMAIL_EXISTS,
         });
-      case RegisterResult.USERNAME_EXISTS:
-        return res.status(StatusCode.CONFLICT).json({
+      case REGISTER_RESULT.USERNAME_EXISTS:
+        return res.status(STATUS_CODE.CONFLICT).json({
           success: false,
-          message: RegisterResult.USERNAME_EXISTS,
+          message: REGISTER_RESULT.USERNAME_EXISTS,
         });
-      case RegisterResult.SUCCESS:
+      case REGISTER_RESULT.SUCCESS:
         res.locals.user = result.user;
         next();
-        return res.status(StatusCode.OK).json({
+        return res.status(STATUS_CODE.OK).json({
           success: true,
-          message: RegisterResult.SUCCESS,
+          message: REGISTER_RESULT.SUCCESS,
+          data: res.locals.user,
         });
       default:
         throw new Error('Invalid register result');
     }
   } catch (error) {
-    logger.error(JSON.stringify(error), 'Register Controller');
-    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+    logger.error(error, 'Authentication controller - register');
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: 'Internal server error, register failed',
+      message: SERVER_ERROR.INTERNAL,
     });
   }
 }
 
 export default {
-  logIn: [logIn, sessionMiddleware.save],
-  register: [register, sessionMiddleware.save],
-  authenticate: [sessionMiddleware.authenticate],
-  logout: sessionMiddleware.destroy,
+  login: [logIn, sessionManager.save],
+  register: [register, sessionManager.save],
+  logout: [sessionManager.destroy],
+  authenticate: [sessionManager.authenticate],
 };

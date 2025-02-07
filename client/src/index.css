@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer theme {
+  .css-light-theme {
+    @apply bg-background text-on-background;
+    @apply relative z-0;
+  }
+
+  .css-dark-theme {
+    @apply bg-dark-background text-dark-on-background;
+    @apply relative z-0;
+  }
+
+  .background {
+    @apply bg-background dark:bg-dark-background;
+    @apply text-on-background dark:text-dark-on-background;
+  }
+
+  .surface {
+    @apply bg-surface dark:bg-dark-surface;
+    @apply text-on-surface dark:text-dark-on-surface;
+    @apply !shadow-md;
+    @apply dark:!border-dark-divider;
+  }
+
+  .primary {
+    @apply !bg-primary dark:!bg-dark-primary;
+    @apply text-on-primary dark:text-dark-on-primary;
+  }
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -13,27 +42,21 @@
   }
 }
 
-@layer theme {
-  .light-theme {
-    @apply bg-background text-on-background;
-  }
-
-  .dark-theme {
-    @apply bg-dark-background text-dark-on-background;
-  }
-}
-
 @layer components {
   .simple-border-button {
     @apply inline-block;
-    @apply rounded border border-primary;
-    @apply text-sm font-medium text-primary text-center;
-    @apply dark:border-dark-primary dark:text-dark-primary;
-    @apply hover:bg-primary hover:text-on-primary active:bg-primary;
-    @apply dark:hover:bg-dark-primary dark:hover:text-dark-on-primary dark:active:bg-dark-primary;
-
     @apply duration-300 ease-in-out;
-    @apply focus:outline-none select-none active:outline-none cursor-pointer;
+
+    @apply rounded border;
+    @apply border-primary dark:border-dark-primary;
+
+    @apply font-medium text-sm text-center;
+    @apply text-primary dark:text-dark-primary;
+
+    @apply hover:bg-primary hover:text-on-primary;
+    @apply dark:hover:bg-dark-primary dark:hover:text-dark-on-primary;
+
+    @apply outline-none select-none cursor-pointer;
     @apply disabled:bg-primary dark:disabled:bg-dark-primary disabled:text-on-primary dark:disabled:text-on-primary;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }

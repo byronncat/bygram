@@ -1,25 +1,28 @@
-import { PostItem } from '../../components';
-import type { ReactProps } from '@global';
-import type { Post } from '../../types';
+import { useContext } from 'react';
 import clsx from 'clsx';
+import { NoPosts, PostCard } from '../../components';
+import { PostContext } from '../../providers';
 
-interface VerticalProps extends ReactProps {
-  posts: Post[];
-}
+type VerticalProps = {
+  className?: string;
+};
 
-const Vertical = ({ posts }: VerticalProps) => {
+export default function Vertical({ className }: VerticalProps) {
+  const { posts } = useContext(PostContext);
+  if (!posts) return null;
   return (
     <div
       className={clsx(
-        'max-w-180 w-full h-max py-5',
-        'flex flex-col items-center gap-y-5',
+        className,
+        'w-160 max-w-full',
+        'flex flex-col items-center',
+        'gap-y-5',
       )}
     >
+      {posts.length === 0 && <NoPosts />}
       {posts.map((post) => {
-        return <PostItem key={post.id} post={post} />;
+        return <PostCard id={post.id} key={post.id} />;
       })}
     </div>
   );
-};
-
-export default Vertical;
+}

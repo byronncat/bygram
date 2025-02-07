@@ -1,220 +1,144 @@
-// import fileService from './file.service';
-import { PostgreSQL } from '@database';
-import { password as passwrodHelper } from '@helpers';
-import { LoginResult, RegisterResult } from '@constants';
-import {
-  createUser,
-  getUserByEmail,
-  getUserByUsername,
-  createProfile,
-  getUsersByRegexp,
-  getProfilesByIDs,
-  getUserByID,
-  getProfileByID,
-} from '@/database/access';
+import { passwordHelper } from '../helpers';
+import { isEmptyObject } from '../utilities';
+import { LOGIN_RESULT, REGISTER_RESULT } from '../constants';
+import { UserDB, QueryCondition } from '../data';
 import type {
-  Account,
-  GetProfileData,
-  Identity,
-  Profile,
+  User,
   SearchProfileData,
-} from '@types';
+  UserToken,
+} from '../types';
+import fileService from './file.service';
 
 async function login(
-  email: Account['email'],
-  password: Account['password'],
-): Promise<Identity> {
-  const query = await getUserByEmail(email);
-  if (!query) return { user: null, message: LoginResult.NOT_EXIST };
-  if (!(await passwrodHelper.compare(password, query.password)))
-    return { user: null, message: LoginResult.INCORRECT_PASSWORD };
+  identity: User['email'],
+  password: User['password'],
+): Promise<{
+  user?: UserToken;
+  message: LOGIN_RESULT;
+}> {
+  const user = await UserDB.getUser(
+    { email: identity, username: identity },
+    {
+      condition: QueryCondition.Or,
+    },
+  );
+  if (!user) return { message: LOGIN_RESULT.NOT_EXIST };
+  if (!(await passwordHelper.compare(password, user.password)))
+    return { message: LOGIN_RESULT.INCORRECT_PASSWORD };
   return {
     user: {
-      id: query.id,
-      email: query.email,
-      username: query.username,
+      id: user.id,
+      email: user.email,
+      username: user.username,
     },
-    message: LoginResult.SUCCESS,
+    message: LOGIN_RESULT.SUCCESS,
   };
 }
 
-async function register(data: Account): Promise<Identity> {
-  const queryEmail = await getUserByEmail(data.email);
-  if (queryEmail) return { user: null, message: RegisterResult.EMAIL_EXISTS };
+async function register({
+  email,
+  username,
+  password,
+}: Pick<User, 'email' | 'username' | 'password'>): Promise<{
+  user?: UserToken;
+  message: REGISTER_RESULT;
+}> {
+  const users = await UserDB.getUsers(
+    {
+      email,
+      username,
+    },
+    { condition: QueryCondition.Or },
+  );
 
-  const queryUsername = await getUserByUsername(data.username);
-  if (queryUsername)
-    return { user: null, message: RegisterResult.USERNAME_EXISTS };
+  if (users) {
+    const isEmailExists = users.some((user) => user.email === email);
+    const isUsernameExists = users.some((user) => user.username === username);
+    if (isEmailExists) return { message: REGISTER_RESULT.EMAIL_EXISTS };
+    if (isUsernameExists) return { message: REGISTER_RESULT.USERNAME_EXISTS };
+  }
 
-  const result = await createUser(data);
-  await createProfile(result.id);
+  const result = await UserDB.createUser({
+    email,
+    username,
+    password,
+  });
   return {
     user: {
       id: result.id,
       email: result.email,
       username: result.username,
     },
-    message: RegisterResult.SUCCESS,
+    message: REGISTER_RESULT.SUCCESS,
   };
 }
 
 async function searchProfile(
   searchTerm: string,
 ): Promise<SearchProfileData[] | null> {
-  const users = await getUsersByRegexp(searchTerm);
-  if (!users) return null;
-  const userIDs = users.map((user) => user.id);
-  const profiles = await getProfilesByIDs(userIDs);
-  if (!profiles) throw new Error('Profiles not found');
+  const users = await UserDB.searchUser(searchTerm);
+  if (!users || users.length === 0) return null;
 
   const searchResult = users.map((user) => {
     return {
       id: user.id,
       username: user.username,
-      avatar: profiles.find((profile) => profile.uid === user.id)?.avatar,
+      avatar: user.avatar,
     };
   });
   return searchResult;
 }
 
-async function getProfile(id: Profile['uid']): Promise<GetProfileData> {
-  const user = await getUserByID(id);
-  if (!user) throw new Error('User not found');
-  let profile = await getProfileByID(id);
+async function getUserProfile(
+  data: Partial<User>,
+): Promise<any | null> {
+  const profile: any = await UserDB.getUser(data);
+  if (!profile) return null;
+  const totalPosts = await UserDB.getPostsCount(profile.id) || 0;
   return {
-    ...profile,
-    email: user.email,
-    username: user.username,
-  } as GetProfileData;
+    ...(profile._doc),
+    totalPosts,
+  };
 }
 
-// async function setAvatar(uid: Account['id'], avatar: Express.Multer.File) {
-//   const profile = (await ProfileModel.findOne({ uid }, 'avatar').catch(
-//     (error: any) => {
-//       logger.error(`${error}`, 'Account service');
-//       return Promise.reject(error);
-//     },
-//   )) as ProfileDocument;
-//   if (!profile) return Promise.reject('Profile not found');
-//   if (!isEmptyObject(profile.avatar))
-//     fileService.deleteImage(profile.avatar!.dataURL!);
-//   const image = await fileService.addImage(avatar, uid);
-//   if (image) {
-//     profile.avatar = {
-//       dataURL: image.secure_url,
-//       sizeType: image.sizeType as 'landscape' | 'portrait',
-//     };
-//     await profile.save();
-//     return profile.avatar;
-//   }
-//   return Promise.reject('Image upload failed');
-// }
+async function changeAvatar(uid: User['id'], file: User['avatar']) {
+  if (!file) return Promise.reject('No file found');
+  const user = await UserDB.getUser({ id: uid }, { findById: true });
+  if (!user) return Promise.reject('User not found');
+  if (!isEmptyObject(user.avatar))
+    await fileService.deleteImage(user.avatar!.url);
+  await UserDB.updateAvatar(uid, file);
+}
 
-// async function removeAvatar(uid: Account['id']) {
-//   const profile = (await ProfileModel.findOne({ uid }, 'avatar').catch(
-//     (error: any) => {
-//       return Promise.reject(error);
-//     },
-//   )) as ProfileDocument;
-//   if (!profile) return Promise.reject('Profile not found');
-//   if (isEmptyObject(profile.avatar)) return Promise.reject('No avatar found');
-//   const success = await fileService.deleteImage(profile.avatar!.dataURL!);
-//   if (success) {
-//     await ProfileModel.updateOne({ uid }, { $unset: { avatar: '' } });
-//     return true;
-//   }
-//   return Promise.reject('Image deletion failed');
-// }
-
-async function createAccount(
-  email: Account['email'],
-  password: Account['password'],
-): Promise<Account> {
-  try {
-    const result = await PostgreSQL.one(
-      `INSERT INTO accounts (email, password) VALUES ($(email), $(password)) RETURNING id, email`,
-      { email, password },
-    );
-    return result;
-  } catch (error) {
-    return Promise.reject(error);
+async function removeAvatar(uid: User['id']) {
+  const user = await UserDB.getUser({ id: uid }, { findById: true });
+  if (!user) return Promise.reject('User not found');
+  if (isEmptyObject(user.avatar)) return Promise.reject('No avatar found');
+  const success = await fileService.deleteImage(user.avatar!.url);
+  if (success) {
+    await UserDB.removeAvatar(uid);
+    return;
   }
+  return Promise.reject('Image deletion failed');
 }
 
-// async function getUsernameByID(id: Account['id']): Promise<string> {
-//   try {
-//     const profile = (await ProfileModel.findOne({
-//       uid: id,
-//     }).exec()) as Profile | null;
-//     if (!profile) return Promise.reject('Profile not found');
-//     if (!profile.username) return Promise.reject('Username not found');
-//     return profile.username;
-//   } catch (error) {
-//     return Promise.reject(error);
-//   }
-// }
+async function followProfile(uid: User['id'], profileUserId: User['id']) {
+  await UserDB.addFollowing(uid, profileUserId);
+  await UserDB.addFollower(profileUserId, uid);
+}
 
-// async function getByID(id: Account['id']): Promise<Account> {
-//   try {
-//     const result = await PostgreSQL.oneOrNone(
-//       `SELECT * FROM accounts WHERE id = $(id)`,
-//       {
-//         id,
-//       },
-//     );
-//     if (!result) return Promise.reject('Account not found');
-//     return result;
-//   } catch (error) {
-//     logger.error(`${error}`, 'Account service');
-//     return Promise.reject(error);
-//   }
-// }
-
-// async function getFollowingsByID(id: Account['id']) {
-//   try {
-//     const profile = (await ProfileModel.findOne({
-//       uid: id,
-//     }).exec()) as ProfileDocument | null;
-//     if (!profile) return Promise.reject('Profile not found');
-//     return profile.followings;
-//   } catch (error) {
-//     logger.error(`${error}`, 'Account service');
-//     return Promise.reject(error);
-//   }
-// }
-
-// async function follow(uid: number, target: number) {
-//   const profile = await ProfileModel.findOne({ uid }).exec();
-//   profile?.followings!.push(target);
-//   await profile?.save();
-//   const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
-//   targetProfile?.followers!.push(uid);
-//   await targetProfile?.save();
-//   return profile;
-// }
-
-// async function unfollow(uid: number, target: number) {
-//   const profile = await ProfileModel.findOne({ uid }).exec();
-//   profile?.followings!.splice(profile?.followings!.indexOf(target), 1);
-//   await profile?.save();
-//   const targetProfile = await ProfileModel.findOne({ uid: target }).exec();
-//   targetProfile?.followers!.splice(targetProfile?.followers!.indexOf(uid), 1);
-//   await targetProfile?.save();
-//   return profile;
-// }
+async function unfollowProfile(uid: User['id'], profileUserId: User['id']) {
+  await UserDB.removeFollowing(uid, profileUserId);
+  await UserDB.removeFollower(profileUserId, uid);
+}
 
 export default {
   login,
   register,
   searchProfile,
-  getProfile,
-
-  // setAvatar,
-  // removeAvatar,
-  createAccount,
-  // getByID,
-  // getUsernameByID,
-  // getFollowingsByID,
-  // follow,
-  // unfollow,
+  getUserProfile,
+  followProfile,
+  unfollowProfile,
+  changeAvatar,
+  removeAvatar,
 };

@@ -1,23 +1,19 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 import clsx from 'clsx';
-import type { ReactProps } from '@global';
+import type { PropsWithChildren } from 'react';
 
 const className = {
-  form: clsx(
-    'max-w-full w-100 p-10 pb-8',
-    'rounded-lg shadow-2xl',
-    'bg-on-background/[0.01] dark:bg-dark-on-background/[0.07]',
-  ),
+  form: clsx('max-w-full w-100 p-10 pb-8', 'rounded-lg shadow-xl', 'surface'),
   formField: 'relative my-3',
   formInput: clsx(
     'block w-full px-3 pt-5 pb-2',
-    'bg-on-surface/[0.04] dark:bg-dark-surface/[0.07]',
+    'bg-on-surface/[0.04] dark:bg-dark-on-surface/[0.07]',
     'border-0 border-b-2 border-transparent',
     'rounded appearance-none',
-    'text-on-surface/[0.6] dark:text-dark-surface/[0.6]',
+    'text-on-surface/[0.6] dark:text-dark-on-surface/[0.6]',
     'transition duration-300',
     'focus:border-primary focus:outline-none focus:ring-0 peer',
-    'focus:text-on-surface/[0.8] dark:focus:text-dark-on-surface',
+    'focus:text-on-surface/[0.9] dark:focus:text-dark-on-surface',
     'dark:focus:border-dark-primary',
   ),
   formLabel: clsx(
@@ -35,18 +31,14 @@ const className = {
   formErrorMessageAnimation: 'flicker-once',
 };
 
-const ClassNameContext = createContext(
+export const ClassNameContext = createContext(
   {} as { className: Record<string, string> },
 );
 
-const useClassNameContext = () => useContext(ClassNameContext);
-const ClassName = ({ children }: ReactProps) => {
+export default function ClassName({ children }: PropsWithChildren) {
   return (
     <ClassNameContext.Provider value={{ className }}>
       {children}
     </ClassNameContext.Provider>
   );
-};
-
-export default ClassName;
-export { useClassNameContext };
+}

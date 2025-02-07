@@ -1,7 +1,11 @@
-const PROTECTED_ROUTE = {
-  HOME: '/',
+const SHARED_ROUTE = {
   EXPLORE: '/explore',
   PROFILE: '/profile/:username',
+  POST: '/post/:id',
+};
+
+const PROTECTED_ROUTE = {
+  HOME: '/',
 };
 
 const PUBLIC_ROUTE = {
@@ -9,6 +13,7 @@ const PUBLIC_ROUTE = {
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
+  ...SHARED_ROUTE,
 };
 
 const ROUTE = {

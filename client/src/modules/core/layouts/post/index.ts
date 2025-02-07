@@ -1,1 +1,2 @@
-export { default as VerticalPostLayout } from './vertical.layout';
+export { default as GridPostLayout } from './Grid.layout';
+export { default as VerticalPostLayout } from './Vertical.layout';

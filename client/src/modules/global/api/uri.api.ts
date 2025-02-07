@@ -1,12 +1,12 @@
-const getHostingServer = (path: string): string => {
+function getHostingServer(path: string) {
   path = path.startsWith('/') ? path : '/' + path;
-  path = '/api' + path;
+  path = '/v1' + path;
   if (process.env.REACT_APP_API_URL)
     return process.env.REACT_APP_API_URL + path;
   else return path;
-};
+}
 
-const transformImageCDN = (path: string, format: string): string => {
+function transformImageCDN(path: string, format: string) {
   const urlParts = path.split('/');
 
   for (let i = 0; i < urlParts.length; i++) {
@@ -17,7 +17,7 @@ const transformImageCDN = (path: string, format: string): string => {
     }
   }
   return path;
-};
+}
 
 export const uri = {
   getHostingServer,

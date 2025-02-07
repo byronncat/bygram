@@ -1,150 +1,55 @@
-import { useState, useEffect } from 'react';
-import { PostWindow } from '../components';
-import Menu from '../components/menu.component';
-import { getHomePosts } from '../api';
-import { likePost, sendComment } from '../services/post.service';
-import {
-  AUTHOR_POST_MENU,
-  FOLLOWP_POST_MENU,
-  DEFAULT_AVATAR,
-} from '../constants';
-import { PostData } from '../types';
-import postWindowStyles from '../styles/components/post-window.module.sass';
-import {
-  uri,
-  toast,
-  useGlobalContext,
-  Loader,
-  Overlay,
-  useThemeContext,
-} from '@global';
-import { useSidebarOptionsContext } from '../providers';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { toast, Loader } from '@global';
+import { postApi } from '../api';
+import { VerticalPostLayout, LayoutContext } from '../layouts';
+import { PostContext } from '../providers';
 
-import { VerticalPostLayout } from '../layouts';
-import type { Post } from '../types';
-import { homepagePost } from '../__mocks__';
-import { useAuthenticationContext } from '@/modules/authentication';
+export default function HomePage() {
+  const page = useRef(0);
+  const isFetching = useRef(false);
+  const { scrollRef } = useContext(LayoutContext);
+  const { posts, setPosts } = useContext(PostContext);
+  const [isLoaded, setLoaded] = useState(false);
 
-function HomePage() {
-  const [ready, setReady] = useState(true);
-  const [posts, setPosts] = useState(homepagePost);
-
-  const [currentPost, setCurrentPost] = useState({} as PostData);
-  const [showCurrentPost, setShowCurrentPost] = useState(false);
-  const [showCreatePost, setShowCreatePost] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState(false);
-
-  const { setOption } = useSidebarOptionsContext();
-
-  const authorMenu = AUTHOR_POST_MENU.map((item) => {
-    switch (item.name) {
-      case 'Delete post': {
-        item.functionHandler = async () => {
-          setShowActionMenu(false);
-          const response = await item.function!(currentPost.id);
-          // refreshPage();
-          // toast.display(
-          //   response.message,
-          //   response.success ? 'success' : 'error',
-          // );
-        };
-        break;
+  const fetchPosts = useCallback(async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
+    const response = await postApi.getHomePosts(page.current);
+    if (response.success) {
+      setPosts((prevPosts) => [...(prevPosts || []), ...(response.data || [])]);
+      if (response.data) {
+        page.current += 1;
       }
-      case 'Edit': {
-        item.functionHandler = () => {
-          setShowActionMenu(false);
-          setShowCreatePost(true);
-        };
-        break;
+    } else toast.error(response.message);
+    isFetching.current = false;
+  }, [setPosts]);
+
+  useEffect(() => {
+    (async () => {
+      await fetchPosts();
+      setLoaded(true);
+    })();
+  }, [fetchPosts]);
+
+  const handleScroll = useCallback(() => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 2) {
+        fetchPosts();
       }
     }
-    return item;
-  });
-  authorMenu.push({
-    name: 'Cancel',
-    functionHandler: () => {
-      setShowActionMenu(false);
-    },
-  });
+  }, [fetchPosts, scrollRef]);
 
-  // const onComment = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const form = event.currentTarget;
-  //   const commentValue = (event.target as HTMLFormElement).comment.value;
-  //   // if (!commentValue) return toast.display('Comment cannot be empty', 'error');
-  //   const response = await sendComment(
-  //     authenticationStorage.identity!.id,
-  //     currentPost.id,
-  //     commentValue,
-  //   );
-  //   if (response.success) {
-  //     form.reset();
-  //     // refreshPage();
-  //     // toast.display(response.message, 'success');
-  //   }
-  // };
-
-  const { user } = useAuthenticationContext();
   useEffect(() => {
-    (async function fetchPosts() {
-      const response = await getHomePosts();
-      console.log(response);
-      // if (response.success && response.data) {
-      //   setPosts(response.data);
-      //   setReady(true);
-      // } else toast.display(response.message, 'error');
-    })();
-  }, []);
+    const scrollElement = scrollRef.current;
+    if (scrollElement) scrollElement.addEventListener('scroll', handleScroll);
+    return () => {
+      if (scrollElement)
+        scrollElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll, scrollRef]);
 
-  if (!ready) return <Loader.BoxSpin />;
-  return (
-    <div>homepage</div>
-    // <VerticalPostLayout posts={posts} />
-    // <>
-    //   <button
-    //     onClick={() => {
-    //       axios
-    //         .delete('http://localhost:3000/api/logout')
-    //         .then((res) => {
-    //           console.log(res);
-    //         })
-    //         .catch((err) => {
-    //           console.log(err);
-    //         });
-    //     }}
-    //   >
-    //     Testtttttttttttttttttt
-    //   </button>
-    //   {showActionMenu && (
-    //     <Overlay exitHandler={() => setShowActionMenu(false)}>
-    //       <Menu
-    //         list={
-    //           (authenticationStorage.identity!.id === currentPost.uid &&
-    //             authorMenu) ||
-    //           FOLLOWP_POST_MENU
-    //         }
-    //       />
-    //     </Overlay>
-    //   )}
-    //   {showCreatePost && (
-    //     <UploadPostWindow
-    //       defaultPost={currentPost}
-    //       exitHandler={() => {
-    //         setShowCreatePost(false);
-    //         setShowActionMenu(false);
-    //       }}
-    //       method="put"
-    //     />
-    //   )}
-    //   {showCurrentPost && (
-    //     <PostWindow
-    //       post={currentPost}
-    //       onExit={() => setShowCurrentPost(false)}
-    //     />
-    //   )}
-
-    // </>
-  );
+  if (!isLoaded) return <Loader.BoxSpin />;
+  if (!posts) return null;
+  return <VerticalPostLayout className="py-4 md:py-6" />;
 }
-
-export default HomePage;

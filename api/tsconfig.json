@@ -25,18 +25,17 @@
     "forceConsistentCasingInFileNames": true,
 
     "outDir": "./dist",
-    "noEmit": true,
+    "noEmit": false,
     "sourceMap": true,
 
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@constants": ["src/constants/index.ts"],
-      "@database": ["src/database/index.ts"],
+      "@data": ["src/data/index.ts"],
       "@helpers": ["src/helpers/index.ts"],
       "@libraries": ["src/libraries/index.ts"],
       "@middlewares": ["src/middlewares/index.ts"],
@@ -46,5 +45,6 @@
       "@utilities": ["src/utilities/index.ts"]
     }
   },
-  "include": ["src/**/*.ts", "configs/**/*.ts"]
+  "include": ["src", "configs/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

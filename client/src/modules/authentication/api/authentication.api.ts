@@ -1,42 +1,34 @@
 import axios from 'axios';
 import { uri } from '@global';
-import { AuthenticationApiPath } from '../constants';
 
 import type { AxiosResponse } from 'axios';
 import type { API } from '@global';
-import type { AuthenticationInformation } from '../types';
+import type { LoginFormData, RegisterFormData, UserToken } from '../types';
 
-const login = async (data: AuthenticationInformation): Promise<API> => {
+export async function login(data: LoginFormData): Promise<API<UserToken>> {
   return await axios
-    .post(uri.getHostingServer(AuthenticationApiPath.login), data)
+    .post(uri.getHostingServer('login'), data, { withCredentials: true })
     .then((res: AxiosResponse) => res.data)
     .catch((error) => error.response.data);
-};
+}
 
-const register = async (data: AuthenticationInformation): Promise<API> => {
+export async function register(data: RegisterFormData): Promise<API<UserToken>> {
   return await axios
-    .post(uri.getHostingServer(AuthenticationApiPath.register), data)
+    .post(uri.getHostingServer('register'), data, { withCredentials: true })
     .then((res: AxiosResponse) => res.data)
     .catch((error) => error.response.data);
-};
+}
 
-const authenticate = async (): Promise<API> => {
+export async function logout(): Promise<API> {
   return await axios
-    .get(uri.getHostingServer(AuthenticationApiPath.authenticate))
+    .delete(uri.getHostingServer('logout'), { withCredentials: true})
     .then((res: AxiosResponse) => res.data)
     .catch((error) => error.response.data);
-};
+}
 
-const logout = async (): Promise<API> => {
+export async function authenticate(): Promise<API<UserToken>> {
   return await axios
-    .delete(uri.getHostingServer(AuthenticationApiPath.logout))
+    .get(uri.getHostingServer('authenticate'), { withCredentials: true })
     .then((res: AxiosResponse) => res.data)
-    .catch((error) => error.response.data);
-};
-
-export const authenticationApi = {
-  login,
-  register,
-  authenticate,
-  logout,
-};
+    .catch((error) => error.response.data || { success: false });
+}

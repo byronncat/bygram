@@ -14,7 +14,7 @@ describe('components', () => {
       const exitHandler = jest.fn();
 
       const { container } = render(
-        <Overlay exitHandler={exitHandler}>
+        <Overlay onExit={exitHandler}>
           <div>Test</div>
         </Overlay>,
       );
@@ -25,7 +25,7 @@ describe('components', () => {
       const exitHandler = jest.fn();
 
       const { container } = render(
-        <Overlay exitHandler={exitHandler}>
+        <Overlay onExit={exitHandler}>
           <div>Test</div>
         </Overlay>,
       );

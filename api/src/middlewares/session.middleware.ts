@@ -1,74 +1,73 @@
 import { signedCookie } from 'cookie-parser';
-import { StatusCode } from '@constants';
-import { jwt } from '@libraries';
-import { logger } from '@utilities';
-import { getSession, removeSession } from '@/database/access';
-import { TIME } from '@constants';
+import { logger } from '../utilities';
+import { SessionStorage } from '../data';
+import {
+  TIME,
+  AUTHENTICATE_STATE,
+  STATUS_CODE,
+  SERVER_ERROR,
+  LOGOUT_RESULT,
+} from '../constants';
 
 import type { Request, Response } from 'express';
-import type { API, UserToken } from '@types';
+import type { UserToken } from '../types';
 
 export function save(req: Request, res: Response) {
   const user = res.locals.user as UserToken;
-  req.session.user = { id: user!.id };
-  res.cookie('user', jwt.generateToken(user!), {
+  req.session.user = { id: user.id };
+  res.cookie('user', user, {
     maxAge: TIME.COOKIE_MAX_AGE,
+    secure: process.env.NODE_ENV === 'development' ? false : true,
+    sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
   });
 }
 
-export async function destroy(
-  req: Request,
-  res: Response,
-): Promise<Response<API>> {
+export async function destroy(req: Request, res: Response) {
   try {
-    const sessionCookie = req.cookies.session_id;
-    const sessionId = signedCookie(
-      sessionCookie,
-      process.env.TOKEN_SECRET || 'secret',
-    );
+    const session = req.session.user;
 
-    if (!sessionId) {
-      return res.status(StatusCode.UNAUTHORIZED).json({
+    if (!session) {
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
-        message: 'Unauthorized',
+        message: LOGOUT_RESULT.NO_SESSION,
       });
     }
 
-    const removedSessions = await removeSession(sessionId);
-    if (removedSessions > 0) {
-      res.clearCookie('session_id');
-      res.clearCookie('user');
+    req.session.destroy((error) => {
+      if (error) {
+        logger.error(error, 'Session middleware - destroy');
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: SERVER_ERROR.INTERNAL,
+        });
+      }
+    });
+    res.clearCookie('user');
+    res.clearCookie('session_id');
 
-      return res.status(StatusCode.OK).json({
-        success: true,
-        message: 'Logged out',
-      });
-    } else {
-      return res.status(StatusCode.OK).json({
-        success: true,
-        message: 'No session found or already logged out',
-      });
-    }
+    return res.status(STATUS_CODE.OK).json({
+      success: true,
+      message: LOGOUT_RESULT.SUCCESS,
+    });
   } catch (error) {
-    logger.error(JSON.stringify(error), 'Session Token Middleware');
-    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+    logger.error(error, 'Session middleware - destroy');
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: 'Internal server error, logout failed',
+      message: SERVER_ERROR.INTERNAL,
     });
   }
 }
 
-export async function authenticate(
-  req: Request,
-  res: Response,
-): Promise<Response<API>> {
+export async function authenticate(req: Request, res: Response) {
   let result = {
-    statusCode: StatusCode.OK,
+    statusCode: STATUS_CODE.UNAUTHORIZED,
     response: {
       success: false,
-      message: 'Unauthorized',
-    } as API,
+      message: AUTHENTICATE_STATE.UNAUTHORIZED,
+      data: undefined,
+    },
   };
+
   try {
     const sessionCookie = req.cookies.session_id;
     const sessionId = signedCookie(
@@ -76,26 +75,21 @@ export async function authenticate(
       process.env.TOKEN_SECRET || 'secret',
     );
 
-    if (sessionId && req.cookies.user) {
-      if (await getSession(sessionId)) {
-        result = {
-          statusCode: StatusCode.OK,
-          response: {
-            success: true,
-            message: 'Authorized',
-          },
-        };
-      }
-    }
+    if (sessionId && req.cookies.user && (await SessionStorage.get(sessionId)))
+      result = {
+        statusCode: STATUS_CODE.OK,
+        response: {
+          success: true,
+          message: AUTHENTICATE_STATE.AUTHORIZED,
+          data: req.cookies.user,
+        },
+      };
   } catch (error) {
-    logger.error(JSON.stringify(error), 'Session Token Middleware');
-    result = {
-      statusCode: StatusCode.INTERNAL_SERVER_ERROR,
-      response: {
-        success: false,
-        message: 'Internal server error, authentication failed',
-      },
-    };
+    logger.error(error, 'Session middleware - authenticate');
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: SERVER_ERROR.INTERNAL,
+    });
   }
 
   return res.status(result.statusCode).json(result.response);

@@ -1,3 +1,3 @@
-export { default as AuthenticationHoc } from './authentication.hoc';
-export { default as LandingHoc } from './landing.hoc';
-export * from './landing.hoc';
+export { default as Authentication } from './Authentication.hoc';
+export { default as Landing } from './Landing.hoc';
+export * from './Landing.hoc';

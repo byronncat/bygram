@@ -20,8 +20,6 @@ a
   color: inherit
 
 html, body, #root
-  height: 100vh
-  width: 100vw
   font-family: $global-font-family
   box-sizing: border-box
 
@@ -44,3 +42,10 @@ $scrollbar-thumb-color: #d81d84
 ::-webkit-scrollbar-thumb
   border-radius: $scrollbar-radius
   background-color: $scrollbar-thumb-color
+
+.LazyLoad
+  opacity: 0
+  transition: all 1s ease-in-out
+
+.is-visible
+  opacity: 1

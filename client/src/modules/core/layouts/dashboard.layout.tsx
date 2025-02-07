@@ -1,25 +1,53 @@
+import { createContext, useContext, useRef } from 'react';
 import clsx from 'clsx';
 import { Header } from '@global';
 import { Sidebar } from '../components';
-import type { ReactProps } from '@global';
+import type { PropsWithChildren } from 'react';
+import { AuthContext } from '@/modules/authentication';
 
-const ColumnLayout = ({ children }: ReactProps) => {
+export const LayoutContext = createContext(
+  {} as {
+    scrollRef: React.MutableRefObject<HTMLDivElement | null>;
+  },
+);
+
+export default function ColumnLayout({ children }: PropsWithChildren) {
   // * /images/wallpaper.jpg different from images/wallpaper.jpg
+  const scrollRef = useRef(null);
+  const { isLoggedIn } = useContext(AuthContext);
+
   return (
-    <div className={clsx('w-full h-full pt-14', 'flex')}>
-      <Header />
-      <Sidebar />
-      <main
+    <LayoutContext.Provider
+      value={{
+        scrollRef,
+      }}
+    >
+      <div
         className={clsx(
-          'h-full w-full',
-          'flex justify-center grow',
-          'overflow-y-auto',
+          'h-svh md:h-screen',
+          'relative md:static',
+          'flex flex-col',
         )}
       >
-        {children}
-      </main>
-    </div>
+        <Header loginShown={!isLoggedIn} />
+        <div className={clsx('flex flex-1', 'overflow-hidden')}>
+          <Sidebar />
+          <main
+            className={clsx('w-full', 'flex-1', 'overflow-y-auto')}
+            ref={scrollRef}
+          >
+            <div
+              className={clsx(
+                'pb-16',
+                'min-h-full h-max',
+                'flex justify-center items-center',
+              )}
+            >
+              {children}
+            </div>
+          </main>
+        </div>
+      </div>
+    </LayoutContext.Provider>
   );
-};
-
-export default ColumnLayout;
+}

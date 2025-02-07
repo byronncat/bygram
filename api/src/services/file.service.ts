@@ -1,9 +1,8 @@
-import { Cloudinary } from '@database';
-import { CloudinaryUploadResponse, CloudinaryDestroyResponse } from '@types';
-import { Account } from '@types';
-import { logger } from '@utilities';
+import { Cloudinary } from '../data';
+import { CloudinaryUploadResponse, CloudinaryDestroyResponse } from '../types';
+import { User } from '../types';
 
-async function addImage(file: Express.Multer.File, uid: Account['id']) {
+async function addImage(file: Express.Multer.File, uid: User['id']) {
   const dataURL = getDataURL(file);
   const path = `social-media-app/${uid}`;
   const image = await Cloudinary.upload(dataURL, { folder: path })
@@ -20,13 +19,21 @@ async function addImage(file: Express.Multer.File, uid: Account['id']) {
   return image;
 }
 
-async function deleteImage(imgURL: string) {
+async function deleteImage(imgURL: string): Promise<boolean> {
   const publicId = getPublicId(imgURL);
+  if (imgURL.includes('video')) {
+    return await Cloudinary.destroy(publicId, { resource_type: 'video' })
+      .then((result: CloudinaryDestroyResponse) => {
+        if (result.result === 'ok') return true;
+        return Promise.reject('Failed to delete video');
+      })
+      .catch((error: any) => Promise.reject(error));
+  }
+
   return await Cloudinary.destroy(publicId)
     .then((result: CloudinaryDestroyResponse) => {
-      logger.warn(`${result.result}`, 'Cloudinary');
       if (result.result === 'ok') return true;
-      return false;
+      return Promise.reject('Failed to delete image');
     })
     .catch((error: any) => Promise.reject(error));
 }
@@ -34,17 +41,15 @@ async function deleteImage(imgURL: string) {
 async function replaceImage(file: Express.Multer.File, deleteURL: string) {
   if (!deleteURL) return Promise.reject('No image to replace');
   const urlParts = deleteURL.split('/');
-  const uid = urlParts[urlParts.length - 2] as unknown as Account['id'];
+  const uid = urlParts[urlParts.length - 2] as unknown as User['id'];
   const image = await addImage(file, uid);
   await deleteImage(deleteURL);
   return image;
 }
 
-export default { addImage, deleteImage, replaceImage };
-
 function getPublicId(imageUrl: string) {
   const urlParts = imageUrl.split('/');
-  const publicId = `social-media-app/${urlParts[urlParts.length - 2]}/${
+  const publicId = `${urlParts[urlParts.length - 2]}/${
     urlParts[urlParts.length - 1].split('.')[0]
   }`;
   return publicId;
@@ -55,3 +60,5 @@ function getDataURL(file: Express.Multer.File) {
   const dataURL = `data:${file.mimetype};base64,${base64String}`;
   return dataURL;
 }
+
+export default { addImage, deleteImage, replaceImage };

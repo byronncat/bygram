@@ -15,15 +15,18 @@ declare module 'express-session' {
   }
 }
 
-import Redis from './database/Redis.database';
+import Redis from './data/database/Redis.database';
 import RedisStore from 'connect-redis';
 const redisStore = new RedisStore({
   client: Redis,
-  prefix: 'sess:',
+  prefix: 'bygram:',
 });
 
 export default function configureServer(server: Express) {
-  server.use(cors());
+  server.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }));
   server.use(logger('dev'));
   server.use(express.json());
   server.use(express.urlencoded({ extended: false }));
@@ -35,6 +38,7 @@ export default function configureServer(server: Express) {
   server.use(bodyParser.json());
 
   // Session
+  server.set('trust proxy', 1); // Add this for HTTPS proxying
   server.use(
     session({
       name: 'session_id',
@@ -42,10 +46,12 @@ export default function configureServer(server: Express) {
       secret: process.env.TOKEN_SECRET || 'secret',
       resave: false,
       saveUninitialized: false,
+      proxy: true,
       cookie: {
         maxAge: TIME.COOKIE_MAX_AGE,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'development' ? false : true,
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
       },
     } as session.SessionOptions),
   );

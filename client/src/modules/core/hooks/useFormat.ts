@@ -9,7 +9,8 @@ enum Time {
   SecondsToMiliseconds = 1000,
 }
 
-function relativeTime(dateString: string) {
+function relativeTime(dateString: string | null) {
+  if (!dateString) return '';
   const date = new Date(dateString);
   const now = new Date();
   const secondsPast = Math.floor(

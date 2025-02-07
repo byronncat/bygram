@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import {
   useGlobalContext,
-  GlobalProvider,
+  GlobalStateProvider,
   ThemeProvider,
   useThemeContext,
 } from '@global';
@@ -23,9 +23,9 @@ describe('provider', () => {
       };
 
       render(
-        <GlobalProvider>
+        <GlobalStateProvider>
           <Test />
-        </GlobalProvider>,
+        </GlobalStateProvider>,
       );
       expect(renderCount).toBe(2);
     });

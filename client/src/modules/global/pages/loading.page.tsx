@@ -2,21 +2,22 @@ import clsx from 'clsx';
 import { Loader } from '../components';
 import logoURL from '@assets/images/logo.svg';
 
-const Loading = () => {
+export default function LoadingPage() {
   return (
-    <div className={clsx('h-full', 'relative', 'flex justify-center')}>
-      <Loader.BoxSpin />
+    <div className={clsx('w-screen h-svh', 'relative', 'flex justify-center')}>
+      <Loader.BoxSpin className="flex-1" />
       <div
         className={clsx(
+          'absolute bottom-0',
           'flex flex-col items-center',
-          'absolute bottom-6 left-1/2 transform -translate-x-1/2',
+          'pb-6',
         )}
       >
         <span className="text-on-background/[0.6] dark:text-dark-on-background/[0.6]">
           from
         </span>
         <div className="flex items-center">
-          <img className="block mr-2 w-8 h-8" src={`${logoURL}`} alt="logo" />
+          <img className="block size-8 mr-2" src={`${logoURL}`} alt="logo" />
           <span
             className={clsx(
               'font-semibold text-xl',
@@ -29,6 +30,4 @@ const Loading = () => {
       </div>
     </div>
   );
-};
-
-export default Loading;
+}

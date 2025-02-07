@@ -1,2 +1,2 @@
-export { default as ColumnLayout } from './dashboard.layout';
+export { default as ColumnLayout, LayoutContext } from './Dashboard.layout';
 export * from './post';

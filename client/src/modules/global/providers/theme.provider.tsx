@@ -1,10 +1,13 @@
-import { createContext, useContext, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  type PropsWithChildren,
+} from 'react';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { LocalStorageKey } from '../constants';
-import type { ReactProps } from '../types';
 
 type TernaryDarkMode = ReturnType<typeof useTernaryDarkMode>['ternaryDarkMode'];
-
 const ThemeContext = createContext(
   {} as {
     theme: TernaryDarkMode;
@@ -16,28 +19,30 @@ const ThemeContext = createContext(
   },
 );
 
-const ThemeProvider = ({ children }: ReactProps) => {
+export default function ThemeProvider({ children }: PropsWithChildren) {
   const { isDarkMode, ternaryDarkMode, setTernaryDarkMode } =
     useTernaryDarkMode({
-      defaultValue: 'dark' as TernaryDarkMode,
+      defaultValue: 'light' as TernaryDarkMode,
       localStorageKey: LocalStorageKey.Theme,
     });
 
-  const setLightTheme = () => {
-    setTernaryDarkMode('light' as TernaryDarkMode);
-  };
-  const setDarkTheme = () => {
-    setTernaryDarkMode('dark' as TernaryDarkMode);
-  };
-  const setSystemTheme = () => {
-    setTernaryDarkMode('system' as TernaryDarkMode);
-  };
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const theme = isDarkMode ? 'dark' : 'light';
     document.documentElement.className = theme;
-    document.getElementById('root')!.className = `${theme}-theme`;
+    document.getElementById('root')!.className = `css-${theme}-theme`;
+    document.body.className =
+      theme === 'light' ? 'bg-surface' : 'bg-dark-surface';
   }, [isDarkMode]);
+
+  function setLightTheme() {
+    setTernaryDarkMode('light' as TernaryDarkMode);
+  }
+  function setDarkTheme() {
+    setTernaryDarkMode('dark' as TernaryDarkMode);
+  }
+  function setSystemTheme() {
+    setTernaryDarkMode('system' as TernaryDarkMode);
+  }
 
   return (
     <ThemeContext.Provider
@@ -53,9 +58,6 @@ const ThemeProvider = ({ children }: ReactProps) => {
       {children}
     </ThemeContext.Provider>
   );
-};
+}
 
-export default ThemeProvider;
-export const useThemeContext = () => {
-  return useContext(ThemeContext);
-};
+export const useThemeContext = () => useContext(ThemeContext);

@@ -1,50 +1,63 @@
-import { useEffect, useState } from 'react';
-import { PostWindow } from '../components';
-import { uri, toast, Loader } from '@global';
-import { explorePost } from '../services/post.service';
-import { Post } from '../types';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { homepagePost } from '../__mocks__';
 
-function ExplorePage() {
-  const [ready, setReady] = useState(true);
-  const [post, setPost] = useState({} as any);
-  const [showPost, setShowPost] = useState(false);
-  const [posts, setPosts] = useState(homepagePost);
+import { toast, Loader } from '@global';
+import { postApi } from '../api';
+import { NoPosts } from '../components';
+import { PostContext } from '../providers';
+import { GridPostLayout, LayoutContext } from '../layouts';
+
+export default function Explore() {
+  const page = useRef(0);
+  const isFetching = useRef(false);
+  const { posts, setPosts } = useContext(PostContext);
+  const { scrollRef } = useContext(LayoutContext);
+  const [isLoaded, setLoaded] = useState(false);
+
+  const fetchPosts = useCallback(async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
+    const response = await postApi.explorePosts(page.current);
+    if (response.success) {
+      setPosts((prevPosts) => [...(prevPosts || []), ...(response.data || [])]);
+      if (response.data) {
+        page.current += 1;
+      }
+    } else toast.error(response.message);
+    isFetching.current = false;
+  }, [setPosts]);
 
   useEffect(() => {
-    // (async function FetchData() {
-    //   const response = await explorePost(32);
-    //   if (response.success && response.data) {
-    //     setPosts(response.data);
-    //     setReady(true);
-    //   } else toast.error(response.message);
-    // })();
-  }, [ready]);
-  if (!ready) return <Loader.BoxSpin />;
+    (async function fetchFirstPage() {
+      await fetchPosts();
+      setLoaded(true);
+    })();
+  }, [fetchPosts]);
+
+  const handleScroll = useCallback(() => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 2) {
+        fetchPosts();
+      }
+    }
+  }, [fetchPosts, scrollRef]);
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) scrollElement.addEventListener('scroll', handleScroll);
+    return () => {
+      if (scrollElement)
+        scrollElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll, scrollRef]);
+
+  if (!isLoaded) return <Loader.BoxSpin />;
+  if (!posts) return null;
+  if (posts?.length === 0) return <NoPosts />;
   return (
-    <>
-      {showPost && <PostWindow post={post} onExit={() => setShowPost(false)} />}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {posts.map((post: any) => {
-          return (
-            <div className="aspect-square overflow-hidden">
-              <LazyLoadImage
-                className="object-cover w-full h-full cursor-pointer"
-                alt="profile"
-                src={post.file.url}
-                onClick={() => {
-                  setPost(post);
-                  setShowPost(true);
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-    </>
+    <div className={clsx('max-w-screen-lg w-full min-h-[calc(100vh-11rem)]', 'px-4 pt-4 md:pt-12')}>
+      <GridPostLayout />
+      <div className="pb-4 md:pb-0" />
+    </div>
   );
 }
-
-export default ExplorePage;

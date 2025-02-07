@@ -1,30 +1,50 @@
 import clsx from 'clsx';
 import { ReactProps } from '@global';
-import { MenuItem } from '../types/layout.d';
-import styles from '../styles/components/menu.module.sass';
+import { MenuItem } from '../types/layout';
 
 interface MenuProps extends ReactProps {
   list: MenuItem[];
+  title?: string;
 }
-function Menu({ list }: MenuProps) {
+
+export default function Menu({ list, title }: MenuProps) {
   return (
-    <ul className={clsx(styles.menu, 'text-neon-glowing-2', 'list-group z-3')}>
-      {list.map((item) => {
-        return (
-          <li
-            // key={index}
-            aria-current="true"
-            className={clsx(styles['menu-item'], 'list-group-item text-center')}
-            onClick={() => {
-              item.functionHandler();
-            }}
-          >
-            {item.name}
-          </li>
-        );
-      })}
+    <ul
+      className={clsx(
+        'w-4/5 max-w-100',
+        'text-center',
+        'surface rounded-lg',
+        'divide-y divider-on-surface/[.3] dark:divide-dark-on-surface/[.09]',
+      )}
+    >
+      {title && (
+        <li
+          aria-current="true"
+          className={clsx(
+            'h-20',
+            'flex items-center justify-center',
+            'text-lg',
+          )}
+        >
+          {title}
+        </li>
+      )}
+      {list.map((item) => (
+        <li
+          key={item.name}
+          aria-current="true"
+          className={clsx(
+            item.fontWeight === 'bold' && 'font-semibold',
+            item.color === 'red' && ' text-[#ed4956]',
+            item.color === 'blue' && ' text-[#0095f6]',
+            'py-4',
+            'cursor-pointer hover:bg-on-surface/[.07] dark:hover:bg-dark-on-surface/[0.05] transition-colors duration-300',
+          )}
+          onClick={item.functionHandler}
+        >
+          {item.name}
+        </li>
+      ))}
     </ul>
   );
 }
-
-export default Menu;

@@ -1,1 +1,1 @@
-export { default as UploadWindow } from './upload-post-window.component';
+export { default as UploadWindow } from './UploadPostWindow.component';
