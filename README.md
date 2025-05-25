@@ -10,9 +10,9 @@
   <h3 align="center">Social Media Platform</h3>
 
   <p align="center">
-    Share your moments, connect with the world!
+    A modern social media platform to share moments and connect with the world!
     <br />
-    <a href="https://youtu.be/0YJ7lPvjlAo"><strong>View Demo »</strong></a>
+    <a href="https://youtu.be/0YJ7lPvjlAo"><strong>Watch Demo »</strong></a>
     <br />
     <br />
     <a href="https://docs.google.com/forms/d/1oUM87A2Kkv7ME9OhRtNDZ_HyMsoKzJR_lOCwna4T_rU/viewform?edit_requested=true">Report Bug</a>
@@ -50,19 +50,20 @@
 
 ![Product Name Screen Shot](readme-resources/product-screenshot.png)
 
-**Social Media Platform** is a modern web application designed to help users share images, videos, and connect with others. Built with a focus on clean code and user-friendly design (for personal learning purpose), this platform offers features like user profiles, post exploration, and search functionality.
+**Bygram** is a dynamic and user-friendly social media platform designed for sharing images, videos, and connecting with others. Built as a personal learning project, Bygram combines modern web technologies with a focus on clean code, responsive design, and an engaging user experience. Whether you're posting moments, exploring content, or connecting with friends, Bygram provides a seamless and visually appealing platform.
 
 ### Key Features:
-- **User Authentication**: Secure authentication using JWT and password hashing.
-- **CRUD Operations**: Create, read, update, and delete posts.
-- **Media Management**: Upload and manage images/videos using Cloudinary.
-- **Responsive Design**: Fully responsive UI with advanced CSS effects (e.g., shadows, neon effects) powered by Sass and Tailwind CSS.
-- **Database**: Utilizes MongoDB (with Mongoose for schema management) and Redis for session storage.
-- **UI/UX**: Friendly, support dark mode.
+- **Secure Authentication**: Robust user authentication with JWT and bcrypt for password hashing.
+- **Media Uploads**: Effortless image and video uploads powered by Cloudinary.
+- **Responsive UI**: Fully responsive design with dark mode support, styled with Tailwind CSS and Sass for advanced effects (e.g., shadows, neon glows).
+
+This project is ideal for developers looking to explore a full-stack social media application or for users seeking a modern platform to share and connect.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
+
+Bygram leverages a powerful stack of modern technologies to deliver a robust and scalable platform:
 
 - [![React][React.js]][React-url]
 - [![Express][Express.js]][Express-url]
@@ -79,34 +80,43 @@
 
 ## Getting Started
 
-To get a local copy up and running, follow these steps.
+Follow these steps to set up and run Bygram locally on your machine.
 
 ### Prerequisites
 
-- Node.js and npm installed (or pnpm, yarn).
-- MongoDB, Redis and Cloudinary servers running.
+Ensure you have the following installed:
+
+- **Node.js** (v16 or higher) and **npm** (or pnpm, yarn).
+- **MongoDB**: A running MongoDB instance (local or cloud-based).
+- **Redis**: A running Redis server for session management.
+- **Cloudinary Account**: For media storage and management.
 
 ### Installation
 
 1. Clone the repo:
    ```sh
-   git clone ...
+   git clone https://github.com/byronncat/bygram.git
+   cd bygram
    ```
 2. Install dependencies:
    ```sh
    npm install
    ```
 3. Set up environment variables:
-   - Create a `.env` file in the api and client directory.
-   - Add the variables in `.env.example`.
+   - Create a `.env` file in both the `api` and `client` directory.
+   - Copy the example variables from `.env.example` and fill in the required values.
 4. Start the development server:
    ```sh
+   cd api
    npm run dev
    ```
 5. Start the development client:
    ```sh
+   cd client
    npm run start
    ```
+6. Access the Application:
+  - Open your browser and navigate to http://localhost:3000 (or the port specified in your client configuration).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,10 +124,10 @@ To get a local copy up and running, follow these steps.
 
 ## Usage
 
-- **Explore Posts**: Browse through posts from other users.
-- **Create Posts**: Share your own images and videos.
-- **Search**: Find users and posts using the search functionality.
-- **Profile Management**: Update your profile and view others' profiles.
+- **Explore Posts**: Browse a feed of posts from users across the platform.
+- **Create Content**: Share images or videos with captions to express yourself.
+- **Search**: Use the search bar to find users or specific posts.
+- **Profile Management**: Update your profile picture, and view your posts or those of others.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,7 +145,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Ngo Cao Anh Thinh - anhthinhncat@gmail.com
 
-Project Link: [Bygram](https://github.com/byronncat/bygram)
+Project Link: [Bygram](https://bygram.netlify.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
